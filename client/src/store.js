@@ -1,0 +1,64 @@
+import Vue from 'vue'
+import Vuex from 'vuex'
+
+import CodeNode from './NodeEditor/CodeNode';
+import socket from './socket.js'
+
+Vue.use(Vuex)
+
+export default new Vuex.Store({
+  state: {
+    canvas: {},
+    selected_node: {},
+    open_code_editor: false,
+    code: '',
+  },
+  mutations: {
+    set_selected_node: function(state, node){      
+      state.selected_node = node;
+    },
+    open_editor: function(state, val){
+      state.open_code_editor = val;
+    },
+    set_canvas: function(state, canvas){
+      state.canvas = canvas;
+    },
+    set_code: function(state, code){
+      state.code = code;
+    }
+  },
+  actions: {
+    open_code_editor: function(context, node){
+      console.log('open editor');
+      context.commit('set_selected_node', node);
+      context.commit('set_code', node.code);
+      context.commit('open_editor', true);
+    },
+    add_empty_node: function(context){      
+      let canvas = context.state.canvas;
+      var node =  new CodeNode();
+      node.setCell(canvas.addNode(node)); 
+      socket.emit('new_node', node.cell.id);  
+      
+    },
+    socket_changeNodeInputPorts(context, port_names){
+      console.log('socket change inputs');
+      let canvas = context.state.canvas;
+      let cell = context.state.selected_node.cell
+      canvas.changePorts(cell, port_names, 0, 'input'); 
+    },
+    socket_changeNodeOutputPorts: function(context, port_names){
+      console.log('socket change outputs');
+      let canvas = context.state.canvas;
+      let cell = context.state.selected_node.cell
+      canvas.changePorts(cell, port_names, 1, 'output'); 
+    },
+    save_node_code: function(context, code){
+      context.state.selected_node.code = code;
+      var data = {};
+      data.code = code;
+      data.id = context.state.selected_node.cell.id;      
+      socket.emit('edit_node_code', data);
+    }
+  }
+})
