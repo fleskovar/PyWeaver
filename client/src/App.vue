@@ -46,6 +46,8 @@
     <v-footer class="pa-3" app dark>
       <v-btn color="gray" dark v-on:click="openEditor">Edit</v-btn>   
       <v-btn color="gray" dark v-on:click="addNode" @keydown.shift.enter="canvasShortcuts">Add</v-btn>   
+      <v-btn color="gray" dark v-on:click="runServer">Run</v-btn>   
+     
       <v-spacer></v-spacer>
         <div>&copy; {{ new Date().getFullYear() }}</div>
     </v-footer>
@@ -91,16 +93,6 @@ export default {
     var canvas = new Canvas(container, this.$store);
     canvas.mount();
     this.$store.commit('set_canvas', canvas);
-
-    var cn = new CodeNode();
-    cn.inputs = ['x', 'y'];
-    cn.outputs = ['sx', 'sy', 'gy'];    
-    
-    cn.setCell(canvas.addNode(cn));  
-    canvas.changePorts(cn.cell, ['y', 'L'], 0, 'input');  
-
-    var cn2 = new CodeNode();
-    cn2.setCell(canvas.addNode(cn2));
     },
 
   methods:{
@@ -119,18 +111,21 @@ export default {
     },
     codeDialogShortcuts: function(e){
       if (e.keyCode === 13 && e.shiftKey){
-        e.preventDefault();
+        
         this.saveCode();
       }else if(e.keyCode === 27){
-        e.preventDefault();
+        
         this.closeDialog();
       }
     },
-    canvasShortcuts: function(e){      
+    canvasShortcuts: function(e){  
       if (e.keyCode === 13 && e.shiftKey){        
         this.addNode();        
       }
     },
+    runServer: function(){
+      this.$store.dispatch('execute_server');
+    }
   },
   computed:{
     code_dialog:{

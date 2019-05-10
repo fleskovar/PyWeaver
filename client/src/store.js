@@ -28,8 +28,7 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    open_code_editor: function(context, node){
-      console.log('open editor');
+    open_code_editor: function(context, node){      
       context.commit('set_selected_node', node);
       context.commit('set_code', node.code);
       context.commit('open_editor', true);
@@ -41,14 +40,12 @@ export default new Vuex.Store({
       socket.emit('new_node', node.cell.id);  
       
     },
-    socket_changeNodeInputPorts(context, port_names){
-      console.log('socket change inputs');
+    socket_changeNodeInputPorts(context, port_names){      
       let canvas = context.state.canvas;
       let cell = context.state.selected_node.cell
       canvas.changePorts(cell, port_names, 0, 'input'); 
     },
-    socket_changeNodeOutputPorts: function(context, port_names){
-      console.log('socket change outputs');
+    socket_changeNodeOutputPorts: function(context, port_names){      
       let canvas = context.state.canvas;
       let cell = context.state.selected_node.cell
       canvas.changePorts(cell, port_names, 1, 'output'); 
@@ -59,6 +56,15 @@ export default new Vuex.Store({
       data.code = code;
       data.id = context.state.selected_node.cell.id;      
       socket.emit('edit_node_code', data);
+    },
+    add_connection(context, data){
+      socket.emit('make_connection', data);
+    },
+    remove_connection(context, data){
+      socket.emit('delete_connection', data);
+    },
+    execute_server(context){
+      socket.emit('execute');
     }
   }
 })

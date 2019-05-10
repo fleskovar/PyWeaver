@@ -57,7 +57,7 @@ export default class Canvas{
 
         var keyHandler = new mxKeyHandler(graph);
         keyHandler.bindKey(46, function(evt)
-        {
+        {            
             if (graph.isEnabled())
             {
                 graph.removeCells();
@@ -81,18 +81,59 @@ export default class Canvas{
         {
             //TODO: Create library of connection here.				
             var edge = evt.getProperty('cell');
+            var data = {
+                source_id: edge.source.parent.id,
+                target_id: edge.target.parent.id,
+                source_var: edge.source.value,
+                target_var: edge.target.value,
+            };
+            this.store.dispatch('add_connection', data);
         });
 
         //Adding double click event
         graph.addListener(mxEvent.DOUBLE_CLICK, (sender, evt) => {
             var cell = evt.getProperty('cell');            
             if (cell!=null){
-                if (cell.isNode){         
-                    console.log('dispatch');           
+                if (cell.isNode){
                     this.store.dispatch('open_code_editor', cell.codeNode);
                 }
             }
         });
+        
+        graph.addListener(mxEvent.CELLS_REMOVED, (sender, evt) => {
+            var removed_cells = evt.properties.cells;
+            
+            console.log(evt);
+
+            //First remove edges from graph. This ensures that referenced nodes are still registered.
+            //Prevents the server from failing.
+            //TODO: Add safegguarding to server side
+            for(var i = 0; i < removed_cells.length; i++){
+                var cell = removed_cells[i];
+
+                if(cell.edge){
+                    //Delete the connection from the graph
+                    var data = {
+                        source_id: cell.source.parent.id,
+                        source_var: cell.source.value
+                    };
+                    this.store.dispatch('remove_connection', data);
+                }
+            }
+
+            //Once edges were removed, delete the nodes.
+            for(var i = 0; i < removed_cells.length; i++){
+                var cell = removed_cells[i];
+
+                if(cell.isNode){
+                    //Delete a node from the graph
+                
+                this.store.dispatch('add_connection', data);
+                }
+            }
+        });
+        
+        
     }
 
     addNode(code_node){
@@ -126,8 +167,6 @@ export default class Canvas{
         let model = this.graph.getModel();
         let remaining_names = [];
         let remaining_ports = [];
-        console.log('here');
-        console.log(port_names);
 
         var style_string = '';
 
