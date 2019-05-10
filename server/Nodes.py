@@ -72,6 +72,7 @@ class Graph(object):
         pass
 
     def build_execution_order_list(self):
+        # TODO: part of the execute method should be refactored here
         return None
 
 class Node(object):
@@ -96,6 +97,7 @@ class Node(object):
         self.parent_node.add_node(self)        
 
     def parse_code(self, code, params=dict()):
+        self.set_dirty()
         self.code = code
         success, func_name, input_vars, input_vars_data, output_vars = self.parse_function(code)  
         self.func_name = func_name
@@ -115,8 +117,6 @@ class Node(object):
 
         for o in output_vars:
             self.results[o] = None
-
-        self.dirty = True
 
     def has_downstream(self):
         val = len(self.connections.keys()) > 0
@@ -214,7 +214,7 @@ class Node(object):
         # TODO: disconnect should undo this        
         target_node.input_vars_data[target_var] = (self.id, var) # Bind target's input var to local output
         self.connections[var] = (target_node.id, target_var) # Bind local var to target's var
-        target_node.dirty = True # A new connection was made. Should recalc.
+        target_node.set_dirty() # A new connection was made. Should recalc.
 
     def disconnect_output(self, var):
         #TODO: make it so that if node is not longer there, delete connection anyways
@@ -225,11 +225,19 @@ class Node(object):
         # Search for output var and disconnect it
         target_node = self.parent_node.nodes[target_id] # Get reference of target node     
         del target_node.input_vars_data[target_var] # Delete connection.
-        target_node.dirty = True # Target lost an input. Should recalc.
+        target_node.set_dirty() # Target lost an input. Should recalc.
 
         self.parent_node.remove_adjacency_dict(self.id, target_id) # Remove connection from adjacency dict
 
         del self.connections[var] # Dele local conection reference.
+
+    def set_dirty(self):
+        self.dirty = True
+
+        for var in self.connections:
+            # Iterate through all connections
+            data = self.connections[var] # Get the connection data (We are interested in the id of the nodes downstream)
+            self.parent_node.nodes[data[0]].set_dirty() # Propagate dirty state downstream
 
 if __name__ == '__main__':
 
