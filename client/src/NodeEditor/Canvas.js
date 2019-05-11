@@ -126,9 +126,8 @@ export default class Canvas{
                 var cell = removed_cells[i];
 
                 if(cell.isNode){
-                    //Delete a node from the graph
-                
-                this.store.dispatch('add_connection', data);
+                    //Delete a node from the graph                
+                    //this.store.dispatch('add_connection', data);
                 }
             }
         });

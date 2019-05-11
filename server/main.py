@@ -55,4 +55,5 @@ def execute():
             print v, root.nodes[n].results[v]
 
 if __name__ == '__main__':
+    print 'Started'
     socketio.run(app, host='localhost', port=5000)

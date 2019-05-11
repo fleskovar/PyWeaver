@@ -85,10 +85,10 @@ class Node(object):
         self.scope = dict()
         self.code = code
         self.id = id
-        self.connections = dict()
+        self.output_vars_data = dict()
 
         self.input_vars = []
-        self.input_vars_data = {}
+        self.input_vars_data = dict()
         self.output_vars = []
 
         if code is not None:
@@ -105,10 +105,18 @@ class Node(object):
         exec code in self.func_dict
         self.func = self.func_dict[func_name]
         self.func.__globals__['scope'] = self.scope
+        
+        if(self.input_vars != input_vars):
+            self.input_vars_data = dict()
+
+        if(self.output_vars != output_vars):
+            self.output_vars_data = dict()
+
         self.input_vars = input_vars
-        self.input_vars_data = input_vars_data
-        self.output_vars = output_vars        
-        self.connections = dict()
+        # TODO: check if I should delete this
+        #self.input_vars_data = input_vars_data
+        
+        self.output_vars = output_vars
 
         self.params = params
         self.results = {}
@@ -119,7 +127,7 @@ class Node(object):
             self.results[o] = None
 
     def has_downstream(self):
-        val = len(self.connections.keys()) > 0
+        val = len(self.output_vars_data.keys()) > 0
         return val
 
     def parse_function(self, code):
@@ -213,30 +221,30 @@ class Node(object):
         self.parent_node.update_adjacency(self, target_node)
         # TODO: disconnect should undo this        
         target_node.input_vars_data[target_var] = (self.id, var) # Bind target's input var to local output
-        self.connections[var] = (target_node.id, target_var) # Bind local var to target's var
+        self.output_vars_data[var] = (target_node.id, target_var) # Bind local var to target's var
         target_node.set_dirty() # A new connection was made. Should recalc.
 
     def disconnect_output(self, var):
         #TODO: make it so that if node is not longer there, delete connection anyways
-        conn_data = self.connections[var]
+        conn_data = self.output_vars_data[var]
         target_id = conn_data[0]
         target_var = conn_data[1]
 
         # Search for output var and disconnect it
         target_node = self.parent_node.nodes[target_id] # Get reference of target node     
-        del target_node.input_vars_data[target_var] # Delete connection.
+        del target_node.input_vars_data[target_var] # Delete input connection.
         target_node.set_dirty() # Target lost an input. Should recalc.
 
         self.parent_node.remove_adjacency_dict(self.id, target_id) # Remove connection from adjacency dict
 
-        del self.connections[var] # Dele local conection reference.
+        del self.output_vars_data[var] # Delete output local conection reference.
 
     def set_dirty(self):
         self.dirty = True
 
-        for var in self.connections:
+        for var in self.output_vars_data:
             # Iterate through all connections
-            data = self.connections[var] # Get the connection data (We are interested in the id of the nodes downstream)
+            data = self.output_vars_data[var] # Get the connection data (We are interested in the id of the nodes downstream)
             self.parent_node.nodes[data[0]].set_dirty() # Propagate dirty state downstream
 
 if __name__ == '__main__':
