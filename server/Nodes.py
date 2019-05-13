@@ -20,7 +20,8 @@ class Graph(object):
         self.adjacency_dict[node_id] = dict()
 
     def delete_node(self, node_id):
-        
+        # Should add a check here to clear all i/o in the node just in case UI does not
+        # properly trigger the deletion of all variables
         del self.nodes[node_id]
 
     def update_adjacency(self, source_node, target_node):
@@ -116,11 +117,26 @@ class Node(object):
         self.func = self.func_dict[func_name]
         self.func.__globals__['scope'] = self.scope
         
-        if(self.input_vars != input_vars):
+
+        if len(input_vars) < self.input_vars:
+            # I could also check that if the smaller new input has some variables in common
+            # with the previous input, then I should only delete the extra variables
+            self.input_vars_data = dict()
+        elif input_vars[:len(self.input_vars)] != self.input_vars:
             self.input_vars_data = dict()
 
-        if(self.output_vars != output_vars):
+        #if(self.input_vars != input_vars):
+        #    self.input_vars_data = dict()
+
+        if len(output_vars) < self.output_vars:
+            # I could also check that if the smaller new input has some variables in common
+            # with the previous input, then I should only delete the extra variables
             self.output_vars_data = dict()
+        elif output_vars[:len(self.output_vars)] != self.output_vars:
+            self.output_vars_data = dict()
+
+        #if(self.output_vars != output_vars):
+        #    self.output_vars_data = dict()
 
         self.input_vars = input_vars
         # TODO: check if I should delete this
@@ -257,15 +273,3 @@ class Node(object):
             # Iterate through all connections
             data = self.output_vars_data[var] # Get the connection data (We are interested in the id of the nodes downstream)
             self.parent_node.nodes[data[0]].set_dirty() # Propagate dirty state downstream
-
-if __name__ == '__main__':
-
-    root = Graph()
-    code_2 = open('func_b.py').read()
-    n1 = Node(root, code_2)
-    # node_in.execute()
-    code = open('func_a.py').read()
-    n2 = Node(root, code)
-    n1.connect_output('x', n2, 'x')
-    n1.connect_output('y', n2, 'y')
-    root.execute()
