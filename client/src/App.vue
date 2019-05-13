@@ -2,8 +2,8 @@
   <v-app>
     <v-toolbar app dark>
       <v-toolbar-title class="headline text-uppercase">
-        <span>Vuetify</span>
-        <span class="font-weight-light">MATERIAL DESIGN</span>
+        <span>Py</span>
+        <span class="font-weight-light">Weaver</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>      
     </v-toolbar>

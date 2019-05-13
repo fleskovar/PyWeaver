@@ -65,6 +65,9 @@ export default new Vuex.Store({
     },
     execute_server(context){
       socket.emit('execute');
+    },
+    delete_node(context, id){
+      socket.emit('delete_node', id);
     }
   }
 })

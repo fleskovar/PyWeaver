@@ -13,6 +13,11 @@ def add_new_node(id):
     global root
     n1 = Node(root, id)
 
+@socketio.on('delete_node')
+def delete_node(node_id):
+    global root
+    root.delete_node(node_id)
+
 @socketio.on('edit_node_code')
 def edit_node_code(data):
     global root

@@ -17,12 +17,16 @@ class Graph(object):
     def add_node(self, node):
         node_id = node.id
         self.nodes[node_id] = node
-        self.adjacency_dict[node_id] = []
+        self.adjacency_dict[node_id] = dict()
+
+    def delete_node(self, node_id):
+        
+        del self.nodes[node_id]
 
     def update_adjacency(self, source_node, target_node):
         self.edges.append((source_node.id, target_node.id))
-        self.update_adjacency_dict(source_node.id, target_node.id)
-        self.update_adjacency_dict(target_node.id, source_node.id)
+        self.add_to_adjacency_dict(source_node.id, target_node.id)
+        self.add_to_adjacency_dict(target_node.id, source_node.id)
 
     def make_connection(self, source_id, source_var, target_id, target_var):
         print 'making conn'
@@ -34,13 +38,18 @@ class Graph(object):
         node = self.nodes[source_id]
         node.disconnect_output(source_var)
     
-    def update_adjacency_dict(self, node_id, neighbor_id):
+    def add_to_adjacency_dict(self, node_id, neighbor_id):
         if neighbor_id not in self.adjacency_dict[node_id]:
-            self.adjacency_dict[node_id].append(neighbor_id)
+            self.adjacency_dict[node_id][neighbor_id] = 1
+        else:
+            self.adjacency_dict[node_id][neighbor_id] += 1
 
-    def remove_adjacency_dict(self, node_id, neighbor_id):        
-        self.adjacency_dict[node_id].remove(neighbor_id)
-        self.adjacency_dict[neighbor_id].remove(node_id)
+    def remove_fom_adjacency_dict(self, node_id, neighbor_id):   
+        if neighbor_id in self.adjacency_dict[node_id]:
+            self.adjacency_dict[node_id][neighbor_id] -= 1
+
+        if self.adjacency_dict[node_id][neighbor_id] <= 0:
+            del self.adjacency_dict[node_id][neighbor_id]
 
     def get_var_value(self, node_id, var):
         node = self.nodes[node_id]
@@ -56,6 +65,7 @@ class Graph(object):
             while node_stack:
                 current = node_stack.pop()
                 for neighbor in self.adjacency_dict[current]:
+                    # If neighbor is a key of the adjacency dict of "current id"
                     if not neighbor in exec_list:
                         node_stack.append(neighbor)
                 exec_list.append(current)
@@ -235,7 +245,8 @@ class Node(object):
         del target_node.input_vars_data[target_var] # Delete input connection.
         target_node.set_dirty() # Target lost an input. Should recalc.
 
-        self.parent_node.remove_adjacency_dict(self.id, target_id) # Remove connection from adjacency dict
+        self.parent_node.remove_fom_adjacency_dict(self.id, target_id) # Remove connection from adjacency dict
+        self.parent_node.remove_fom_adjacency_dict(target_id, self.id) 
 
         del self.output_vars_data[var] # Delete output local conection reference.
 
