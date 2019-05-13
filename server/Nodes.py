@@ -35,9 +35,9 @@ class Graph(object):
         target_b = self.nodes[target_id]
         source_b.connect_output(source_var, target_b, target_var)
 
-    def delete_connection(self, source_id, source_var):
+    def delete_connection(self, source_id, source_var, target_id, target_var):
         node = self.nodes[source_id]
-        node.disconnect_output(source_var)
+        node.disconnect_output(source_var, target_id, target_var)
     
     def add_to_adjacency_dict(self, node_id, neighbor_id):
         if neighbor_id not in self.adjacency_dict[node_id]:
@@ -139,6 +139,7 @@ class Node(object):
         #    self.output_vars_data = dict()
 
         self.input_vars = input_vars
+
         # TODO: check if I should delete this
         #self.input_vars_data = input_vars_data
         
@@ -236,35 +237,66 @@ class Node(object):
         # TODO: Find a way to add/inject parameters
         input_vals = []
         for i in self.input_vars_data:
-            data = self.input_vars_data[i]
-            node_id = data[0]
-            var_name = data[1]
-            val = self.parent_node.get_var_value(node_id, var_name)
+            data_list = self.input_vars_data[i]
+            val = None
+            if len(data_list) == 1:
+                # If only one connection is made to this input, pass it as a value
+                data = data_list[0]
+                node_id = data[0]
+                var_name = data[1]
+                val = self.parent_node.get_var_value(node_id, var_name)
+                
+            else:
+                # If multiple connections are made to the variable, vectorize it
+                val = []
+                for data in data_list:
+                    node_id = data[0]
+                    var_name = data[1]
+                    result = self.parent_node.get_var_value(node_id, var_name)
+                    val.append(result)            
             input_vals.append(val)
         return input_vals
 
     def connect_output(self, var, target_node, target_var):
         self.parent_node.update_adjacency(self, target_node)
-        # TODO: disconnect should undo this        
-        target_node.input_vars_data[target_var] = (self.id, var) # Bind target's input var to local output
-        self.output_vars_data[var] = (target_node.id, target_var) # Bind local var to target's var
+        # TODO: disconnect should undo this
+        if target_var not in target_node.input_vars_data:
+            # Store connections as a list in case i/o has multiple connections
+            target_node.input_vars_data[target_var] = []
+
+        target_node.input_vars_data[target_var].append((self.id, var)) # Bind target's input var to local output
+        
+        if var not in self.output_vars_data:
+            self.output_vars_data[var] = []
+        
+        self.output_vars_data[var].append((target_node.id, target_var)) # Bind local var to target's var
+        
         target_node.set_dirty() # A new connection was made. Should recalc.
 
-    def disconnect_output(self, var):
-        #TODO: make it so that if node is not longer there, delete connection anyways
-        conn_data = self.output_vars_data[var]
-        target_id = conn_data[0]
-        target_var = conn_data[1]
+    def disconnect_output(self, var, target_id, target_var):
+        # Takes an output variable, searches for the corresponding connection and deletes it
+        
+        conn_data = self.output_vars_data[var]  
 
         # Search for output var and disconnect it
         target_node = self.parent_node.nodes[target_id] # Get reference of target node     
-        del target_node.input_vars_data[target_var] # Delete input connection.
+        
+        record_index = target_node.input_vars_data[target_var].index((self.id, var))
+        target_node.input_vars_data[target_var].pop(record_index)
+        if len(target_node.input_vars_data[target_var]) == 0:
+            del target_node.input_vars_data[target_var]
+        #del target_node.input_vars_data[target_var] # Delete input connection.
         target_node.set_dirty() # Target lost an input. Should recalc.
 
         self.parent_node.remove_fom_adjacency_dict(self.id, target_id) # Remove connection from adjacency dict
         self.parent_node.remove_fom_adjacency_dict(target_id, self.id) 
 
-        del self.output_vars_data[var] # Delete output local conection reference.
+        
+        record_index = self.output_vars_data[var].index((target_id, target_var))
+        self.output_vars_data[var].pop(record_index)
+        if len(self.output_vars_data[var]) == 0:
+            del self.output_vars_data[var]
+        #del self.output_vars_data[var] # Delete output local conection reference.
 
     def set_dirty(self):
         self.dirty = True

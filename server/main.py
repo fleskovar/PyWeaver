@@ -47,7 +47,11 @@ def delete_connection(data):
     global root
     source_id = data['source_id']
     source_var = data['source_var']
-    root.delete_connection(source_id, source_var)
+
+    target_id = data['target_id']
+    target_var = data['target_var']
+
+    root.delete_connection(source_id, source_var, target_id, target_var)
 
 @socketio.on('execute')
 def execute():
