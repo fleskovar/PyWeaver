@@ -115,7 +115,9 @@ export default class Canvas{
                     //Delete the connection from the graph
                     var data = {
                         source_id: cell.source.parent.id,
-                        source_var: cell.source.value
+                        source_var: cell.source.value,
+                        target_id: cell.target.parent.id,
+                        target_var: cell.target.value
                     };
                     this.store.dispatch('remove_connection', data);
                 }
