@@ -12,6 +12,7 @@ export default new Vuex.Store({
     selected_node: {},
     open_code_editor: false,
     code: '',
+    code_nodes: {}
   },
   mutations: {
     set_selected_node: function(state, node){      
@@ -36,18 +37,24 @@ export default new Vuex.Store({
     add_empty_node: function(context){      
       let canvas = context.state.canvas;
       var node =  new CodeNode();
-      node.setCell(canvas.addNode(node)); 
-      socket.emit('new_node', node.cell.id);  
-      
+      var node_cell = canvas.addNode(node);
+      context.state.code_nodes[node_cell.id] = node;
+      node.setCell(node_cell); 
+
+      socket.emit('new_node', node_cell.id);        
     },
     socket_changeNodeInputPorts(context, port_names){      
       let canvas = context.state.canvas;
-      let cell = context.state.selected_node.cell
+      //let cell = context.state.selected_node.cell;
+      let cell_id = context.state.selected_node.cell.id;
+      let cell = context.state.code_nodes[cell_id].cell;
       canvas.changePorts(cell, port_names, 0, 'input'); 
     },
     socket_changeNodeOutputPorts: function(context, port_names){      
       let canvas = context.state.canvas;
-      let cell = context.state.selected_node.cell
+      //let cell = context.state.selected_node.cell
+      let cell_id = context.state.selected_node.cell.id;
+      let cell = context.state.code_nodes[cell_id].cell;
       canvas.changePorts(cell, port_names, 1, 'output'); 
     },
     save_node_code: function(context, code){

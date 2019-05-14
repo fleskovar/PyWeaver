@@ -4,21 +4,60 @@
       <v-toolbar-title class="headline text-uppercase">
         <span>Py</span>
         <span class="font-weight-light">Weaver</span>
+        <span>2</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
+      
       <v-toolbar-items>
-        <v-btn flat small v-on:click='OpenFile'>Open file</v-btn>
-        <v-btn flat small v-on:click='SaveModel'>Save model</v-btn>
+        <v-btn flat small v-on:click='OpenFile'>          
+          <span>Open file</span>
+          <v-icon>folder_open</v-icon>
+        </v-btn>
+        
+        <v-btn flat small v-on:click='SaveModel'>
+          <span>Save model</span>
+          <v-icon>cloud_download</v-icon>
+        </v-btn>
       </v-toolbar-items>
-        <v-chip color="green" text-color="white" v-if='connected'>Connected</v-chip>  
-        <v-chip color="red" text-color="white" v-if='!connected'>Disconnected</v-chip> 
+        
+      <v-chip color="green" text-color="white" v-if='connected'>Connected</v-chip>  
+      <v-chip color="red" text-color="white" v-if='!connected'>Disconnected</v-chip> 
        
     </v-toolbar>
     <input type='file' id='fileInput' v-on:change='OpenModel($event)' hidden>
 
+    <v-navigation-drawer permanent clipped dark app width='300' :mini-variant="drawer_mini">  
+      
+      <v-list>
+        <v-list-tile>          
+          <v-list-tile-content></v-list-tile-content>
+          <v-list-tile-action @click="toggleMiniDrawer">
+            <v-btn icon>
+              <v-icon v-if="drawer_mini">keyboard_arrow_right</v-icon>
+              <v-icon v-if="!drawer_mini">keyboard_arrow_left</v-icon>
+            </v-btn>
+          </v-list-tile-action>        
+        </v-list-tile>        
 
-    <v-navigation-drawer permanent clipped dark app width='300'>
-      Options!
+        <v-list-tile @click="addNode" @keydown.shift.enter="canvasShortcuts">
+          <v-list-tile-action>
+            <v-btn icon class="text-lg-right">              
+              <v-icon>add</v-icon>
+            </v-btn>
+          </v-list-tile-action>   
+          <v-list-tile-content>ADD NEW NODE</v-list-tile-content>     
+        </v-list-tile>
+
+        <v-list-tile @click="runServer">
+          <v-list-tile-action>
+            <v-btn icon class="text-lg-right">              
+              <v-icon>computer</v-icon>
+            </v-btn>
+          </v-list-tile-action>   
+          <v-list-tile-content>RUN</v-list-tile-content>     
+        </v-list-tile>
+
+      </v-list>
     </v-navigation-drawer>
 
     <v-content app> 
@@ -32,7 +71,7 @@
             <v-toolbar dark color="gray">              
               <v-toolbar-title>Editor</v-toolbar-title>
               <v-spacer></v-spacer>
-              <v-toolbar-items>
+              <v-toolbar-items>                
                 <v-btn icon dark @click="closeDialog">
                   <v-icon>close</v-icon>
                 </v-btn>
@@ -53,10 +92,7 @@
 
 
     <v-footer class="pa-3" app dark>
-      <v-btn color="gray" dark v-on:click="openEditor">Edit</v-btn>   
-      <v-btn color="gray" dark v-on:click="addNode" @keydown.shift.enter="canvasShortcuts">Add</v-btn>   
-      <v-btn color="gray" dark v-on:click="runServer">Run</v-btn>   
-     
+      <v-btn color="gray" dark v-on:click="openEditor">Edit</v-btn>
       <v-spacer></v-spacer>
         <div>&copy; {{ new Date().getFullYear() }}</div>
     </v-footer>
@@ -93,8 +129,9 @@ export default {
         viewportMargin: Infinity,
         line: true,
         theme: 'base16-dark',
-        autoRefresh: true
-      }      
+        autoRefresh: true,        
+      },
+      drawer_mini: true      
     }
   },  
   mounted(){
@@ -148,13 +185,13 @@ export default {
         reader.onload = (e) => {
           var contents = e.target.result;
           // Display file content
-          //this.$store.state.canvas.LoadModel(contents);
+          this.$store.state.canvas.LoadModel(contents);
         };
         reader.readAsText(file);
       },
       SaveModel: function(){
-        //var xmlString = this.$store.state.canvas.GetModelXML();
-        var xmlString = '';
+        var xmlString = this.$store.state.canvas.GetModelXML();
+        
         /*
         mxUtils.post(url, 'xml='+xmlString, function(req)
         {
@@ -173,6 +210,9 @@ export default {
         element.click();
         document.body.removeChild(element);
       },
+      toggleMiniDrawer: function(){
+        this.drawer_mini = !this.drawer_mini;
+      }
   },
   computed:{
     code_dialog:{

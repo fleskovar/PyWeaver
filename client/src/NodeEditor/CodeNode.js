@@ -6,12 +6,12 @@ export default class CodeNode{
         this.outputs = [];
         this.code_source = 'local';
         this.code = '';
-        this.cell = {};
+        this.cell_id = '';
+        this.cell = {}
     }
 
-    setCell(cell){
-        this.cell = cell;
-        cell.codeNode = this;
+    setCell(cell){        
+        this.cell = cell
     }
 }
 

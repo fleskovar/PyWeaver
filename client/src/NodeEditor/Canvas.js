@@ -2,7 +2,7 @@ import EventBus from '../EventBus.js'
 import * as mxgraph from 'mxgraph';
 
 const {
-	mxClient, mxGraph, mxRubberband, mxUtils, mxEvent, mxPoint, mxConstants, mxEdgeStyle, mxKeyHandler
+	mxClient, mxGraph, mxRubberband, mxUtils, mxEvent, mxPoint, mxConstants, mxEdgeStyle, mxKeyHandler, mxCodec
 } = mxgraph();
 
 
@@ -13,7 +13,27 @@ export default class Canvas{
         this.graph = {};
         this.store = store;        
         this.codeNode = {};
+
     }
+
+    GetModelXML(){
+		let graph = this.graph;
+		var enc = new mxCodec();
+		var node = enc.encode(graph.getModel());
+	
+		var xmlString = mxUtils.getPrettyXml(node);	
+		return xmlString;		
+    }
+    
+    LoadModel(xml){
+		let graph = this.graph;
+        var file = xml;
+        //var xmlDoc = mxUtils.load(url).getXml();
+        var xmlDoc = mxUtils.parseXml(file);
+        var node = xmlDoc.documentElement;
+        var dec = new mxCodec(node.ownerDocument);
+        dec.decode(node, graph.getModel());
+	}
 
     mount(){
         // Disables the built-in context menu
@@ -116,7 +136,8 @@ export default class Canvas{
             var cell = evt.getProperty('cell');            
             if (cell!=null){
                 if (cell.isNode){
-                    this.store.dispatch('open_code_editor', cell.codeNode);
+                    let code_node = this.store.state.code_nodes[cell.id];
+                    this.store.dispatch('open_code_editor', code_node);
                 }
             }
         });
