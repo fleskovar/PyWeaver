@@ -26,7 +26,10 @@ class Graph(object):
 
     def update_adjacency(self, source_node, target_node):
         self.edges.append((source_node.id, target_node.id))
-        self.add_to_adjacency_dict(source_node.id, target_node.id)
+        #self.add_to_adjacency_dict(source_node.id, target_node.id)
+
+        # By only storing these connections in the adjacency dict, the traversal algorithm doesn't go upstream.
+        # This ensures that all nodes are computed in the correct order.
         self.add_to_adjacency_dict(target_node.id, source_node.id)
 
     def make_connection(self, source_id, source_var, target_id, target_var):
@@ -288,7 +291,7 @@ class Node(object):
         #del target_node.input_vars_data[target_var] # Delete input connection.
         target_node.set_dirty() # Target lost an input. Should recalc.
 
-        self.parent_node.remove_fom_adjacency_dict(self.id, target_id) # Remove connection from adjacency dict
+        #self.parent_node.remove_fom_adjacency_dict(self.id, target_id) # Remove connection from adjacency dict
         self.parent_node.remove_fom_adjacency_dict(target_id, self.id) 
 
         
