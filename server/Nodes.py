@@ -240,6 +240,9 @@ class Node(object):
 
     def get_inputs(self):
         # TODO: Find a way to add/inject parameters
+        
+        # TODO: Check order of inputs. Somehow, the test version is not working.
+        # Inputs are being fed in reverse order
         input_vals = []
         for i in self.input_vars_data:
             data_list = self.input_vars_data[i]
