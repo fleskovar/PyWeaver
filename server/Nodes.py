@@ -4,6 +4,8 @@ class Session(object):
 
     def __init__(self):
         self.graph = Graph()
+        self.modelXML = None # Server's copy of mxgraph's model xml
+        self.key = '' # Random key to identify session. If server's session is different to UI's session, resync
 
 class Graph(object):
 

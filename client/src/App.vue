@@ -1,14 +1,23 @@
 <template>
   <v-app>
-    <v-toolbar app dark>
+    <v-toolbar app dark fixed clipped-left>
       <v-toolbar-title class="headline text-uppercase">
         <span>Py</span>
         <span class="font-weight-light">Weaver</span>
       </v-toolbar-title>
-      <v-spacer></v-spacer>      
+      <v-spacer></v-spacer>
+      <v-toolbar-items>
+        <v-btn flat small v-on:click='OpenFile'>Open file</v-btn>
+        <v-btn flat small v-on:click='SaveModel'>Save model</v-btn>
+      </v-toolbar-items>
+        <v-chip color="green" text-color="white" v-if='connected'>Connected</v-chip>  
+        <v-chip color="red" text-color="white" v-if='!connected'>Disconnected</v-chip> 
+       
     </v-toolbar>
+    <input type='file' id='fileInput' v-on:change='OpenModel($event)' hidden>
 
-    <v-navigation-drawer clipped dark app width='300'>
+
+    <v-navigation-drawer permanent clipped dark app width='300'>
       Options!
     </v-navigation-drawer>
 
@@ -125,7 +134,45 @@ export default {
     },
     runServer: function(){
       this.$store.dispatch('execute_server');
-    }
+    },
+    OpenFile: function(){
+      var file_obj = document.getElementById('fileInput');
+      file_obj.click();
+    },
+    OpenModel: function(ev){
+        const file = ev.target.files[0];
+        if (!file) {
+          return;
+        }
+        var reader = new FileReader();
+        reader.onload = (e) => {
+          var contents = e.target.result;
+          // Display file content
+          //this.$store.state.canvas.LoadModel(contents);
+        };
+        reader.readAsText(file);
+      },
+      SaveModel: function(){
+        //var xmlString = this.$store.state.canvas.GetModelXML();
+        var xmlString = '';
+        /*
+        mxUtils.post(url, 'xml='+xmlString, function(req)
+        {
+            // Process server response using req of type mxXmlRequest
+        });
+        */
+        var element = document.createElement('a');
+        element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(xmlString));
+        
+        var file_name = this.$store.state.document_name + ".xml";
+        
+        element.setAttribute('download', file_name);
+
+        element.style.display = 'none';
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+      },
   },
   computed:{
     code_dialog:{
@@ -143,6 +190,9 @@ export default {
       {
         this.$store.commit('set_code', val)
       }      
+    },
+    connected: function(){
+      return this.$socket.connected;
     }
   },
   watch:{

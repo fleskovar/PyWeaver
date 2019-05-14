@@ -29,11 +29,32 @@ export default class Canvas{
         graph.setMultigraph(true);
         graph.isCellEditable  = function(cell){return false};
 
+        // Sets default styles
+        var style = graph.getStylesheet().getDefaultVertexStyle();
+        style['fillColor'] = '#FFFFFF';
+        style['strokeColor'] = '#000000';
+        style['fontColor'] = '#000000';
+        style['fontStyle'] = '1';
+        
+        style = graph.getStylesheet().getDefaultEdgeStyle();
+        style['strokeColor'] = '#000000';
+        style['fontColor'] = '#000000';
+        style['fontStyle'] = '0';
+        style['fontStyle'] = '0';
+        style['startSize'] = '8';
+        style['endSize'] = '8';
+        style[mxConstants.STYLE_ROUNDED] = true;
+        style[mxConstants.STYLE_EDGE] = mxEdgeStyle.EntityRelation;
+        style[mxConstants.STYLE_STROKEWIDTH] = '1';
+        style[mxConstants.STYLE_LABEL_BACKGROUNDCOLOR] = '#FFFFFF';
+
+        /*
         var style = graph.getStylesheet().getDefaultEdgeStyle();
         style[mxConstants.STYLE_LABEL_BACKGROUNDCOLOR] = '#FFFFFF';
         style[mxConstants.STYLE_STROKEWIDTH] = '2';
         style[mxConstants.STYLE_ROUNDED] = true;
         style[mxConstants.STYLE_EDGE] = mxEdgeStyle.EntityRelation;
+        */
 
         // Enables rubberband selection
         new mxRubberband(graph);
