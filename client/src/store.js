@@ -12,7 +12,8 @@ export default new Vuex.Store({
     selected_node: {},
     open_code_editor: false,
     code: '',
-    code_nodes: {}
+    code_nodes: {},
+    document_name: 'Untitled'
   },
   mutations: {
     set_selected_node: function(state, node){      
@@ -26,6 +27,9 @@ export default new Vuex.Store({
     },
     set_code: function(state, code){
       state.code = code;
+    },
+    set_document_name: function(state, name){
+      state.document_name = name;
     }
   },
   actions: {
@@ -58,7 +62,7 @@ export default new Vuex.Store({
       canvas.changePorts(cell, port_names, 1, 'output'); 
     },
     save_node_code: function(context, code){
-      context.state.selected_node.code = code;
+      context.state.selected_node.setCode(code);
       var data = {};
       data.code = code;
       data.id = context.state.selected_node.cell.id;      

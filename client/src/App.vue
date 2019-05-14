@@ -38,6 +38,15 @@
             </v-btn>
           </v-list-tile-action>        
         </v-list-tile>        
+        
+        <v-list-tile>
+          <v-list-tile-content>
+            <br>
+            <br>
+            <v-text-field label="Document name" v-model='document_name'/>
+            <br>
+          </v-list-tile-content>
+        </v-list-tile>
 
         <v-list-tile @click="addNode" @keydown.shift.enter="canvasShortcuts">
           <v-list-tile-action>
@@ -233,6 +242,14 @@ export default {
     },
     connected: function(){
       return this.$socket.connected;
+    },
+    document_name:{
+      get: function(){
+        return this.$store.state.document_name;
+      },
+      set:function(val){
+        this.$store.commit('set_document_name', val);
+      }
     }
   },
   watch:{

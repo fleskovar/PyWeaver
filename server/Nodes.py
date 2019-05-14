@@ -1,4 +1,5 @@
 import ast
+from collections import OrderedDict
 
 class Session(object):
 
@@ -93,7 +94,7 @@ class Graph(object):
 
 class Node(object):
 
-    def __init__(self, parent_node, id, code=None, params=dict()):
+    def __init__(self, parent_node, id, code=None, params=OrderedDict()):
 
         self.parent_node = parent_node
         self.display = None  # TODO: Implement display option for web client
@@ -101,10 +102,10 @@ class Node(object):
         self.scope = dict()
         self.code = code
         self.id = id
-        self.output_vars_data = dict()
+        self.output_vars_data = OrderedDict()
 
         self.input_vars = []
-        self.input_vars_data = dict()
+        self.input_vars_data = OrderedDict()
         self.output_vars = []
 
         if code is not None:
@@ -112,7 +113,7 @@ class Node(object):
 
         self.parent_node.add_node(self)        
 
-    def parse_code(self, code, params=dict()):
+    def parse_code(self, code, params=OrderedDict()):
         self.set_dirty()
         self.code = code
         success, func_name, input_vars, input_vars_data, output_vars = self.parse_function(code)  
@@ -126,9 +127,9 @@ class Node(object):
         if len(input_vars) < self.input_vars:
             # I could also check that if the smaller new input has some variables in common
             # with the previous input, then I should only delete the extra variables
-            self.input_vars_data = dict()
+            self.input_vars_data = OrderedDict()
         elif input_vars[:len(self.input_vars)] != self.input_vars:
-            self.input_vars_data = dict()
+            self.input_vars_data = OrderedDict()
 
         #if(self.input_vars != input_vars):
         #    self.input_vars_data = dict()
@@ -136,9 +137,9 @@ class Node(object):
         if len(output_vars) < self.output_vars:
             # I could also check that if the smaller new input has some variables in common
             # with the previous input, then I should only delete the extra variables
-            self.output_vars_data = dict()
+            self.output_vars_data = OrderedDict()
         elif output_vars[:len(self.output_vars)] != self.output_vars:
-            self.output_vars_data = dict()
+            self.output_vars_data = OrderedDict()
 
         #if(self.output_vars != output_vars):
         #    self.output_vars_data = dict()
@@ -153,7 +154,7 @@ class Node(object):
         self.params = params
         self.results = {}
 
-        self.results = dict()
+        self.results = OrderedDict()
 
         for o in output_vars:
             self.results[o] = None

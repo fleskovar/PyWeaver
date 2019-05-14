@@ -13,6 +13,11 @@ export default class CodeNode{
     setCell(cell){        
         this.cell = cell
     }
+
+    setCode(code){
+        this.code = code;
+        this.cell.code = code;
+    }
 }
 
 /*
