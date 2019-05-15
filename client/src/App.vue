@@ -48,6 +48,8 @@
           </v-list-tile-content>
         </v-list-tile>
 
+        <v-divider/>
+
         <v-list-tile @click="addNode" @keydown.shift.enter="canvasShortcuts">
           <v-list-tile-action>
             <v-btn icon class="text-lg-right">              
@@ -64,6 +66,17 @@
             </v-btn>
           </v-list-tile-action>   
           <v-list-tile-content>RUN</v-list-tile-content>     
+        </v-list-tile>
+
+        <v-divider/>
+
+        <v-list-tile>
+          <v-list-tile-action>
+            <v-btn icon class="text-lg-right">              
+              <v-icon>settings</v-icon>
+            </v-btn>
+          </v-list-tile-action>   
+          <v-list-tile-content>SETTINGS</v-list-tile-content>     
         </v-list-tile>
 
       </v-list>
@@ -186,6 +199,7 @@ export default {
       file_obj.click();
     },
     OpenModel: function(ev){
+        console.log('tried open');
         const file = ev.target.files[0];
         if (!file) {
           return;
