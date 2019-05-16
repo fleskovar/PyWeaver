@@ -57,7 +57,8 @@ export default class Canvas{
         graph.isCellEditable  = function(cell){return false};
         graph.htmlLabels = true;
         graph.autoSizeCells = true;
-        graph.autoSizeCellsOnAdd = true;
+        //graph.autoSizeCellsOnAdd = true;
+        graph.foldingEnabled = false;
 
         // Sets default styles
         var style = graph.getStylesheet().getDefaultVertexStyle();
@@ -212,9 +213,7 @@ export default class Canvas{
             //Set cell height based on number of inputs/outputs
             var cell_height = Math.max(code_node.outputs.length, code_node.inputs.length)*30+40;            
             //var v1 = this.graph.insertVertex(parent, null, 'Node', 20, 20, 80, cell_height, 'verticalAlign=top'); 
-            var v1 = this.graph.insertVertex(parent, null,
-                '<div><b>Node html test</b></div><div id="myDiv" class="ignore_drag" style="width: 500px; height: 500px;"></div>',
-                 20, 20, 80, cell_height, 'verticalAlign=top'); 
+            var v1 = this.graph.insertVertex(parent, null, code_node.display_code, 20, 20, 80, cell_height, 'verticalAlign=top'); 
             
             v1.setConnectable(false);  
             v1.isNode = true;
@@ -295,5 +294,10 @@ export default class Canvas{
             // Updates the display            
             this.graph.getModel().endUpdate();
         }
+    }
+
+    updateCell(cell){
+        this.graph.getView().clear(cell, false, false);
+        this.graph.getView().validate();
     }
 }

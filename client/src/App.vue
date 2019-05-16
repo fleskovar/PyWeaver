@@ -104,7 +104,21 @@
             <v-flex xs12 sm6 md3>
               <v-text-field label="Node name"/>
             </v-flex>
-            <codemirror :options="cmOptions" ref="code_editor" v-model="code"/> 
+            <v-tabs dark>
+              <v-tab>Code</v-tab>
+              <v-tab-item>
+                <codemirror :options="cmOptions" ref="code_editor" v-model="code"/>
+              </v-tab-item>
+
+              <v-tab>Display</v-tab>
+              <v-tab-item>
+                
+                <codemirror :options="dispCmOptions" ref="code_editor" v-model="display_code"/>
+                
+              </v-tab-item>
+
+            </v-tabs>
+             
           </v-card-text>
             <v-card-actions>              
               <v-btn color="green" flat v-on:click='saveCode' dark>Save</v-btn>                          
@@ -131,6 +145,7 @@ import { codemirror } from 'vue-codemirror'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/mode/python/python.js'
 import 'codemirror/theme/base16-dark.css'
+import 'codemirror/mode/htmlmixed/htmlmixed.js'
 
 import Canvas from './NodeEditor/Canvas';
 import CodeNode from './NodeEditor/CodeNode';
@@ -156,6 +171,18 @@ export default {
         theme: 'base16-dark',
         autoRefresh: true,        
       },
+      dispCmOptions: {
+        // codemirror options
+        tabSize: 4,
+        indentUnit: 4,
+        mode: 'htmlmixed',        
+        lineNumbers: true,        
+        indentWithTabs: true,
+        viewportMargin: Infinity,
+        line: true,
+        theme: 'base16-dark',
+        autoRefresh: true,        
+      },
       drawer_mini: true      
     }
   },  
@@ -171,7 +198,8 @@ export default {
       this.code_dialog = false;
     },
     saveCode: function(){      
-      this.$store.dispatch('save_node_code', this.code);
+      console.log('asd');
+      this.$store.dispatch('save_node_code', {code: this.code, display_code: this.display_code});      
       this.closeDialog();
     },
     openEditor: function(){
@@ -271,7 +299,14 @@ export default {
       
       set: function(val)
       {
-        this.$store.commit('set_code', val)
+        this.$store.commit('set_code', val);
+      }      
+    },
+    display_code:{
+      get: function(){return this.$store.state.display_code},      
+      set: function(val)
+      {
+        this.$store.commit('set_display_code', val)
       }      
     },
     connected: function(){

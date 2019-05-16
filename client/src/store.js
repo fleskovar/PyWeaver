@@ -12,6 +12,7 @@ export default new Vuex.Store({
     selected_node: {},
     open_code_editor: false,
     code: '',
+    display_code: '',
     code_nodes: {},
     document_name: 'Untitled'
   },
@@ -28,6 +29,9 @@ export default new Vuex.Store({
     set_code: function(state, code){
       state.code = code;
     },
+    set_display_code: function(state, code){
+      state.display_code = code;
+    },
     set_document_name: function(state, name){
       state.document_name = name;
     }
@@ -36,11 +40,14 @@ export default new Vuex.Store({
     open_code_editor: function(context, node){      
       context.commit('set_selected_node', node);
       context.commit('set_code', node.code);
+      context.commit('set_display_code', node.display_code);
       context.commit('open_editor', true);
     },
     add_empty_node: function(context){      
       let canvas = context.state.canvas;
-      var node =  new CodeNode();
+
+      var node =  new CodeNode('Node', context.state.canvas);
+      
       var node_cell = canvas.addNode(node);
       context.state.code_nodes[node_cell.id] = node;
       node.setCell(node_cell); 
@@ -61,10 +68,11 @@ export default new Vuex.Store({
       let cell = context.state.code_nodes[cell_id].cell;
       canvas.changePorts(cell, port_names, 1, 'output'); 
     },
-    save_node_code: function(context, code){
-      context.state.selected_node.setCode(code);
+    save_node_code: function(context, editor_data){
+      context.state.selected_node.setCode(editor_data.code);
+      context.state.selected_node.setDisplayCode(editor_data.display_code);
       var data = {};
-      data.code = code;
+      data.code = editor_data.code;
       data.id = context.state.selected_node.cell.id;      
       socket.emit('edit_node_code', data);
     },
