@@ -115,6 +115,7 @@
 
     <v-footer class="pa-3" app dark>
       <v-btn color="gray" dark v-on:click="openEditor">Edit</v-btn>
+      <v-btn color="gray" dark v-on:click="plotTest">Plot</v-btn>
       <v-spacer></v-spacer>
         <div>&copy; {{ new Date().getFullYear() }}</div>
     </v-footer>
@@ -133,6 +134,8 @@ import 'codemirror/theme/base16-dark.css'
 
 import Canvas from './NodeEditor/Canvas';
 import CodeNode from './NodeEditor/CodeNode';
+
+import Plotly from 'plotly.js-dist';
 
 export default {
   name: 'App',
@@ -235,6 +238,23 @@ export default {
       },
       toggleMiniDrawer: function(){
         this.drawer_mini = !this.drawer_mini;
+      },
+      plotTest: function(){
+        var trace1 = {
+          x: [1, 2, 3, 4],
+          y: [0, 2, 3, 5],
+          fill: 'tozeroy',
+          type: 'scatter'
+        };
+        var trace2 = {
+          x: [1, 2, 3, 4],
+          y: [3, 5, 1, 3],
+          fill: 'tonexty',
+          type: 'scatter'
+        };
+        var data = [trace1, trace2];
+
+        Plotly.newPlot('myDiv', data, {}, {scrollZoom: true});
       }
   },
   computed:{

@@ -1,10 +1,4 @@
 import EventBus from '../EventBus.js'
-import * as mxgraph from 'mxgraph';
-
-const {
-	mxClient, mxGraph, mxRubberband, mxUtils, mxEvent, mxPoint, mxConstants, mxEdgeStyle, mxKeyHandler, mxCodec
-} = mxgraph();
-
 
 export default class Canvas{
 
@@ -39,6 +33,19 @@ export default class Canvas{
         // Disables the built-in context menu
         mxEvent.disableContextMenu(this.container);
                         
+        mxGraph.prototype.isCellMovable = function(cell)
+        {
+            if(!this.lastEvent.altKey){
+                var state = this.view.getState(cell);
+                var style = (state != null) ? state.style : this.getCellStyle(cell);
+                
+                return this.isCellsMovable() && !this.isCellLocked(cell) && style[mxConstants.STYLE_MOVABLE] != 0;
+            }
+            else{
+                return false;
+            }
+        };
+
         // Creates the graph inside the given container
         var graph = new mxGraph(this.container);  
         this.graph = graph;    
@@ -48,6 +55,9 @@ export default class Canvas{
         graph.setConnectable(true);
         graph.setMultigraph(true);
         graph.isCellEditable  = function(cell){return false};
+        graph.htmlLabels = true;
+        graph.autoSizeCells = true;
+        graph.autoSizeCellsOnAdd = true;
 
         // Sets default styles
         var style = graph.getStylesheet().getDefaultVertexStyle();
@@ -76,8 +86,15 @@ export default class Canvas{
         style[mxConstants.STYLE_EDGE] = mxEdgeStyle.EntityRelation;
         */
 
-        // Enables rubberband selection
+        // Enables rubberband selection. Disable alt force.
+        
+        mxRubberband.prototype.isForceRubberbandEvent = function(me)
+        {
+	        return false;
+        };
+        
         new mxRubberband(graph);
+        
 
         graph.isPort = function(cell)
         {
@@ -88,12 +105,13 @@ export default class Canvas{
         
         mxEvent.addMouseWheelListener(mxUtils.bind(this, function(evt, up)
         {
-            //if (evt.altKey == true){
+            //Disable alt+zoom
+            if (evt.altKey == true){
                 if(up == true)
                     graph.zoomIn();
                 else graph.zoomOut();
 
-            //}	
+            }	
         }));
 
         var keyHandler = new mxKeyHandler(graph);
@@ -141,6 +159,12 @@ export default class Canvas{
                 }
             }
         });
+
+        graph.addListener(mxEvent.MOUSE_MOVE, (sender, evt) => {
+            if(graph.isMouseDown){
+                console.log('yay');
+            }
+        });
         
         graph.addListener(mxEvent.CELLS_REMOVED, (sender, evt) => {
             var removed_cells = evt.properties.cells;
@@ -175,8 +199,6 @@ export default class Canvas{
                 }
             }
         });
-        
-        
     }
 
     addNode(code_node){
@@ -189,7 +211,11 @@ export default class Canvas{
         {            
             //Set cell height based on number of inputs/outputs
             var cell_height = Math.max(code_node.outputs.length, code_node.inputs.length)*30+40;            
-            var v1 = this.graph.insertVertex(parent, null, 'Node', 20, 20, 80, cell_height, 'verticalAlign=top'); 
+            //var v1 = this.graph.insertVertex(parent, null, 'Node', 20, 20, 80, cell_height, 'verticalAlign=top'); 
+            var v1 = this.graph.insertVertex(parent, null,
+                '<div><b>Node html test</b></div><div id="myDiv" class="ignore_drag" style="width: 500px; height: 500px;"></div>',
+                 20, 20, 80, cell_height, 'verticalAlign=top'); 
+            
             v1.setConnectable(false);  
             v1.isNode = true;
         }
