@@ -130,6 +130,7 @@
     <v-footer class="pa-3" app dark>
       <v-btn color="gray" dark v-on:click="openEditor">Edit</v-btn>
       <v-btn color="gray" dark v-on:click="plotTest">Plot</v-btn>
+      <v-btn color="gray" dark v-on:click="compileTest">Compile</v-btn>
       <v-spacer></v-spacer>
         <div>&copy; {{ new Date().getFullYear() }}</div>
     </v-footer>
@@ -151,6 +152,14 @@ import Canvas from './NodeEditor/Canvas';
 import CodeNode from './NodeEditor/CodeNode';
 
 import Plotly from 'plotly.js-dist';
+
+import {
+  DISPLAY_NODE_ID_ATTR,
+  DISPLAY_VAR_ATTR,
+  DISPLAY_VAR_NAME_ATTR,
+  DISPLAY_CLASS
+} from './Constants.js';
+
 
 export default {
   name: 'App',
@@ -188,6 +197,7 @@ export default {
   },  
   mounted(){
     var container = document.getElementById('canvas');
+    console.log(DISPLAY_VAR_NAME_ATTR);
     var canvas = new Canvas(container, this.$store);
     canvas.mount();
     this.$store.commit('set_canvas', canvas);
@@ -283,6 +293,25 @@ export default {
         var data = [trace1, trace2];
 
         Plotly.newPlot('myDiv', data, {}, {scrollZoom: true});
+      },
+      compileTest: function(){        
+        var elmsts = document.getElementsByClassName(DISPLAY_CLASS);       
+
+        var params = {}
+        for(var i = 0; i < elmsts.length; i++){
+          params[elmsts[i].getAttribute(DISPLAY_NODE_ID_ATTR)] = {}
+          var input_vars = elmsts[i].querySelector('['+DISPLAY_VAR_ATTR+']');
+          
+          if(!Array.isArray(input_vars))
+            input_vars = [input_vars];
+
+          for(var j = 0; j < input_vars.length; j++){
+            var var_name = input_vars[j].getAttribute(DISPLAY_VAR_NAME_ATTR);
+            var val = input_vars[j].value;
+            params[elmsts[i].getAttribute(DISPLAY_NODE_ID_ATTR)][var_name] = val;
+          }
+        }
+        console.log(params);
       }
   },
   computed:{

@@ -1,3 +1,6 @@
+import DisplayConstants from '../Constants.js'
+
+
 export default class CodeNode{
 
     constructor(default_display, canvas){
@@ -10,10 +13,25 @@ export default class CodeNode{
         this.display_code = default_display;
         this.cell_id = '';
         this.cell = {}
+        this.compiled_display_code = '';
+        this.compileDisplayCode();
     }
 
     setCell(cell){        
-        this.cell = cell
+        this.cell = cell;
+        this.id = cell.id;
+    }
+
+    compileDisplayCode(){
+        //The idea behind this is to wrapp the display code with a div which we can track easily.
+        //We then use the 'node' attribute to know which node/cell owns this code
+        //Then, before sending the "excute" event to the server, we should gather all the inputs and
+        //pass them to the server so that they can be injected to each node
+        this.compiled_display_code = 
+        "<div "+DisplayConstants.DISPLAY_NODE_ID_ATTR+"='"+this.cell.id+"' class='"+DisplayConstants.DISPLAY_CLASS+"'>"+
+        this.display_code +
+        "</div>";
+        console.log(this.compiled_display_code);
     }
 
     setCode(code){
@@ -23,7 +41,9 @@ export default class CodeNode{
 
     setDisplayCode(code){
         this.display_code = code;
-        this.cell.value = code;
+        this.compileDisplayCode();
+        this.cell.value = this.compiled_display_code;
+        this.cell.display_code = code;
         this.canvas.updateCell(this.cell);
     }
 }

@@ -9,6 +9,9 @@ import socket from './socket.js';
 import EventBus from './EventBus.js'
 import { ObserveVisibility } from 'vue-observe-visibility'
 
+import DisplayConstants from './Constants.js'
+Vue.use(DisplayConstants);
+
 Vue.config.productionTip = false;
 
 console.log('installing');
