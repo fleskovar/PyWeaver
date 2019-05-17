@@ -4,6 +4,8 @@ import Vuex from 'vuex'
 import CodeNode from './NodeEditor/CodeNode';
 import socket from './socket.js'
 
+import NodeDisplay from './components/NodeDisplay.vue'
+
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -14,7 +16,8 @@ export default new Vuex.Store({
     code: '',
     display_code: '',
     code_nodes: {},
-    document_name: 'Untitled'
+    document_name: 'Untitled',
+    node_displays: {},
   },
   mutations: {
     set_selected_node: function(state, node){      
@@ -46,9 +49,19 @@ export default new Vuex.Store({
     add_empty_node: function(context){      
       let canvas = context.state.canvas;
 
-      var node =  new CodeNode('Node', context.state.canvas);
-      
+      var node =  new CodeNode('Node', context.state.canvas);      
       var node_cell = canvas.addNode(node);
+      var node_id = node_cell.id;
+
+      //Insert component into node
+      var ComponentClass = Vue.extend(NodeDisplay);
+      var instance = new ComponentClass({
+        propsData: {}
+      });
+      instance.$mount(); // pass nothing
+      document.getElementById('node_'+node_id).appendChild(instance.$el);
+      context.state.node_displays[node_cell.id] = instance;
+      
       context.state.code_nodes[node_cell.id] = node;
       node.setCell(node_cell); 
 
@@ -70,7 +83,12 @@ export default new Vuex.Store({
     },
     save_node_code: function(context, editor_data){
       context.state.selected_node.setCode(editor_data.code);
+            
+      var node_id = context.state.selected_node.id;
+      context.state.node_displays[node_id].changeCode(editor_data.display_code);
       context.state.selected_node.setDisplayCode(editor_data.display_code);
+      
+      //This is sent to the server to update i/o connections and save code
       var data = {};
       data.code = editor_data.code;
       data.id = context.state.selected_node.cell.id;      
@@ -86,6 +104,7 @@ export default new Vuex.Store({
       socket.emit('execute');
     },
     delete_node(context, id){
+      //TODO: Delete display component from context.state.node_displays
       socket.emit('delete_node', id);
     }
   }

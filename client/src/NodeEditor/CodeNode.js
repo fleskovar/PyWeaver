@@ -28,7 +28,7 @@ export default class CodeNode{
         //Then, before sending the "excute" event to the server, we should gather all the inputs and
         //pass them to the server so that they can be injected to each node
         this.compiled_display_code = 
-        "<div "+DisplayConstants.DISPLAY_NODE_ID_ATTR+"='"+this.cell.id+"' class='"+DisplayConstants.DISPLAY_CLASS+"'>"+
+        "<div "+DisplayConstants.DISPLAY_NODE_ID_ATTR+"='"+this.cell.id+"' class='"+DisplayConstants.DISPLAY_CLASS+"'id='node_"+this.cell.id+"'>"+
         this.display_code +
         "</div>";
         console.log(this.compiled_display_code);
@@ -42,9 +42,9 @@ export default class CodeNode{
     setDisplayCode(code){
         this.display_code = code;
         this.compileDisplayCode();
-        this.cell.value = this.compiled_display_code;
+        //this.cell.value = this.compiled_display_code;
         this.cell.display_code = code;
-        this.canvas.updateCell(this.cell);
+        //this.canvas.updateCell(this.cell);
     }
 }
 

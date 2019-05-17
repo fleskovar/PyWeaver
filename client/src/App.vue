@@ -294,24 +294,15 @@ export default {
 
         Plotly.newPlot('myDiv', data, {}, {scrollZoom: true});
       },
-      compileTest: function(){        
-        var elmsts = document.getElementsByClassName(DISPLAY_CLASS);       
-
-        var params = {}
-        for(var i = 0; i < elmsts.length; i++){
-          params[elmsts[i].getAttribute(DISPLAY_NODE_ID_ATTR)] = {}
-          var input_vars = elmsts[i].querySelector('['+DISPLAY_VAR_ATTR+']');
-          
-          if(!Array.isArray(input_vars))
-            input_vars = [input_vars];
-
-          for(var j = 0; j < input_vars.length; j++){
-            var var_name = input_vars[j].getAttribute(DISPLAY_VAR_NAME_ATTR);
-            var val = input_vars[j].value;
-            params[elmsts[i].getAttribute(DISPLAY_NODE_ID_ATTR)][var_name] = val;
-          }
+      compileTest: function(){
+        //TODO: Access scope of v-runtime-template
+        //TODO: On code change, reinit scope of v-runtime-template     
+        var data = {}
+        let ds = this.$store.state.node_displays;
+        for(var key in ds){
+          data[key] = ds[key].data;
         }
-        console.log(params);
+        console.log(data);
       }
   },
   computed:{

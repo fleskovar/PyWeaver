@@ -12,6 +12,7 @@
     "mxgraph": "^3.9.12",
     "plotly.js-dist": "^1.47.4",
     "socket.io-client": "^2.2.0",
+    "v-runtime-template": "^1.5.2",
     "vue": "^2.6.10",
     "vue-codemirror": "^4.0.6",
     "vue-observe-visibility": "^0.4.4",

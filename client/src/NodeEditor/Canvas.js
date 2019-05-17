@@ -58,6 +58,7 @@ export default class Canvas{
         graph.htmlLabels = true;
         graph.autoSizeCells = true;
         //graph.autoSizeCellsOnAdd = true;
+        //TODO: Handle autoSize on display (value) change
         graph.foldingEnabled = false;
 
         // Sets default styles
@@ -213,8 +214,10 @@ export default class Canvas{
             //Set cell height based on number of inputs/outputs
             var cell_height = Math.max(code_node.outputs.length, code_node.inputs.length)*30+40;            
             //var v1 = this.graph.insertVertex(parent, null, 'Node', 20, 20, 80, cell_height, 'verticalAlign=top'); 
-            var v1 = this.graph.insertVertex(parent, null, code_node.display_code, 20, 20, 80, cell_height, 'verticalAlign=top'); 
+            //var v1 = this.graph.insertVertex(parent, null, code_node.compiled_display_code, 20, 20, 80, cell_height, 'verticalAlign=top'); 
+            var v1 = this.graph.insertVertex(parent, null, '', 20, 20, 80, cell_height, 'verticalAlign=top'); 
             
+            v1.value = "<div id='node_"+v1.id+"'></div>";
             v1.setConnectable(false);  
             v1.isNode = true;
         }
