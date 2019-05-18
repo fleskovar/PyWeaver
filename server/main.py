@@ -59,9 +59,14 @@ def execute():
     print 'exec'
     root.execute()
 
+    r = dict()
     for n in root.nodes:
+        rr = dict()
         for v in root.nodes[n].results:
-            print v, root.nodes[n].results[v]
+            rr[v] = root.nodes[n].results[v]
+        r[n] = rr
+    
+    return r
 
 if __name__ == '__main__':
     print 'Started'

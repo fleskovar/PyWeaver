@@ -1,14 +1,16 @@
 <template>
 	<div>
-		<v-runtime-template :template="template"></v-runtime-template>
+		<v-runtime-template :template="template" :display_code="display_code"></v-runtime-template>    
 	</div>
 </template>
 
 <script>
-import VRuntimeTemplate from "v-runtime-template";
+import VRuntimeTemplate from "../../custom_modules/v-runtime-template/index.js";
 //import EventBus from '../EventBus.js'
 
+//TODO: Change template init code and tie it to CodeNode default code
 export default {
+  props: [ 'node' ],
   data: () => ({
     id: '',
     name: "Mellow",
@@ -16,7 +18,9 @@ export default {
       Hello {{ name }}!
       <v-btn>Test!</v-btn>
       </div>
-    `
+    `,
+    display_code:'{}',
+    scope: {}
   }),
   components: {    
     VRuntimeTemplate,
@@ -24,6 +28,9 @@ export default {
   methods:{
       changeCode(code){          
             this.template = code;          
+      },
+      changeAct(code){
+        this.display_code = code
       },
   },
   mounted(){

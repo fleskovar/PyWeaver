@@ -211,13 +211,27 @@ export default class Canvas{
         this.graph.getModel().beginUpdate();
         try
         {            
+            var outputs = [];
+            var inputs = [];            
+
+            for(var p in code_node.outputs){
+                outputs.push(p);
+            }            
+
+            for(var p in code_node.inputs){
+                inputs.push(p);
+            }
+
             //Set cell height based on number of inputs/outputs
-            var cell_height = Math.max(code_node.outputs.length, code_node.inputs.length)*30+40;            
+            var cell_height = Math.max(outputs.length, inputs.length)*30+40;            
             //var v1 = this.graph.insertVertex(parent, null, 'Node', 20, 20, 80, cell_height, 'verticalAlign=top'); 
             //var v1 = this.graph.insertVertex(parent, null, code_node.compiled_display_code, 20, 20, 80, cell_height, 'verticalAlign=top'); 
             var v1 = this.graph.insertVertex(parent, null, '', 20, 20, 80, cell_height, 'verticalAlign=top'); 
             
-            v1.value = "<div id='node_"+v1.id+"'></div>";
+            v1.value = "<div id='node_"+v1.id+"'></div>"; //TODO: Find a better way to initialize the code in the node
+            //TODO: Add default action code (probably should do ="")
+            v1.display_act_code = '';
+
             v1.setConnectable(false);  
             v1.isNode = true;
         }
@@ -227,14 +241,14 @@ export default class Canvas{
             this.graph.getModel().endUpdate();
         }
 
-        this.changePorts(v1, code_node.outputs, 1, 'output');
-        this.changePorts(v1, code_node.inputs, 0, 'input');
+        this.changePorts(v1, outputs, 1, 'output');
+        this.changePorts(v1, inputs, 0, 'input');
 
         return v1
     }
 
     changePorts(cell, port_names, position, tag){
-
+ 
         let model = this.graph.getModel();
         let remaining_names = [];
         let remaining_ports = [];

@@ -6,11 +6,12 @@ export default class CodeNode{
     constructor(default_display, canvas){
         this.canvas = canvas;
         this.id = '';
-        this.inputs = [];
-        this.outputs = [];
+        this.inputs = {};
+        this.outputs = {};
         this.code_source = 'local';
         this.code = '';
         this.display_code = default_display;
+        this.display_act_code = '';
         this.cell_id = '';
         this.cell = {}
         this.compiled_display_code = '';
@@ -45,6 +46,11 @@ export default class CodeNode{
         //this.cell.value = this.compiled_display_code;
         this.cell.display_code = code;
         //this.canvas.updateCell(this.cell);
+    }
+
+    setDisplayActCode(code){
+        this.display_act_code = code;
+        this.cell.display_act_code = code;
     }
 }
 

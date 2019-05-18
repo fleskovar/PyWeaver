@@ -1,0 +1,65 @@
+{
+  "_args": [
+    [
+      "v-runtime-template@1.5.2",
+      "C:\\Users\\f.leskovar\\Web\\visual-mxgraph\\client"
+    ]
+  ],
+  "_from": "v-runtime-template@1.5.2",
+  "_id": "v-runtime-template@1.5.2",
+  "_inBundle": false,
+  "_integrity": "sha512-cYXqoMx02V8ffNr6SeL3v30xN6E9gT+EK63kIZS6ikpoSxBRtsZTXSO3TbWsVGb3cKenDNw9PfYHmY3WQxxhLA==",
+  "_location": "/v-runtime-template",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "version",
+    "registry": true,
+    "raw": "v-runtime-template@1.5.2",
+    "name": "v-runtime-template",
+    "escapedName": "v-runtime-template",
+    "rawSpec": "1.5.2",
+    "saveSpec": null,
+    "fetchSpec": "1.5.2"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/v-runtime-template/-/v-runtime-template-1.5.2.tgz",
+  "_spec": "1.5.2",
+  "_where": "C:\\Users\\f.leskovar\\Web\\visual-mxgraph\\client",
+  "author": {
+    "name": "Alex J",
+    "email": "alexjovermorales@gmail.com"
+  },
+  "browser": "dist/v-runtime-template.es.js",
+  "bugs": {
+    "url": "https://github.com/alexjoverm/v-runtime-template/issues"
+  },
+  "description": "Create Vue components by compiling templates on the fly",
+  "devDependencies": {
+    "hoek": "^5.0.3",
+    "rollit": "0.0.8"
+  },
+  "homepage": "https://github.com/alexjoverm/v-runtime-template#readme",
+  "keywords": [
+    "vuejs",
+    "dynamic",
+    "runtime",
+    "template"
+  ],
+  "license": "MIT",
+  "main": "dist/v-runtime-template.cjs.js",
+  "module": "dist/v-runtime-template.es.js",
+  "name": "v-runtime-template",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexjoverm/v-runtime-template.git"
+  },
+  "scripts": {
+    "build": "rollit index.js",
+    "prepublishOnly": "npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "unpkg": "dist/v-runtime-template.js",
+  "version": "1.5.2"
+}

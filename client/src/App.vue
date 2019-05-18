@@ -111,10 +111,13 @@
               </v-tab-item>
 
               <v-tab>Display</v-tab>
-              <v-tab-item>
-                
-                <codemirror :options="dispCmOptions" ref="code_editor" v-model="display_code"/>
-                
+              <v-tab-item>                
+                <codemirror :options="dispCmOptions" ref="code_editor" v-model="display_code"/>                
+              </v-tab-item>
+
+              <v-tab>Display Actions</v-tab>
+              <v-tab-item>                
+                <codemirror :options="dispActCmOptions" ref="code_editor" v-model="display_act_code"/>                
               </v-tab-item>
 
             </v-tabs>
@@ -147,6 +150,7 @@ import 'codemirror/lib/codemirror.css'
 import 'codemirror/mode/python/python.js'
 import 'codemirror/theme/base16-dark.css'
 import 'codemirror/mode/htmlmixed/htmlmixed.js'
+import 'codemirror/mode/javascript/javascript.js'
 
 import Canvas from './NodeEditor/Canvas';
 import CodeNode from './NodeEditor/CodeNode';
@@ -192,12 +196,23 @@ export default {
         theme: 'base16-dark',
         autoRefresh: true,        
       },
+      dispActCmOptions: {
+        // codemirror options
+        tabSize: 4,
+        indentUnit: 4,
+        mode: 'javascript',        
+        lineNumbers: true,        
+        indentWithTabs: true,
+        viewportMargin: Infinity,
+        line: true,
+        theme: 'base16-dark',
+        autoRefresh: true,        
+      },
       drawer_mini: true      
     }
   },  
   mounted(){
-    var container = document.getElementById('canvas');
-    console.log(DISPLAY_VAR_NAME_ATTR);
+    var container = document.getElementById('canvas');    
     var canvas = new Canvas(container, this.$store);
     canvas.mount();
     this.$store.commit('set_canvas', canvas);
@@ -300,7 +315,7 @@ export default {
         var data = {}
         let ds = this.$store.state.node_displays;
         for(var key in ds){
-          data[key] = ds[key].data;
+          data[key] = ds[key].scope;
         }
         console.log(data);
       }
@@ -327,6 +342,13 @@ export default {
       set: function(val)
       {
         this.$store.commit('set_display_code', val)
+      }      
+    },
+    display_act_code:{
+      get: function(){return this.$store.state.display_act_code},      
+      set: function(val)
+      {
+        this.$store.commit('set_display_act_code', val)
       }      
     },
     connected: function(){
