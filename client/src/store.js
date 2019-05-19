@@ -120,16 +120,18 @@ export default new Vuex.Store({
       data.code = editor_data.code;
       data.id = context.state.selected_node.cell.id;      
       socket.emit('edit_node_code', data);
+      context.dispatch('execute_server');
     },
     add_connection(context, data){
       socket.emit('make_connection', data);
 
       //Makes a reference in the target node's input to the output of the source
       context.state.code_nodes[data.target_id].inputs[data.target_var] = {id: data.source_id, var_name: data.source_var};
-
+      context.dispatch('execute_server');
     },
     remove_connection(context, data){
       socket.emit('delete_connection', data);
+      context.dispatch('execute_server');
     },
     execute_server(context){
       socket.emit('execute', (data) => {

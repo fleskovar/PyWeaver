@@ -313,7 +313,7 @@ export default class Canvas{
     }
 
     updateCell(cell){
-        //this.graph.getView().clear(cell, false, false);
+        this.graph.getView().clear(cell, false, false);
         this.graph.getView().validate();
     }
 }

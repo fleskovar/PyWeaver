@@ -230,6 +230,9 @@ class Node(object):
         else:
             # Fetch input values from parent's node scope
             inputs = self.get_inputs()
+
+            #TODO: check that if len(inputs) is smaller than required inputs (this means that we don't have all the connections)
+            # then don't execute
             if len(self.output_vars) != 0:
                 output_vals = self.func(*inputs)
             else:

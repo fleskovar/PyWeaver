@@ -56,7 +56,7 @@ def delete_connection(data):
 @socketio.on('execute')
 def execute():
     global root
-    print 'exec'
+
     root.execute()
 
     r = dict()
@@ -65,8 +65,6 @@ def execute():
         for v in root.nodes[n].results:
             rr[v] = root.nodes[n].results[v]
         r[n] = rr
-
-    print r
 
     return r
 
