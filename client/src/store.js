@@ -5,6 +5,7 @@ import CodeNode from './NodeEditor/CodeNode';
 import socket from './socket.js'
 
 import NodeDisplay from './components/NodeDisplay.vue'
+import EventBus from './EventBus.js'
 
 Vue.use(Vuex)
 
@@ -19,6 +20,7 @@ export default new Vuex.Store({
     code_nodes: {},
     document_name: 'Untitled',
     node_displays: {},
+    results: {}
   },
   mutations: {
     set_selected_node: function(state, node){      
@@ -54,14 +56,17 @@ export default new Vuex.Store({
     add_empty_node: function(context){      
       let canvas = context.state.canvas;
 
-      var node =  new CodeNode('Node', context.state.canvas);      
+      var node =  new CodeNode('Node', context.state.canvas, context);      
       var node_cell = canvas.addNode(node);
       var node_id = node_cell.id;
 
       //Insert component into node
       var ComponentClass = Vue.extend(NodeDisplay);
       var instance = new ComponentClass({
-        propsData: {node: node}
+        propsData: {
+          _node: node,
+          store: context,          
+        }
       });
       instance.$mount(); // pass nothing
       document.getElementById('node_'+node_id).appendChild(instance.$el);
@@ -118,12 +123,20 @@ export default new Vuex.Store({
     },
     add_connection(context, data){
       socket.emit('make_connection', data);
+
+      //Makes a reference in the target node's input to the output of the source
+      context.state.code_nodes[data.target_id].inputs[data.target_var] = {id: data.source_id, var_name: data.source_var};
+
     },
     remove_connection(context, data){
       socket.emit('delete_connection', data);
     },
     execute_server(context){
-      socket.emit('execute', (data) => {console.log(data);});
+      socket.emit('execute', (data) => {
+        console.log(data);
+        context.state.results = data;
+        EventBus.$emit('update_displays');
+      });
       //TODO: process outputs and put them into:
       //context.state.code_nodes[cell_id].inputs[i] = null;
     },

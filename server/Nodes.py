@@ -153,11 +153,15 @@ class Node(object):
 
         self.params = params
         self.results = {}
+        #self.input_results = {}
 
         self.results = OrderedDict()
 
         for o in output_vars:
             self.results[o] = None
+
+        #for o in input_vars:
+        #    self.input_results[o] = None
 
     def has_downstream(self):
         val = len(self.output_vars_data.keys()) > 0
@@ -262,7 +266,10 @@ class Node(object):
                     node_id = data[0]
                     var_name = data[1]
                     result = self.parent_node.get_var_value(node_id, var_name)
-                    val.append(result)            
+                    val.append(result)
+
+            #self.input_results[i] = val # Save the results of the inputs to pass them to the UI
+            # TODO: find a better way to handle this: it causes data duplication
             input_vals.append(val)
         return input_vals
 

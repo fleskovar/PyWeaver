@@ -302,7 +302,8 @@ export default class Canvas{
                 }            
             }
 
-            this.graph.getView().clear(cell, false, false);
+            //This appears to clear the cell's content (but it shouldnt)
+            //this.graph.getView().clear(cell, false, false);
             this.graph.getView().validate();
 
         }
@@ -314,7 +315,7 @@ export default class Canvas{
     }
 
     updateCell(cell){
-        this.graph.getView().clear(cell, false, false);
+        //this.graph.getView().clear(cell, false, false);
         this.graph.getView().validate();
     }
 }

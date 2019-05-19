@@ -3,7 +3,7 @@ import DisplayConstants from '../Constants.js'
 
 export default class CodeNode{
 
-    constructor(default_display, canvas){
+    constructor(default_display, canvas, store){
         this.canvas = canvas;
         this.id = '';
         this.inputs = {};
@@ -16,6 +16,7 @@ export default class CodeNode{
         this.cell = {}
         this.compiled_display_code = '';
         this.compileDisplayCode();
+        this.store = store;
     }
 
     setCell(cell){        
@@ -31,8 +32,7 @@ export default class CodeNode{
         this.compiled_display_code = 
         "<div "+DisplayConstants.DISPLAY_NODE_ID_ATTR+"='"+this.cell.id+"' class='"+DisplayConstants.DISPLAY_CLASS+"'id='node_"+this.cell.id+"'>"+
         this.display_code +
-        "</div>";
-        console.log(this.compiled_display_code);
+        "</div>";        
     }
 
     setCode(code){

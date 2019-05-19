@@ -224,7 +224,13 @@ export default {
     },
     saveCode: function(){      
       console.log('asd');
-      this.$store.dispatch('save_node_code', {code: this.code, display_code: this.display_code});      
+      this.$store.dispatch('save_node_code',
+       {
+        code: this.code,
+        display_code: this.display_code,
+        display_act_code: this.display_act_code
+        }
+      );      
       this.closeDialog();
     },
     openEditor: function(){

@@ -65,7 +65,9 @@ def execute():
         for v in root.nodes[n].results:
             rr[v] = root.nodes[n].results[v]
         r[n] = rr
-    
+
+    print r
+
     return r
 
 if __name__ == '__main__':
