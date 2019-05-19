@@ -14,7 +14,6 @@ Vue.use(DisplayConstants);
 
 Vue.config.productionTip = false;
 
-console.log('installing');
 Vue.use(VueSocketio, socket, {store});
 
 Vue.directive('observe-visibility', ObserveVisibility)

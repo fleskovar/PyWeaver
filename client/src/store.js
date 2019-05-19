@@ -133,7 +133,6 @@ export default new Vuex.Store({
     },
     execute_server(context){
       socket.emit('execute', (data) => {
-        console.log(data);
         context.state.results = data;
         EventBus.$emit('update_displays');
       });

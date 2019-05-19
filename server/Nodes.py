@@ -124,7 +124,7 @@ class Node(object):
         self.func.__globals__['scope'] = self.scope
         
 
-        if len(input_vars) < self.input_vars:
+        if len(input_vars) < len(self.input_vars):
             # I could also check that if the smaller new input has some variables in common
             # with the previous input, then I should only delete the extra variables
             self.input_vars_data = OrderedDict()
@@ -134,7 +134,7 @@ class Node(object):
         #if(self.input_vars != input_vars):
         #    self.input_vars_data = dict()
 
-        if len(output_vars) < self.output_vars:
+        if len(output_vars) < len(self.output_vars):
             # I could also check that if the smaller new input has some variables in common
             # with the previous input, then I should only delete the extra variables
             self.output_vars_data = OrderedDict()
@@ -320,4 +320,5 @@ class Node(object):
         for var in self.output_vars_data:
             # Iterate through all connections
             data = self.output_vars_data[var] # Get the connection data (We are interested in the id of the nodes downstream)
-            self.parent_node.nodes[data[0]].set_dirty() # Propagate dirty state downstream
+            for d in data:
+                self.parent_node.nodes[d[0]].set_dirty() # Propagate dirty state downstream

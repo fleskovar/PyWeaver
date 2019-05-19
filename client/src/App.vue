@@ -222,8 +222,7 @@ export default {
     closeDialog: function(){
       this.code_dialog = false;
     },
-    saveCode: function(){      
-      console.log('asd');
+    saveCode: function(){
       this.$store.dispatch('save_node_code',
        {
         code: this.code,

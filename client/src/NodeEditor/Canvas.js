@@ -169,9 +169,7 @@ export default class Canvas{
         });
         
         graph.addListener(mxEvent.CELLS_REMOVED, (sender, evt) => {
-            var removed_cells = evt.properties.cells;
-            
-            console.log(evt);
+            var removed_cells = evt.properties.cells;            
 
             //First remove edges from graph. This ensures that referenced nodes are still registered.
             //Prevents the server from failing.
