@@ -54,10 +54,10 @@ def delete_connection(data):
     root.delete_connection(source_id, source_var, target_id, target_var)
 
 @socketio.on('execute')
-def execute():
+def execute(scope_data):
     global root
 
-    root.execute()
+    root.execute(scope_data)
 
     r = dict()
     for n in root.nodes:
@@ -67,6 +67,11 @@ def execute():
         r[n] = rr
 
     return r
+
+@socketio.on('reset')
+def reset():
+    global root
+    root = Graph()
 
 if __name__ == '__main__':
     print 'Started'

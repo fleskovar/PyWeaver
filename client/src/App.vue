@@ -134,6 +134,7 @@
       <v-btn color="gray" dark v-on:click="openEditor">Edit</v-btn>
       <v-btn color="gray" dark v-on:click="plotTest">Plot</v-btn>
       <v-btn color="gray" dark v-on:click="compileTest">Compile</v-btn>
+      <v-btn color="gray" dark v-on:click="resetServer">Reset</v-btn>
       <v-spacer></v-spacer>
         <div>&copy; {{ new Date().getFullYear() }}</div>
     </v-footer>
@@ -259,6 +260,10 @@ export default {
       var file_obj = document.getElementById('fileInput');
       file_obj.click();
     },
+    resetServer: function(){
+      //Resets server
+      this.$socket.emit('reset');
+    },
     OpenModel: function(ev){
         console.log('tried open');
         const file = ev.target.files[0];
@@ -316,13 +321,7 @@ export default {
       },
       compileTest: function(){
         //TODO: Access scope of v-runtime-template
-        //TODO: On code change, reinit scope of v-runtime-template     
-        var data = {}
-        let ds = this.$store.state.node_displays;
-        for(var key in ds){
-          data[key] = ds[key].scope;
-        }
-        console.log(data);
+        //TODO: On code change, reinit scope of v-runtime-template
       }
   },
   computed:{

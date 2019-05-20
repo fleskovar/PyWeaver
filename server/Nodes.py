@@ -62,7 +62,7 @@ class Graph(object):
         node = self.nodes[node_id]
         return node.results[var]
 
-    def execute(self):
+    def execute(self, scope_data):
 
         node_ids = [self.nodes[b].id for b in self.nodes if self.nodes[b].has_downstream()==False]
 
@@ -82,7 +82,8 @@ class Graph(object):
             for id in exec_list:
                 exe_node = self.nodes[id]
                 if exe_node.dirty:
-                    exe_node.execute()
+                    node_scope = scope_data[id]
+                    exe_node.execute(node_scope)
 
     def build_adjacency_dict(self):
         # TODO: build adjacency dict from edges list
@@ -121,7 +122,7 @@ class Node(object):
         self.func_dict = {}
         exec code in self.func_dict
         self.func = self.func_dict[func_name]
-        self.func.__globals__['scope'] = self.scope
+        self.func.__globals__['display'] = self.scope
         
 
         if len(input_vars) < len(self.input_vars):
@@ -219,8 +220,8 @@ class Node(object):
 
         return output_vars
 
-    def execute(self):
-
+    def execute(self, scope_data):
+        self.scope = scope_data
         # TODO: Check if function has outputs
         if len(self.input_vars) == 0:
             if len(self.output_vars) != 0:

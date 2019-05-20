@@ -134,7 +134,15 @@ export default new Vuex.Store({
       context.dispatch('execute_server');
     },
     execute_server(context){
-      socket.emit('execute', (data) => {
+
+      //Compiles the scope data of each display and passes it to the serve
+      var scope_data = {}
+      let ds = context.state.node_displays;
+      for(var key in ds){
+        scope_data[key] = ds[key].scope;
+      }
+
+      socket.emit('execute', scope_data, (data) => {
         context.state.results = data;
         EventBus.$emit('update_displays');
       });

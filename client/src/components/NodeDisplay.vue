@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<v-runtime-template :template="template" :display_code="display_code"></v-runtime-template>    
+		<v-runtime-template :template="template" :display_code="display_code"></v-runtime-template>   
 	</div>
 </template>
 
