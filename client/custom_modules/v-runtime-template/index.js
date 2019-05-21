@@ -40,8 +40,6 @@ export default {
   },
   data(){
     return {
-      _previous_display_code: '{}',
-      _previous_template: '',
       plotly: Plotly,
     };
   },
@@ -54,9 +52,9 @@ export default {
         disp_code = this.display_code;
 
       //Update functions only if display code changed
-      if(disp_code != this._previous_display_code){
+      if(disp_code != this.$parent.$data._previous_display_code){
         //If the display code changed, delete the previous injected functions
-        var embedded_x = 'function(){return '+this._previous_display_code+' }();';
+        var embedded_x = 'function(){return '+this.$parent.$data._previous_display_code+' }();';
         var previousActionFunctions = Function("return " + embedded_x)();
         
         //Iterate and delete the functions
@@ -65,7 +63,7 @@ export default {
           delete this.$parent[f];;
         };
 
-        this._previous_display_code = disp_code; //Backup last code
+        this.$parent.$data._previous_display_code = disp_code; //Backup last code
         
         embedded_x = 'function(){return '+disp_code+' }();';
         var actionFunctions = Function("return " + embedded_x)();     
@@ -81,10 +79,10 @@ export default {
         };
       }
       
-      if(this._previous_template != this.template)
+      if(this.$parent.$data._previous_template != this.template)
       {
         this.$parent.$data.scope = {};
-        this._previous_template = this.template;
+        this.$parent.$data._previous_template = this.template;
       }
 
       const methodKeys = Object.keys($options.methods || {});

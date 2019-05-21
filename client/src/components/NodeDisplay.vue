@@ -18,6 +18,10 @@ export default {
     display_code:'{}',
     scope: {},
     node: {},
+    _previous_template: '',
+    _previous_display_code: '{}',
+    
+
   }),
   components: {    
     VRuntimeTemplate,
@@ -50,31 +54,39 @@ export default {
     //EventBus.$on('update_displays', (data) => {this.updateDisplay();});
 
     this.node = new Proxy(this._node, {
-        get: (target, name, receiver) => {          
-          var id = null;
-          var var_name = null;
-          if(name in target.inputs){
-            console.log('input request');
-            //The requested var is an input
-            var source_data = target.inputs[name];
-            //Fetch the data from the store using source's data
-            id = source_data.id;
-            var_name = source_data.var_name;
-          }
-          else{
-            //Fetch the data from the store using own data
-            id = target.id;
-            var_name = name;
-          }
+        get: (target, name, receiver) => {  
 
           var return_val = null;
-          
-          if(id in target.store.state.results){
-            if(var_name in target.store.state.results[id]){
-              return_val = target.store.state.results[id][var_name];
+
+          if(name != '__ob__'){     
+            //Ignore __ob__ request   
+            var id = null;
+            var var_name = null;
+            if(name in target.inputs){
+              console.log('input request');
+              //The requested var is an input
+              var source_data = target.inputs[name];
+              //Fetch the data from the store using source's data
+              if(source_data){
+                id = source_data.id;
+                var_name = source_data.var_name;
+              }
+            }
+            else{
+              //Fetch the data from the store using own data
+              id = target.id;
+              var_name = name;
+            }
+
+            if(id && var_name){
+              if(id in target.store.state.results){
+                if(var_name in target.store.state.results[id]){
+                  return_val = target.store.state.results[id][var_name];
+                }
+              }
             }
           }
-          
+
           return return_val;
       }
     });

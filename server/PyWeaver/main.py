@@ -1,7 +1,15 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO, emit
-from Nodes import Node, Graph, Session
+import sys
 
+from Nodes import Node
+from Graph import Graph
+from results_encoder import encode
+
+# Register initial modules that should not be deleted when restarting the server
+init_modules = sys.modules.keys()
+
+# Flask server app
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
@@ -63,6 +71,7 @@ def delete_connection(data):
 @socketio.on('execute')
 def execute(scope_data):
     global root
+
     print 'Running'
     root.execute(scope_data)
 
@@ -70,16 +79,25 @@ def execute(scope_data):
     for n in root.nodes:
         rr = dict()
         for v in root.nodes[n].results:
-            rr[v] = root.nodes[n].results[v]
+            # Transforms result into JSON safe data
+            rr[v] = encode(root.nodes[n].results[v])
+
         r[n] = rr
 
-    print r
-
+    print 'Finished'
     return r
 
 @socketio.on('reset')
 def reset():
     global root
+    global init_modules
+
+    if globals().has_key('init_modules'):
+        # remove all but initially loaded modules
+        for m in sys.modules.keys():
+            if m not in init_modules:
+                del (sys.modules[m])
+
     root = Graph()
 
 if __name__ == '__main__':

@@ -93,7 +93,7 @@ export default new Vuex.Store({
       //TODO: this is killing input connections
       context.state.code_nodes[cell_id].inputs = {}
       for(var i in port_names){
-        context.state.code_nodes[cell_id].inputs[port_names[i]] = null;
+        context.state.code_nodes[cell_id].inputs[port_names[i]] = null;        
       }
       
       canvas.changePorts(cell, port_names, 0, 'input'); 
@@ -109,7 +109,7 @@ export default new Vuex.Store({
       //Server should send "delete connection"
       context.state.code_nodes[cell_id].outputs = {}
       for(var i in port_names){
-        context.state.code_nodes[cell_id].outputs[port_names[i]] = null;
+        context.state.code_nodes[cell_id].outputs[port_names[i]] = null;        
       }
 
       canvas.changePorts(cell, port_names, 1, 'output'); 
@@ -124,7 +124,7 @@ export default new Vuex.Store({
       context.state.selected_node.setDisplayActCode(editor_data.display_act_code);     
       
       context.state.node_displays[node_id].updateDisplay();
-      //EventBus.$emit('update_displays');
+      EventBus.$emit('update_displays');
 
       Vue.nextTick()
         .then( () => {
