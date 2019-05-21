@@ -7,6 +7,8 @@ import socket from './socket.js'
 import NodeDisplay from './components/NodeDisplay.vue'
 import EventBus from './EventBus.js'
 
+import Plotly from 'plotly.js-dist';
+
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -20,7 +22,9 @@ export default new Vuex.Store({
     code_nodes: {},
     document_name: 'Untitled',
     node_displays: {},
-    results: {}
+    results: {},
+    auto_exec: false,
+    run_id: 0,
   },
   mutations: {
     set_selected_node: function(state, node){      
@@ -85,9 +89,11 @@ export default new Vuex.Store({
       
       //TODO: check what happens with dirtyness
       //Reset port names in node
+
+      //TODO: this is killing input connections
       context.state.code_nodes[cell_id].inputs = {}
       for(var i in port_names){
-        context.state.code_nodes[cell_id].inputs[i] = null;
+        context.state.code_nodes[cell_id].inputs[port_names[i]] = null;
       }
       
       canvas.changePorts(cell, port_names, 0, 'input'); 
@@ -99,9 +105,11 @@ export default new Vuex.Store({
       let cell = context.state.code_nodes[cell_id].cell;
 
       //Reset port names in node
+      //TODO: this is killing output connections
+      //Server should send "delete connection"
       context.state.code_nodes[cell_id].outputs = {}
       for(var i in port_names){
-        context.state.code_nodes[cell_id].outputs[i] = null;
+        context.state.code_nodes[cell_id].outputs[port_names[i]] = null;
       }
 
       canvas.changePorts(cell, port_names, 1, 'output'); 
@@ -113,25 +121,33 @@ export default new Vuex.Store({
       context.state.node_displays[node_id].changeCode(editor_data.display_code);
       context.state.node_displays[node_id].changeAct(editor_data.display_act_code);
       context.state.selected_node.setDisplayCode(editor_data.display_code);
-      context.state.selected_node.setDisplayActCode(editor_data.display_act_code);
+      context.state.selected_node.setDisplayActCode(editor_data.display_act_code);     
       
+      context.state.node_displays[node_id].updateDisplay();
+      //EventBus.$emit('update_displays');
+
+      Vue.nextTick()
+        .then( () => {
+          var data = {};
+          data.code = editor_data.code;
+          data.id = context.state.selected_node.cell.id;      
+          socket.emit('edit_node_code', data);
+          context.dispatch('auto_execute');
+        });
+
       //This is sent to the server to update i/o connections and save code
-      var data = {};
-      data.code = editor_data.code;
-      data.id = context.state.selected_node.cell.id;      
-      socket.emit('edit_node_code', data);
-      context.dispatch('execute_server');
+      
     },
     add_connection(context, data){
       socket.emit('make_connection', data);
 
       //Makes a reference in the target node's input to the output of the source
       context.state.code_nodes[data.target_id].inputs[data.target_var] = {id: data.source_id, var_name: data.source_var};
-      context.dispatch('execute_server');
+      context.dispatch('auto_execute');
     },
     remove_connection(context, data){
       socket.emit('delete_connection', data);
-      context.dispatch('execute_server');
+      context.dispatch('auto_execute');
     },
     execute_server(context){
 
@@ -144,10 +160,16 @@ export default new Vuex.Store({
 
       socket.emit('execute', scope_data, (data) => {
         context.state.results = data;
+        context.state.run_id += 1;
         EventBus.$emit('update_displays');
       });
       //TODO: process outputs and put them into:
       //context.state.code_nodes[cell_id].inputs[i] = null;
+    },
+    auto_execute(context){
+      if(context.state.auto_exec){
+        context.dispatch('execute_server');
+      }
     },
     delete_node(context, id){
       //TODO: Delete display component from context.state.node_displays

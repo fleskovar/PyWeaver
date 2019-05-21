@@ -317,7 +317,8 @@ export default {
         };
         var data = [trace1, trace2];
 
-        Plotly.newPlot('myDiv', data, {}, {scrollZoom: true});
+        //Plotly.newPlot('my_div', data, {}, {scrollZoom: true});
+        this.$store.state.plotly.newPlot('my_div', data, {}, {scrollZoom: true});
       },
       compileTest: function(){
         //TODO: Access scope of v-runtime-template

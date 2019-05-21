@@ -26,10 +26,17 @@ def edit_node_code(data):
     code = data['code']
 
     b = root.nodes[id]
+    old_input_vars = b.input_vars
+    old_output_vars = b.output_vars
     b.parse_code(code)
 
-    emit('change_node_input_ports', b.input_vars, json=True)
-    emit('change_node_output_ports', b.output_vars)
+    if old_input_vars != b.input_vars:
+        # Prevents emitting an event when input didnt change
+        emit('change_node_input_ports', b.input_vars, json=True)
+
+    if old_output_vars != b.output_vars:
+        # Prevents emitting an event when output didnt change
+        emit('change_node_output_ports', b.output_vars)
 
 @socketio.on('make_connection')
 def make_connection(data):
@@ -56,7 +63,7 @@ def delete_connection(data):
 @socketio.on('execute')
 def execute(scope_data):
     global root
-
+    print 'Running'
     root.execute(scope_data)
 
     r = dict()
@@ -65,6 +72,8 @@ def execute(scope_data):
         for v in root.nodes[n].results:
             rr[v] = root.nodes[n].results[v]
         r[n] = rr
+
+    print r
 
     return r
 

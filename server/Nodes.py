@@ -81,8 +81,13 @@ class Graph(object):
 
             for id in exec_list:
                 exe_node = self.nodes[id]
+                node_scope = scope_data[id]
+
+                if exe_node.scope != node_scope:
+                    # If the scope of the function changed, set dirty and propagate
+                    exe_node.set_dirty()
+
                 if exe_node.dirty:
-                    node_scope = scope_data[id]
                     exe_node.execute(node_scope)
 
     def build_adjacency_dict(self):
@@ -122,7 +127,7 @@ class Node(object):
         self.func_dict = {}
         exec code in self.func_dict
         self.func = self.func_dict[func_name]
-        self.func.__globals__['display'] = self.scope
+        self.func.__globals__['display'] = {}
         
 
         if len(input_vars) < len(self.input_vars):
@@ -221,6 +226,8 @@ class Node(object):
         return output_vars
 
     def execute(self, scope_data):
+        #Inject display's scope
+        self.func.__globals__['display'] = scope_data
         self.scope = scope_data
         # TODO: Check if function has outputs
         if len(self.input_vars) == 0:

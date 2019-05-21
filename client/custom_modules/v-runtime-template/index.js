@@ -1,3 +1,6 @@
+import {Val} from '../../src/directives/InitDirective.js'
+import Plotly from 'plotly.js-dist';
+
 const getKeysFromOptions = options => [
   ...Object.keys((options.data && options.data()) || {}),
   ...Object.keys(options.props || {})
@@ -32,10 +35,14 @@ export default {
     template: String,
     display_code: String
   },
+  directives:{
+    Val
+  },
   data(){
     return {
       _previous_display_code: '{}',
       _previous_template: '',
+      plotly: Plotly,
     };
   },
   render(h) {
@@ -65,9 +72,12 @@ export default {
 
         //Inject methods into parent scope
         for(var f in actionFunctions){
-          //var boundFunc = actionFunctions[f].bind(this.$parent);        
-          $options.methods[f] = actionFunctions[f];
-          this.$parent[f] = actionFunctions[f];
+          var boundFunc = actionFunctions[f].bind(this.$parent);        
+          //$options.methods[f] = actionFunctions[f];
+          //this.$parent[f] = actionFunctions[f];
+
+          $options.methods[f] = boundFunc;
+          this.$parent[f] = boundFunc;
         };
       }
       

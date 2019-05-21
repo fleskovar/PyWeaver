@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div :key='run_id'>
 		<v-runtime-template :template="template" :display_code="display_code"></v-runtime-template>   
 	</div>
 </template>
@@ -7,18 +7,14 @@
 <script>
 import VRuntimeTemplate from "../../custom_modules/v-runtime-template/index.js";
 import EventBus from '../EventBus.js'
+import {Val} from '../directives/InitDirective.js'
 
 //TODO: Change template init code and tie it to CodeNode default code
 export default {
   props: [ '_node', 'store'],
   data: () => ({
     id: '',
-    name: "Mellow",
-    template: `<div>
-      Hello {{ name }}!
-      <v-btn>Test!</v-btn>
-      </div>
-    `,
+    template: `<div>Node</div>`,
     display_code:'{}',
     scope: {},
     node: {},
@@ -26,26 +22,39 @@ export default {
   components: {    
     VRuntimeTemplate,
   },
+  directives:{
+    Val
+  },
   methods:{
-      changeCode(code){          
-            this.template = code;          
+      changeCode(code){         
+            //Safeguarding display code
+            this.template ='<div>'+code+'</div>';          
       },
       changeAct(code){
         this.display_code = code
       },
       updateDisplay(){
         this.$forceUpdate();
+        if(this.onResults){
+          this.onResults();
+        }
       }      
+  },
+  computed:{
+    run_id: function(){
+      return this.store.state.run_id;
+    }
   },
   mounted(){
 
-    EventBus.$on('update_displays', (data) => {this.updateDisplay();});
+    //EventBus.$on('update_displays', (data) => {this.updateDisplay();});
 
     this.node = new Proxy(this._node, {
         get: (target, name, receiver) => {          
           var id = null;
           var var_name = null;
           if(name in target.inputs){
+            console.log('input request');
             //The requested var is an input
             var source_data = target.inputs[name];
             //Fetch the data from the store using source's data
