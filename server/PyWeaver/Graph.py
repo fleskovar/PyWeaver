@@ -1,3 +1,4 @@
+from collections import defaultdict
 
 class Graph(object):
 
@@ -55,7 +56,7 @@ class Graph(object):
 
     def execute(self, scope_data):
 
-        exec_list = self.sort_graph()
+        exec_list = self.sort_graph(self.nodes)
 
         for id in exec_list:
             exe_node = self.nodes[id]
@@ -76,22 +77,59 @@ class Graph(object):
         # TODO: part of the execute method should be refactored here
         return None
 
-    def sort_graph(self):
+    def sort_graph(self, nodes):
         exec_list = []
 
-        node_ids = [self.nodes[b].id for b in self.nodes if self.nodes[b].has_downstream() == False]
+        in_degree = dict()
+        graph = defaultdict(list)
+        n_nodes = len(nodes)  # Total number of vertices
 
-        for b_id in node_ids:
-            node_stack = [b_id]
-            exec_list = []
-            while node_stack:
-                current = node_stack.pop()
-                for neighbor in self.adjacency_dict[current]:
-                    # If neighbor is a key of the adjacency dict of "current id"
-                    if not neighbor in exec_list:
-                        node_stack.append(neighbor)
-                exec_list.append(current)
+        # TODO: Investigate if this could be done in a more pythonic way
+        for node_id in nodes:
+            in_degree[node_id] = 0
 
-        exec_list = exec_list[::-1]  # Reverse list to get proper execution order
+        # TODO: Investigate if this could be done in a more pythonic way with output_vars_data
+        for node_id in nodes:
+            node = nodes[node_id]
+            for var in node.output_vars_data:
+                # Tracks if two nodes are already connected. Helps to keep into account multi-conns
+                already_connected = []
+                for edge in node.output_vars_data[var]:
+                    if edge[0] not in already_connected:
+                        in_degree[edge[0]] += 1  # Count the inner connection
+                        already_connected.append(edge[0])  # Store the connection in case it appears again.
+                graph[node_id] = already_connected
 
-        return exec_list
+        # Initialize count of visited vertices
+        cnt = 0
+
+        # Create an queue and enqueue all vertices with
+        # indegree 0
+        queue = [n for n in in_degree if in_degree[n] == 0]
+
+        # One by one dequeue vertices from queue and enqueue
+        # adjacents if indegree of adjacent becomes 0
+        while queue:
+
+            # Extract front of queue (or perform dequeue)
+            # and add it to topological order
+            u = queue.pop(0)
+            exec_list.append(u)
+
+            # Iterate through all neighbouring nodes
+            # of dequeued node u and decrease their in-degree
+            # by 1
+            for i in graph[u]:
+                in_degree[i] -= 1
+                # If in-degree becomes zero, add it to queue
+                if in_degree[i] == 0:
+                    queue.append(i)
+
+            cnt += 1
+
+        # Check if there was a cycle
+        if cnt != n_nodes:
+            return None
+        else:
+            # Print topological order
+            return exec_list
