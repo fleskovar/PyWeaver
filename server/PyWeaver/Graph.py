@@ -55,6 +55,30 @@ class Graph(object):
 
     def execute(self, scope_data):
 
+        exec_list = self.sort_graph()
+
+        for id in exec_list:
+            exe_node = self.nodes[id]
+            node_scope = scope_data[id]
+
+            if exe_node.scope != node_scope:
+                # If the scope of the function changed, set dirty and propagate
+                exe_node.set_dirty()
+
+            if exe_node.dirty:
+                exe_node.execute(node_scope)
+
+    def build_adjacency_dict(self):
+        # TODO: build adjacency dict from edges list
+        pass
+
+    def build_execution_order_list(self):
+        # TODO: part of the execute method should be refactored here
+        return None
+
+    def sort_graph(self):
+        exec_list = []
+
         node_ids = [self.nodes[b].id for b in self.nodes if self.nodes[b].has_downstream() == False]
 
         for b_id in node_ids:
@@ -68,23 +92,6 @@ class Graph(object):
                         node_stack.append(neighbor)
                 exec_list.append(current)
 
-            exec_list = exec_list[::-1]  # Reverse list to get proper execution order
+        exec_list = exec_list[::-1]  # Reverse list to get proper execution order
 
-            for id in exec_list:
-                exe_node = self.nodes[id]
-                node_scope = scope_data[id]
-
-                if exe_node.scope != node_scope:
-                    # If the scope of the function changed, set dirty and propagate
-                    exe_node.set_dirty()
-
-                if exe_node.dirty:
-                    exe_node.execute(node_scope)
-
-    def build_adjacency_dict(self):
-        # TODO: build adjacency dict from edges list
-        pass
-
-    def build_execution_order_list(self):
-        # TODO: part of the execute method should be refactored here
-        return None
+        return exec_list

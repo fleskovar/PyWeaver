@@ -92,7 +92,7 @@ def reset():
     global root
     global init_modules
 
-    if globals().has_key('init_modules'):
+    if 'init_modules' in globals():
         # remove all but initially loaded modules
         for m in sys.modules.keys():
             if m not in init_modules:
