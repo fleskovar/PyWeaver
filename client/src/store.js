@@ -25,8 +25,12 @@ export default new Vuex.Store({
     results: {},
     auto_exec: false,
     run_id: 0,
+    treeStore: [],
   },
   mutations: {
+    tree_change: function(state, tree){
+      state.treeStore = tree;
+    },
     set_selected_node: function(state, node){      
       state.selected_node = node;
     },
@@ -174,6 +178,11 @@ export default new Vuex.Store({
     delete_node(context, id){
       //TODO: Delete display component from context.state.node_displays
       socket.emit('delete_node', id);
+    }
+  },
+  getters:{
+    tree(state){
+      return state.treeStore;
     }
   }
 })

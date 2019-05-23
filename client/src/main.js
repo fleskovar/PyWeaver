@@ -5,15 +5,12 @@ import store from './store'
 import VueSocketio from 'vue-socket.io-extended'
 import socket from './socket.js';
 
-
 import EventBus from './EventBus.js'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import Plot from './components/Plot.vue'
 
 import DisplayConstants from './Constants.js'
-import LiquorTree from 'liquor-tree'
 
-Vue.use(LiquorTree)
 Vue.use(DisplayConstants);
 Vue.component('plot', Plot);
 
@@ -25,5 +22,5 @@ Vue.directive('observe-visibility', ObserveVisibility)
 
 new Vue({
   store,
-  render: h => h(App)
+  render: h => h(App),
 }).$mount('#app')

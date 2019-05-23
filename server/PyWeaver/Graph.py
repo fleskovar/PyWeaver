@@ -91,14 +91,14 @@ class Graph(object):
         # TODO: Investigate if this could be done in a more pythonic way with output_vars_data
         for node_id in nodes:
             node = nodes[node_id]
+            # Tracks if two nodes are already connected. Helps to keep into account multi-conns
+            already_connected = []
             for var in node.output_vars_data:
-                # Tracks if two nodes are already connected. Helps to keep into account multi-conns
-                already_connected = []
                 for edge in node.output_vars_data[var]:
                     if edge[0] not in already_connected:
                         in_degree[edge[0]] += 1  # Count the inner connection
                         already_connected.append(edge[0])  # Store the connection in case it appears again.
-                graph[node_id] = already_connected
+            graph[node_id] = already_connected
 
         # Initialize count of visited vertices
         cnt = 0

@@ -125,6 +125,12 @@ def get_template_names():
     global library
     return library.get_template_names()
 
+@socketio.on('get_tree')
+def get_tree():
+    global library
+    tree = library.get_tree()
+    return tree
+
 @socketio.on('get_template')
 def get_template_names(lib_id):
     global library

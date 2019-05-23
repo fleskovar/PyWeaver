@@ -80,12 +80,13 @@
         </v-list-tile>
 
         
-        <v-card color='white' v-show='!drawer_mini' style='overflow-y: scroll' height='300px'>
-          <tree
-            :data="items"
-            :options="options"
-            ref="tree"
-          />
+        <v-card v-show='!drawer_mini' style='overflow-y: scroll' height='300px'>
+          <v-treeview :items="items" ref='tree'>
+            <template v-slot:prepend="{ item }">
+              <v-icon v-if="item.children">folder</v-icon>
+              <v-icon v-if="!item.children">insert_drive_file</v-icon>
+            </template>
+          </v-treeview>
         </v-card>
 
       </v-list>
@@ -219,17 +220,8 @@ export default {
         autoRefresh: true,        
       },
       drawer_mini: true,
-      items: [
-            {text: 'Item 1'},
-            {text: 'Item 2'},
-            {text: 'Item 3', children: [
-              {text: 'Item 3.1'},
-              {text: 'Item 3.2'}
-            ]}
-          ],
-          options: {
-            checkbox: true
-          }      
+      connected: false,
+      items: []
     }
   },  
   mounted(){
@@ -343,6 +335,11 @@ export default {
       compileTest: function(){
         //TODO: Access scope of v-runtime-template
         //TODO: On code change, reinit scope of v-runtime-template
+      },
+      updateTree: function(tree){
+        console.log('tree update');
+        this.items = tree;
+        this.$refs.tree.$forceUpdate();            
       }
   },
   computed:{
@@ -375,10 +372,7 @@ export default {
       {
         this.$store.commit('set_display_act_code', val)
       }      
-    },
-    connected: function(){
-      return this.$socket.connected;
-    },
+    },    
     document_name:{
       get: function(){
         return this.$store.state.document_name;
@@ -396,6 +390,15 @@ export default {
         this.$refs.code_editor.codemirror.focus();
         }, 200);        
       }
+    }
+  },
+  sockets:{
+    connect: function(){
+      this.connected = true;
+      this.$socket.emit('get_tree', this.updateTree);
+    },
+    disconnect: function(){
+      this.connected = false;
     }
   }
 }

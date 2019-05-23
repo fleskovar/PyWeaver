@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "core-js": "^2.6.5",
-    "liquor-tree": "^0.2.56",
     "mxgraph": "^3.9.12",
     "npm": "^6.9.0",
     "plotly.js-dist": "^1.47.4",

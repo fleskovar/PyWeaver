@@ -20,8 +20,6 @@ export default {
     node: {},
     _previous_template: '',
     _previous_display_code: '{}',
-    
-
   }),
   components: {    
     VRuntimeTemplate,
