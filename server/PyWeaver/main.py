@@ -1,13 +1,16 @@
 from flask import Flask, render_template
 from flask_socketio import SocketIO, emit
 import sys
+from copy import deepcopy
 
 from Nodes import Node
 from Graph import Graph
 from results_encoder import encode
+from LibraryManager import LibraryManager
 
 # Register initial modules that should not be deleted when restarting the server
 init_modules = sys.modules.keys()
+init_path = deepcopy(sys.path)
 
 # Flask server app
 app = Flask(__name__)
@@ -15,16 +18,20 @@ app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
 
 root = Graph()
+library = LibraryManager()
+
 
 @socketio.on('new_node')
-def add_new_node(id):
+def add_new_node(node_id):
     global root
-    n1 = Node(root, id)
+    # TODO: rethink this
+    n1 = Node(root, node_id)
 
 @socketio.on('delete_node')
 def delete_node(node_id):
     global root
     root.delete_node(node_id)
+
 
 @socketio.on('edit_node_code')
 def edit_node_code(data):
@@ -45,6 +52,7 @@ def edit_node_code(data):
     if old_output_vars != b.output_vars:
         # Prevents emitting an event when output didnt change
         emit('change_node_output_ports', b.output_vars)
+
 
 @socketio.on('make_connection')
 def make_connection(data):
@@ -68,6 +76,7 @@ def delete_connection(data):
 
     root.delete_connection(source_id, source_var, target_id, target_var)
 
+
 @socketio.on('execute')
 def execute(scope_data):
     global root
@@ -87,18 +96,39 @@ def execute(scope_data):
     print 'Finished'
     return r
 
+
 @socketio.on('reset')
 def reset():
     global root
+    global library
     global init_modules
+    global init_path
 
+    # Resets module imports
     if 'init_modules' in globals():
         # remove all but initially loaded modules
         for m in sys.modules.keys():
             if m not in init_modules:
                 del (sys.modules[m])
 
+    # Resets the path
+    sys.path = init_path
+
+    # TODO: Reset declared classes and functions
+
+    # Reset computational graph and library
     root = Graph()
+    library = LibraryManager()
+
+@socketio.on('get_template_names')
+def get_template_names():
+    global library
+    return library.get_template_names()
+
+@socketio.on('get_template')
+def get_template_names(lib_id):
+    global library
+    return library.get_render(lib_id)
 
 if __name__ == '__main__':
     print 'Started'
