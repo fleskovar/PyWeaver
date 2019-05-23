@@ -11,6 +11,9 @@ import { ObserveVisibility } from 'vue-observe-visibility'
 import Plot from './components/Plot.vue'
 
 import DisplayConstants from './Constants.js'
+import LiquorTree from 'liquor-tree'
+
+Vue.use(LiquorTree)
 Vue.use(DisplayConstants);
 Vue.component('plot', Plot);
 

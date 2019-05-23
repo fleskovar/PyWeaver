@@ -79,6 +79,15 @@
           <v-list-tile-content>SETTINGS</v-list-tile-content>     
         </v-list-tile>
 
+        
+        <v-card color='white' v-show='!drawer_mini' style='overflow-y: scroll' height='300px'>
+          <tree
+            :data="items"
+            :options="options"
+            ref="tree"
+          />
+        </v-card>
+
       </v-list>
     </v-navigation-drawer>
 
@@ -209,7 +218,18 @@ export default {
         theme: 'base16-dark',
         autoRefresh: true,        
       },
-      drawer_mini: true      
+      drawer_mini: true,
+      items: [
+            {text: 'Item 1'},
+            {text: 'Item 2'},
+            {text: 'Item 3', children: [
+              {text: 'Item 3.1'},
+              {text: 'Item 3.2'}
+            ]}
+          ],
+          options: {
+            checkbox: true
+          }      
     }
   },  
   mounted(){
