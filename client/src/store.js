@@ -85,6 +85,35 @@ export default new Vuex.Store({
 
       socket.emit('new_node', node_cell.id);        
     },
+    add_node: function(context, node_data){
+      //TODO:      
+      //set selected_node and others
+
+      let canvas = context.state.canvas;
+      var node =  new CodeNode('Node', context.state.canvas, context);      
+      var node_cell = canvas.addNode(node);
+      var node_id = node_cell.id;
+
+      //Insert component into node
+      var ComponentClass = Vue.extend(NodeDisplay);
+      var instance = new ComponentClass({
+        propsData: {
+          _node: node,
+          store: context,          
+        }
+      });
+      
+      instance.$mount(); // pass nothing
+      document.getElementById('node_'+node_id).appendChild(instance.$el);
+      context.state.node_displays[node_cell.id] = instance;
+      
+      context.state.code_nodes[node_cell.id] = node;
+      node.setCell(node_cell); 
+
+      context.commit('set_selected_node', node); //This is required by the 'save_node_code' action
+      socket.emit('new_node', node_cell.id); //This could be combined with the line below
+      context.dispatch('save_node_code', node_data) //Change the code.
+    },
     socket_changeNodeInputPorts(context, port_names){      
       let canvas = context.state.canvas;
       //let cell = context.state.selected_node.cell;
@@ -123,8 +152,9 @@ export default new Vuex.Store({
             
       var node_id = context.state.selected_node.id;
       context.state.node_displays[node_id].changeCode(editor_data.display_code);
-      context.state.node_displays[node_id].changeAct(editor_data.display_act_code);
       context.state.selected_node.setDisplayCode(editor_data.display_code);
+
+      context.state.node_displays[node_id].changeAct(editor_data.display_act_code);
       context.state.selected_node.setDisplayActCode(editor_data.display_act_code);     
       
       context.state.node_displays[node_id].updateDisplay();

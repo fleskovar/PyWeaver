@@ -24,6 +24,7 @@ library = LibraryManager()
 @socketio.on('new_node')
 def add_new_node(node_id):
     global root
+
     # TODO: rethink this
     n1 = Node(root, node_id)
 

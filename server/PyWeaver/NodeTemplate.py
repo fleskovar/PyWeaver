@@ -16,8 +16,8 @@ class NodeTemplate(object):
 
         render['id'] = self.lib_id
         render['code'] = self.read_file(self.code_path)
-        render['ui_code'] = self.read_file(self.ui_code_path)
-        render['ui_script'] = self.read_file(self.ui_script_path)
+        render['display_code'] = self.read_file(self.ui_code_path)
+        render['display_act_code'] = self.read_file(self.ui_script_path)
         render['meta'] = self.read_file(self.meta_path)
         render['doc'] = self.read_file(self.doc_path)
 

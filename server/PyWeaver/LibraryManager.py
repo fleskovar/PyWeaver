@@ -36,7 +36,7 @@ class LibraryManager(object):
             name = os.path.basename(p)
 
             for f in files:
-                file_path = os.path.isfile(os.path.join(p, f))
+                file_path = os.path.join(p, f)
                 if f.endswith('.py'):
                     code_path = file_path
                 elif f.endswith('.html'):

@@ -5,7 +5,7 @@ from code_parsing import parse_function
 
 class Node(object):
 
-    def __init__(self, parent_node, id, code=None, params=OrderedDict()):
+    def __init__(self, parent_node, id, code=None):
 
         self.parent_node = parent_node
         self.display = None  # TODO: Implement display option for web client
@@ -25,7 +25,7 @@ class Node(object):
 
         self.parent_node.add_node(self)
 
-    def parse_code(self, code, params=OrderedDict()):
+    def parse_code(self, code):
         self.set_dirty()
         self.code = code
         success, func_name, input_vars, input_vars_data, output_vars = parse_function(code)
@@ -61,8 +61,7 @@ class Node(object):
         # self.input_vars_data = input_vars_data
 
         self.output_vars = output_vars
-
-        self.params = params
+        
         self.results = {}
         # self.input_results = {}
 
