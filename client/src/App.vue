@@ -86,6 +86,12 @@
               <v-icon v-if="item.children">folder</v-icon>
               <v-icon v-if="!item.children">insert_drive_file</v-icon>
             </template>
+
+             <template v-slot:label="{item}">
+               {{item.name}}
+               <v-btn v-if="!item.children" icon @click='addLibraryNode(item.lib_id)'><v-icon>add_circle_outline</v-icon></v-btn>
+            </template>
+
           </v-treeview>
         </v-card>
 
@@ -142,7 +148,6 @@
 
     <v-footer class="pa-3" app dark>
       <v-btn color="gray" dark v-on:click="openEditor">Edit</v-btn>
-      <v-btn color="gray" dark v-on:click="addNodeTest">Custom Node</v-btn>
       <v-btn color="gray" dark v-on:click="compileTest">Compile</v-btn>
       <v-btn color="gray" dark v-on:click="resetServer">Reset</v-btn>
       <v-spacer></v-spacer>
@@ -312,8 +317,8 @@ export default {
       toggleMiniDrawer: function(){
         this.drawer_mini = !this.drawer_mini;
       },
-      addNodeTest: function(){
-        this.$socket.emit('get_template', 1, this.addNodeAction)
+      addLibraryNode: function(id){
+        this.$socket.emit('get_template', id, this.addNodeAction)
       },
       addNodeAction: function(node_data){
         this.$store.dispatch('add_node', node_data);
