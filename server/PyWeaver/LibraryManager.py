@@ -59,7 +59,8 @@ class LibraryManager(object):
     def find_templates(self, lib_path):
         # Gets the paths of all templates based on a DFS of the lib folder
         # TODO: refactor this...
-        queue = ['Root']
+        root_name = 'Node Library'
+        queue = [root_name]
         queue = zip(queue, [lib_path]*len(queue))
         child_folders = []
         template_paths = []
@@ -70,7 +71,7 @@ class LibraryManager(object):
 
         tree_obj = {}
         tree_obj['id'] = tree_id
-        tree_obj['name'] = 'Root'
+        tree_obj['name'] = root_name
         tree_obj['children'] = []
         tree.append(tree_obj)
         tree_elements[lib_path] = tree_obj
