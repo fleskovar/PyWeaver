@@ -34,6 +34,12 @@ def delete_node(node_id):
     root.delete_node(node_id)
 
 
+@socketio.on('connect')
+def made_connection():
+    global library
+    tree = library.get_tree()
+    emit('set_library_tree', tree)
+
 @socketio.on('edit_node_code')
 def edit_node_code(data):
     global root

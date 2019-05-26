@@ -73,42 +73,42 @@
 
 <script>
 export default {
+  mounted(){
+
+  },
     data(){
         return{
             drawer_mini: true,
-            items: []
+            document_name: ''
         }
     },
     methods:{
-        addNode: function(){      
+      addNode: function(){      
         this.$store.dispatch('add_empty_node');     
-        },
-        runServer: function(){
+      },
+      runServer: function(){
         this.$store.dispatch('execute_server');
-        },
-        resetServer: function(){
+      },
+      resetServer: function(){
         //Resets server
         this.$socket.emit('reset');
-        },
-        toggleMiniDrawer: function(){
-            this.drawer_mini = !this.drawer_mini;
-        },
-        addLibraryNode: function(id){
+      },
+      toggleMiniDrawer: function(){
+          this.drawer_mini = !this.drawer_mini;
+      },
+      addLibraryNode: function(id){
         this.$socket.emit('get_template', id, this.addNodeAction)
-        },
-        addNodeAction: function(node_data){
-            this.$store.dispatch('add_node', node_data);
-        },
-        updateTree: function(tree){
-            console.log('tree update');
-            this.items = tree;
-            this.$refs.tree.$forceUpdate();            
-        }
+      },
+      addNodeAction: function(node_data){
+          this.$store.dispatch('add_node', node_data);
+      },
     },
-    sockets:{
-        connect: function(){
-            this.$socket.emit('get_tree', this.updateTree);
-        },
+    computed:{
+      items:{
+        get(){
+          return this.$store.state.libraryTree;
+        }
+      }
     }
 }
 </script>

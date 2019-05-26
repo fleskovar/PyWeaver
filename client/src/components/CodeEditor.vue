@@ -3,6 +3,7 @@
 		<v-card>      
 			<v-toolbar dark color="gray">              
 				<v-toolbar-title>Editor</v-toolbar-title>
+				<v-btn icon><v-icon>save</v-icon></v-btn>   
 				<v-spacer></v-spacer>
 				<v-toolbar-items>                
 				<v-btn icon dark @click="closeDialog">
@@ -28,11 +29,13 @@
 					<v-tab-item>                
 						<codemirror :options="dispActCmOptions" ref="code_editor" v-model="display_act_code"/>                
 					</v-tab-item>
-				</v-tabs>             
+				</v-tabs>      
+				<v-spacer/>				    
 			</v-card-text>
 
-			<v-card-actions>              
-				<v-btn color="green" flat v-on:click='saveCode' dark>Save</v-btn>                          
+			<v-card-actions>     
+				<v-spacer/>         
+				<v-btn color="green" flat v-on:click='saveCode' dark>Update</v-btn>                          
 			</v-card-actions>
 
         </v-card>              

@@ -25,17 +25,21 @@ export default new Vuex.Store({
     results: {},
     auto_exec: false,
     run_id: 0,
-    treeStore: [],
+    libraryTree: [],
+    save_dialog: false
   },
   mutations: {
-    tree_change: function(state, tree){
-      state.treeStore = tree;
+    tree_change: function(state, libraryTree){
+      state.libraryTree = libraryTree;
     },
     set_selected_node: function(state, node){      
       state.selected_node = node;
     },
     open_editor: function(state, val){
       state.open_code_editor = val;
+    },
+    set_dialog_open: function(state, val){
+      state.save_dialog = val;
     },
     set_canvas: function(state, canvas){
       state.canvas = canvas;
@@ -113,6 +117,9 @@ export default new Vuex.Store({
       context.commit('set_selected_node', node); //This is required by the 'save_node_code' action
       socket.emit('new_node', node_cell.id); //This could be combined with the line below
       context.dispatch('save_node_code', node_data) //Change the code.
+    },
+    socket_setLibraryTree(context, tree){
+      context.commit('tree_change', tree);
     },
     socket_changeNodeInputPorts(context, port_names){      
       let canvas = context.state.canvas;
@@ -210,9 +217,4 @@ export default new Vuex.Store({
       socket.emit('delete_node', id);
     }
   },
-  getters:{
-    tree(state){
-      return state.treeStore;
-    }
-  }
 })

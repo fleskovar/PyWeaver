@@ -34,10 +34,10 @@
     </v-content>
 
     <CodeEditor/>
-
+    <LibrarySaveDialog/>
 
     <v-footer class="pa-3" app dark>      
-      <v-btn color="gray" dark v-on:click="compileTest">Compile</v-btn>
+      <v-btn color="gray" dark v-on:click="saveDialog">Open Save</v-btn>
       <v-btn color="gray" dark v-on:click="resetServer">Reset</v-btn>
       <v-spacer></v-spacer>
         <div>&copy; {{ new Date().getFullYear() }}</div>
@@ -52,12 +52,14 @@ import Canvas from './NodeEditor/Canvas';
 import CodeNode from './NodeEditor/CodeNode';
 import CodeEditor from './components/CodeEditor'
 import SideBar from './components/SideBar'
+import LibrarySaveDialog from './components/LibrarySaveDialog'
 
 export default {
   name: 'App',
   components: {
     CodeEditor,
-    SideBar 
+    SideBar,
+    LibrarySaveDialog 
   },
   data () {
     return {           
@@ -71,13 +73,14 @@ export default {
     this.$store.commit('set_canvas', canvas);
     },
 
-  methods:{    
-    
+  methods:{
     OpenFile: function(){
       var file_obj = document.getElementById('fileInput');
       file_obj.click();
     },
-    
+    saveDialog(){
+      this.$store.commit('set_dialog_open', true);
+    },    
     OpenModel: function(ev){
         console.log('tried open');
         const file = ev.target.files[0];
@@ -92,6 +95,10 @@ export default {
         };
         reader.readAsText(file);
       },
+      resetServer: function(){
+        //Resets server
+        this.$socket.emit('reset');
+        },
       SaveModel: function(){
         var xmlString = this.$store.state.canvas.GetModelXML();
         
