@@ -12,8 +12,9 @@
 			</v-toolbar>
 
             <v-card-text>
+                <v-text-field label="Node"/>
                 <v-card style='overflow-y: scroll' height='300px'>
-                    <v-treeview :items="libraryTree" ref='tree'>
+                    <v-treeview :items="libraryTree" ref='tree' activatable :active.sync="selected_folder" return-object>
                         <template v-slot:prepend="{ item }">
                         <v-icon v-if="item.children">folder</v-icon>
                         <v-icon v-if="!item.children">insert_drive_file</v-icon>
@@ -27,6 +28,11 @@
                 </v-card>
             </v-card-text>
 
+            <v-card-actions>     
+				<v-spacer/>         
+				<v-btn color="blue" flat dark @click='saveNode'>Save</v-btn>                          
+			</v-card-actions>
+
 		</v-card>
     </v-dialog>
 </template>
@@ -35,11 +41,15 @@
 export default {
     data(){
         return{
+            selected_folder: []
         }
     },
     methods:{
         closeDialog(){
             this.$store.commit('set_dialog_open', false);
+        },
+        saveNode(){
+            console.log(this.selected_folder);
         }
     },
     computed:{

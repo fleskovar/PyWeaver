@@ -47,9 +47,7 @@
 </template>
 
 <script>
-import EventBus from './EventBus.js'
 import Canvas from './NodeEditor/Canvas';
-import CodeNode from './NodeEditor/CodeNode';
 import CodeEditor from './components/CodeEditor'
 import SideBar from './components/SideBar'
 import LibrarySaveDialog from './components/LibrarySaveDialog'
@@ -82,7 +80,6 @@ export default {
       this.$store.commit('set_dialog_open', true);
     },    
     OpenModel: function(ev){
-        console.log('tried open');
         const file = ev.target.files[0];
         if (!file) {
           return;

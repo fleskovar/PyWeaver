@@ -7,8 +7,6 @@ import socket from './socket.js'
 import NodeDisplay from './components/NodeDisplay.vue'
 import EventBus from './EventBus.js'
 
-import Plotly from 'plotly.js-dist';
-
 Vue.use(Vuex)
 
 export default new Vuex.Store({

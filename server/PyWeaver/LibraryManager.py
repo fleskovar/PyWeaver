@@ -100,8 +100,8 @@ class LibraryManager(object):
                     tree_obj['lib_id'] = lib_id
                     lib_id += 1
                 else:
-                    # TODO: pick up from here
                     tree_obj['children'] = []
+                    tree_obj['path'] = os.path.join(d[1], f)
                     child_folders.append(f)
 
                 current_tree['children'].append(tree_obj)
@@ -123,3 +123,6 @@ class LibraryManager(object):
 
     def get_tree(self):
         return self.tree
+
+    def save(self, path, node_data):
+        pass
