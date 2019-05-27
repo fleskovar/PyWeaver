@@ -1,3 +1,7 @@
+const path = require('path')
+console.log();
+
 module.exports = {
-    runtimeCompiler: true
+    runtimeCompiler: true,
+    outputDir: path.resolve(__dirname, "../server/PyWeaver/static")
   };

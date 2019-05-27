@@ -13,13 +13,16 @@ init_modules = sys.modules.keys()
 init_path = deepcopy(sys.path)
 
 # Flask server app
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='')
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
 
 root = Graph()
 library = LibraryManager()
 
+@app.route('/')
+def root():
+    return app.send_static_file('index.html')
 
 @socketio.on('new_node')
 def add_new_node(node_id):
