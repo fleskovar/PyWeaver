@@ -1,0 +1,7 @@
+Simple plot node.
+Input:
+    x - X axis
+    y - Y series (vectorizable)
+
+Output:
+    z - Chart object compatible with Plotly
