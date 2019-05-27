@@ -125,4 +125,23 @@ class LibraryManager(object):
         return self.tree
 
     def save(self, path, node_data):
-        pass
+        name = node_data['name']
+
+        cwd = os.path.join(path, name)
+
+        os.mkdir(cwd)  # Creates the new folder
+
+        python_file = os.path.join(cwd, 'code.py')
+        f = open(python_file, "w+")
+        f.write(node_data['code'])
+        f.close()
+
+        html_file = os.path.join(cwd, 'ui.html')
+        f = open(html_file, "w+")
+        f.write(node_data['display_code'])
+        f.close()
+
+        js_file = os.path.join(cwd, 'ui_script.js')
+        f = open(js_file, "w+")
+        f.write(node_data['display_act_code'])
+        f.close()

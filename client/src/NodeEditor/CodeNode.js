@@ -53,11 +53,3 @@ export default class CodeNode{
         this.cell.display_act_code = code;
     }
 }
-
-/*
-var parent = graph.getDefaultParent();
-var model = graph.getModel();
-var v1 = null;
-v1 = graph.insertVertex(parent, null, label, x, y, 120, 120);
-var port = graph.insertVertex(v1, null, 'Trigger', 0, 0.25, 16, 16, '', true);
-*/

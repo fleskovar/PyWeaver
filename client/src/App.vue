@@ -36,8 +36,7 @@
     <CodeEditor/>
     <LibrarySaveDialog/>
 
-    <v-footer class="pa-3" app dark>      
-      <v-btn color="gray" dark v-on:click="saveDialog">Open Save</v-btn>
+    <v-footer class="pa-3" app dark>
       <v-btn color="gray" dark v-on:click="resetServer">Reset</v-btn>
       <v-spacer></v-spacer>
         <div>&copy; {{ new Date().getFullYear() }}</div>
@@ -76,9 +75,6 @@ export default {
       var file_obj = document.getElementById('fileInput');
       file_obj.click();
     },
-    saveDialog(){
-      this.$store.commit('set_dialog_open', true);
-    },    
     OpenModel: function(ev){
         const file = ev.target.files[0];
         if (!file) {

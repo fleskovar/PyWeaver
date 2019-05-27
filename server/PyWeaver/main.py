@@ -143,15 +143,19 @@ def get_template_names(lib_id):
     global library
     return library.get_render(lib_id)
 
-
 @socketio.on('save_to_library')
 def get_template_names(data):
     global library
     path = data['path']
-    node_data = data['node']
+    node_data = data['node_data']
 
     library.save(path, node_data)
+
+    library = LibraryManager()
+    tree = library.get_tree()
+    emit('set_library_tree', tree)
 
 if __name__ == '__main__':
     print 'Started'
     socketio.run(app, host='localhost', port=5000)
+

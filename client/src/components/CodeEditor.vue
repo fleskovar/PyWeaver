@@ -3,7 +3,7 @@
 		<v-card>      
 			<v-toolbar dark color="gray">              
 				<v-toolbar-title>Editor</v-toolbar-title>
-				<v-btn icon><v-icon>save</v-icon></v-btn>   
+				<v-btn icon @click='openSaveDialog'><v-icon>save</v-icon></v-btn>   
 				<v-spacer></v-spacer>
 				<v-toolbar-items>                
 				<v-btn icon dark @click="closeDialog">
@@ -99,6 +99,9 @@ export default{
 	methods:{
 		closeDialog: function(){
 			this.code_dialog = false;
+		},
+		openSaveDialog: function(){
+			this.$store.commit('set_dialog_open', true);
 		},
 		saveCode: function(){
 			this.$store.dispatch('save_node_code',
