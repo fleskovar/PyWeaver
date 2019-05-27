@@ -32,8 +32,21 @@
           <v-list-tile-content>ADD EMPTY NODE</v-list-tile-content>     
         </v-list-tile>
 
-        <v-card v-show='!drawer_mini' style='overflow-y: scroll' height='300px'>
-          <v-treeview :items="items" ref='tree'>
+        <v-card v-show='!drawer_mini' style='padding: 10px'>
+          <v-text-field
+            v-model="search"
+            label="Search Node Library"
+            dark
+            flat
+            solo-inverted
+            hide-details
+            clearable
+            clear-icon="mdi-close-circle-outline"
+          />
+        </v-card>
+
+        <v-card v-show='!drawer_mini' style='padding: 20px; overflow-y: scroll' height='300px' flat>          
+          <v-treeview :items="items" ref='tree' :search="search" :filter="filter" open-on-click>
             <template v-slot:prepend="{ item }">
               <v-icon v-if="item.children">folder</v-icon>
               <v-icon v-if="!item.children">insert_drive_file</v-icon>
@@ -42,6 +55,7 @@
              <template v-slot:label="{item}">
                {{item.name}}
                <v-btn v-if="!item.children" icon @click='addLibraryNode(item.lib_id)'><v-icon>add_circle_outline</v-icon></v-btn>
+               <v-btn v-if="item.id==0" icon><v-icon>refresh</v-icon></v-btn> <!--Adds a special refresh icon for the root folder to trigger library refresh on the server--> 
             </template>
 
           </v-treeview>
@@ -72,6 +86,8 @@
 
 
 <script>
+import Fuse from 'fuse.js';
+
 export default {
   mounted(){
 
@@ -79,7 +95,16 @@ export default {
     data(){
         return{
             drawer_mini: true,
-            document_name: ''
+            document_name: '',
+            search: '',
+            fuse_options: {
+              keys:['name'],
+              distance: 100,
+              location: 0,
+              maxPatternLength: 32,
+              minMatchCharLength: 1,
+              id: "id"
+            }
         }
     },
     methods:{
@@ -102,13 +127,23 @@ export default {
       addNodeAction: function(node_data){
           this.$store.dispatch('add_node', node_data);
       },
+      treeFilter: function(item, search, textKey){
+
+          var fuse = new Fuse(this.items, this.fuse_options);
+          var search_results = fuse.search(search);
+
+          return search_results.indexOf(item.id) > -1
+      },
     },
     computed:{
       items:{
         get(){
           return this.$store.state.libraryTree;
         }
-      }
+      },
+      filter(){        
+        return this.treeFilter;
+      },
     }
 }
 </script>

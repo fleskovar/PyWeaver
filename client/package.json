@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "core-js": "^2.6.5",
+    "fuse.js": "^3.4.4",
     "mxgraph": "^3.9.12",
     "npm": "^6.9.0",
     "plotly.js-dist": "^1.47.4",

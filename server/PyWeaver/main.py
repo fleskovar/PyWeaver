@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask
 from flask_socketio import SocketIO, emit
 import sys
 from copy import deepcopy
@@ -17,7 +17,7 @@ app = Flask(__name__, static_url_path='')
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
 
-root = Graph()
+graph_root = Graph()
 library = LibraryManager()
 
 @app.route('/')
@@ -26,15 +26,15 @@ def root():
 
 @socketio.on('new_node')
 def add_new_node(node_id):
-    global root
+    global graph_root
 
     # TODO: rethink this
-    n1 = Node(root, node_id)
+    n1 = Node(graph_root, node_id)
 
 @socketio.on('delete_node')
 def delete_node(node_id):
-    global root
-    root.delete_node(node_id)
+    global graph_root
+    graph_root.delete_node(node_id)
 
 
 @socketio.on('connect')
@@ -45,12 +45,12 @@ def made_connection():
 
 @socketio.on('edit_node_code')
 def edit_node_code(data):
-    global root
+    global graph_root
 
     id = data['id']
     code = data['code']
 
-    b = root.nodes[id]
+    b = graph_root.nodes[id]
     old_input_vars = b.input_vars
     old_output_vars = b.output_vars
     b.parse_code(code)
@@ -66,40 +66,40 @@ def edit_node_code(data):
 
 @socketio.on('make_connection')
 def make_connection(data):
-    global root
+    global graph_root
     source_id = data['source_id']
     target_id = data['target_id']
     source_var = data['source_var']
     target_var = data['target_var']
 
-    root.make_connection(source_id, source_var, target_id, target_var)
+    graph_root.make_connection(source_id, source_var, target_id, target_var)
 
 
 @socketio.on('delete_connection')
 def delete_connection(data):
-    global root
+    global graph_root
     source_id = data['source_id']
     source_var = data['source_var']
 
     target_id = data['target_id']
     target_var = data['target_var']
 
-    root.delete_connection(source_id, source_var, target_id, target_var)
+    graph_root.delete_connection(source_id, source_var, target_id, target_var)
 
 
 @socketio.on('execute')
 def execute(scope_data):
-    global root
+    global graph_root
 
     print 'Running'
-    root.execute(scope_data)
+    graph_root.execute(scope_data)
 
     r = dict()
-    for n in root.nodes:
+    for n in graph_root.nodes:
         rr = dict()
-        for v in root.nodes[n].results:
+        for v in graph_root.nodes[n].results:
             # Transforms result into JSON safe data
-            rr[v] = encode(root.nodes[n].results[v])
+            rr[v] = encode(graph_root.nodes[n].results[v])
 
         r[n] = rr
 
@@ -109,7 +109,7 @@ def execute(scope_data):
 
 @socketio.on('reset')
 def reset():
-    global root
+    global graph_root
     global library
     global init_modules
     global init_path
@@ -127,7 +127,7 @@ def reset():
     # TODO: Reset declared classes and functions
 
     # Reset computational graph and library
-    root = Graph()
+    graph_root = Graph()
     library = LibraryManager()
 
 @socketio.on('get_template_names')
