@@ -1,5 +1,7 @@
 from collections import defaultdict
 
+import xmltodict
+
 class Graph(object):
 
     def __init__(self):
@@ -8,6 +10,7 @@ class Graph(object):
         self.edges = []
         self.adjacency_dict = dict()
         self.terminal_nodes = []  # List of nodes that have no output
+        self.xmlModel = None
 
     def add_node(self, node):
         node_id = node.id

@@ -79,6 +79,21 @@ export default class Canvas{
         style[mxConstants.STYLE_EDGE] = mxEdgeStyle.EntityRelation;
         style[mxConstants.STYLE_STROKEWIDTH] = '1';
         style[mxConstants.STYLE_LABEL_BACKGROUNDCOLOR] = '#FFFFFF';
+        
+        
+        // Enables wrapping for vertex labels
+        graph.isWrapping = function(cell)
+        {
+            return true;
+        };
+        
+        // Enables clipping of vertex labels if no offset is defined
+        graph.isLabelClipped = function(cell)
+        {
+            var geometry = this.model.getGeometry(cell);            
+            return geometry != null && !geometry.relative
+        };
+        
 
         /*
         var style = graph.getStylesheet().getDefaultEdgeStyle();

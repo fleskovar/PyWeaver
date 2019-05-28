@@ -8,21 +8,17 @@ from Graph import Graph
 from results_encoder import encode
 from LibraryManager import LibraryManager
 
-# Register initial modules that should not be deleted when restarting the server
-init_modules = sys.modules.keys()
-init_path = deepcopy(sys.path)
+from model_from_xml import parse_xml, generate_nodes, generate_edges
 
 # Flask server app
 app = Flask(__name__, static_url_path='')
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
 
-graph_root = Graph()
-library = LibraryManager()
-
 @app.route('/')
 def root():
     return app.send_static_file('index.html')
+
 
 @socketio.on('new_node')
 def add_new_node(node_id):
@@ -30,6 +26,7 @@ def add_new_node(node_id):
 
     # TODO: rethink this
     n1 = Node(graph_root, node_id)
+
 
 @socketio.on('delete_node')
 def delete_node(node_id):
@@ -42,6 +39,7 @@ def made_connection():
     global library
     tree = library.get_tree()
     emit('set_library_tree', tree)
+
 
 @socketio.on('edit_node_code')
 def edit_node_code(data):
@@ -135,16 +133,19 @@ def get_template_names():
     global library
     return library.get_template_names()
 
+
 @socketio.on('get_tree')
 def get_tree():
     global library
     tree = library.get_tree()
     return tree
 
+
 @socketio.on('get_template')
 def get_template_names(lib_id):
     global library
     return library.get_render(lib_id)
+
 
 @socketio.on('save_to_library')
 def get_template_names(data):
@@ -157,6 +158,70 @@ def get_template_names(data):
     library = LibraryManager()
     tree = library.get_tree()
     emit('set_library_tree', tree)
+
+
+@socketio.on('new_folder')
+def new_folder(folder_data):
+    global library
+    folder_path = folder_data['path']
+    folder_name = folder_data['name']
+    library.new_folder(folder_path, folder_name)
+
+    library = LibraryManager()
+    tree = library.get_tree()
+    emit('set_library_tree', tree)
+
+
+@socketio.on('delete_folder')
+def delete_folder(path):
+    global library    
+    library.delete_folder(path)
+
+    library = LibraryManager()
+    tree = library.get_tree()
+    emit('set_library_tree', tree)
+
+
+@socketio.on('rename_folder')
+def rename_folder(folder_data):
+    global library    
+    folder_path = folder_data['path']
+    folder_name = folder_data['name']
+    library.rename_folder(folder_path, folder_name)
+
+    library = LibraryManager()
+    tree = library.get_tree()
+    emit('set_library_tree', tree)
+
+
+@socketio.on('refresh_library')
+def refresh_library():
+    global library
+    library = LibraryManager()
+    tree = library.get_tree()
+    emit('set_library_tree', tree)
+
+
+@socketio.on('sync_model')
+def sync_model(xml):
+    global graph_root
+    graph_root.xmlModel = xml
+
+
+def parse_xml(xml, root):
+
+    cells, nodes, edges = parse_xml(xml)  # Parse xml
+
+    generate_nodes(root, emit, cells, nodes)  # Generate nodes
+    generate_edges(root, emit, cells, edges)  # Generate connections
+
+
+# Register initial modules that should not be deleted when restarting the server
+init_modules = sys.modules.keys()
+init_path = deepcopy(sys.path)
+
+graph_root = Graph()
+library = LibraryManager()
 
 if __name__ == '__main__':
     print 'Started'

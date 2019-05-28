@@ -50,6 +50,7 @@ import Canvas from './NodeEditor/Canvas';
 import CodeEditor from './components/CodeEditor'
 import SideBar from './components/SideBar'
 import LibrarySaveDialog from './components/LibrarySaveDialog'
+import EventBus from './EventBus.js'
 
 export default {
   name: 'App',
@@ -63,11 +64,12 @@ export default {
       connected: false,      
     }
   },  
-  mounted(){
+  mounted(){   
     var container = document.getElementById('canvas');    
     var canvas = new Canvas(container, this.$store);
     canvas.mount();
     this.$store.commit('set_canvas', canvas);
+    EventBus.$on('update_displays', this.updateCanvas);
     },
 
   methods:{
@@ -113,6 +115,9 @@ export default {
         element.click();
         document.body.removeChild(element);
       },
+      updateCanvas(){
+        this.$store.dispatch('update_all_cells');
+      }
   },
   computed:{           
     document_name:{

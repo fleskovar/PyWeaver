@@ -56,6 +56,21 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    update_all_cells: function(context){
+      /*
+      let graph = context.state.canvas.graph;
+
+      for(var node_id in context.state.code_nodes){
+        var cell = context.state.code_nodes[node_id].cell;
+        graph.updateCellSize(cell);
+      }
+      */
+      
+    },
+    sync_server_model: function(context){
+      var xmlString = context.state.canvas.GetModelXML();
+      socket.emit('sync_model', xmlString);
+    },
     open_code_editor: function(context, node){      
       context.commit('set_selected_node', node);
       context.commit('set_code', node.code);
@@ -85,7 +100,7 @@ export default new Vuex.Store({
       context.state.code_nodes[node_cell.id] = node;
       node.setCell(node_cell); 
 
-      socket.emit('new_node', node_cell.id);        
+      socket.emit('new_node', node_cell.id);  
     },
     add_node: function(context, node_data){
       //TODO:      
@@ -134,7 +149,7 @@ export default new Vuex.Store({
         context.state.code_nodes[cell_id].inputs[port_names[i]] = null;        
       }
       
-      canvas.changePorts(cell, port_names, 0, 'input'); 
+      canvas.changePorts(cell, port_names, 0, 'input');
     },
     socket_changeNodeOutputPorts: function(context, port_names){      
       let canvas = context.state.canvas;
@@ -150,7 +165,7 @@ export default new Vuex.Store({
         context.state.code_nodes[cell_id].outputs[port_names[i]] = null;        
       }
 
-      canvas.changePorts(cell, port_names, 1, 'output'); 
+      canvas.changePorts(cell, port_names, 1, 'output');
     },
     save_node_code: function(context, editor_data){
       context.state.selected_node.setCode(editor_data.code);
@@ -202,8 +217,6 @@ export default new Vuex.Store({
         context.state.run_id += 1;
         EventBus.$emit('update_displays');
       });
-      //TODO: process outputs and put them into:
-      //context.state.code_nodes[cell_id].inputs[i] = null;
     },
     auto_execute(context){
       if(context.state.auto_exec){

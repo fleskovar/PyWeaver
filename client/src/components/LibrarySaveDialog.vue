@@ -209,13 +209,25 @@ export default {
             this.edit_name_dialog = true;
         },
         createNewFolder(){
-
+            var folder_data = {
+                path: this.selected_item.path,
+                name: this.new_folder_name
+            };
+            this.$socket.emit('new_folder', folder_data);
+            this.add_folder_dialog = false;
         },
         deleteFolder(){
-
+            var path = this.selected_item.path;
+            this.$socket.emit('delete_folder', path);
+            this.delete_folder_dialog = false;
         },
         renameItem(){
-
+            var folder_data = {
+                path: this.selected_item.path,
+                name: this.new_item_name
+            };
+            this.$socket.emit('rename_folder', folder_data);
+            this.edit_name_dialog = false;
         },
     },
     computed:{

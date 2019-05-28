@@ -1,4 +1,6 @@
-import os, imp, sys, inspect
+import os, inspect, shutil
+from zipfile import ZipFile
+
 from NodeTemplate import NodeTemplate
 
 class LibraryManager(object):
@@ -58,7 +60,7 @@ class LibraryManager(object):
 
     def find_templates(self, lib_path):
         # Gets the paths of all templates based on a DFS of the lib folder
-        # TODO: refactor this...
+        # TODO: refactor this... use os.walk()
         root_name = 'Node Library'
         queue = [root_name]
         queue = zip(queue, [lib_path]*len(queue))
@@ -127,6 +129,9 @@ class LibraryManager(object):
     def save(self, path, node_data):
         name = node_data['name']
 
+        # Validate that the name is nor already in use
+        name = self.get_unique_name(path, name)  # If name is in use, append '_i' at the end
+
         cwd = os.path.join(path, name)
 
         os.mkdir(cwd)  # Creates the new folder
@@ -145,3 +150,50 @@ class LibraryManager(object):
         f = open(js_file, "w+")
         f.write(node_data['display_act_code'])
         f.close()
+
+    def new_folder(self, folder_path, folder_name):
+
+        # Validate that the name is nor already in use
+        folder_name = self.get_unique_name(folder_path, folder_name)  # If name is in use, append '_i' at the end
+        os.mkdir(os.path.join(folder_path, folder_name))
+
+    def delete_folder(self, path):
+        shutil.rmtree(path, ignore_errors=True)
+
+    def rename_folder(self, folder_path, folder_name):
+
+        # Validate that the name is nor already in use
+        folder_name = self.get_unique_name(folder_path, folder_name)  # If name is in use, append '_i' at the end
+
+        os.rename(folder_path, os.path.join(os.path.dirname(folder_path), folder_name))  # Rename folder
+
+    def get_unique_name(self, path, name):
+
+        f_elements = os.listdir(path)
+
+        if name in f_elements:
+            count = 1
+            new_name = name + '_' + str(count)
+            while new_name in f_elements:
+                count += 1
+                new_name = name + '_' + str(count)
+
+            name = new_name
+
+        return name
+
+    def import_package(self):
+        pass
+
+    def export_package(self):
+        pass
+
+
+class Package(object):
+
+    def __init__(self):
+        self.name = None
+        self.author = None
+        self.version = None
+        self.description = None
+        self.link = None

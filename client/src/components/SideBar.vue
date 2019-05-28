@@ -32,6 +32,17 @@
           <v-list-tile-content>ADD EMPTY NODE</v-list-tile-content>     
         </v-list-tile>
 
+        <v-divider/>
+
+        <v-list-tile @click="drawer_mini = false">
+          <v-list-tile-action>
+            <v-btn icon class="text-lg-right">              
+              <v-icon>library_books</v-icon>
+            </v-btn>
+          </v-list-tile-action>   
+          <v-list-tile-content>Node Library</v-list-tile-content>     
+        </v-list-tile>        
+
         <v-card v-show='!drawer_mini' style='padding: 10px'>
           <v-text-field
             v-model="search"
@@ -55,11 +66,13 @@
              <template v-slot:label="{item}">
                {{item.name}}
                <v-btn v-if="!item.children" icon @click='addLibraryNode(item.lib_id)'><v-icon>add_circle_outline</v-icon></v-btn>
-               <v-btn v-if="item.id==0" icon><v-icon>refresh</v-icon></v-btn> <!--Adds a special refresh icon for the root folder to trigger library refresh on the server--> 
+               <v-btn v-if="item.id==0" icon @click='refreshLibrary'><v-icon>refresh</v-icon></v-btn> <!--Adds a special refresh icon for the root folder to trigger library refresh on the server--> 
             </template>
 
           </v-treeview>
         </v-card>
+
+        <v-divider/>
 
         <v-list-tile @click="runServer">
           <v-list-tile-action>
@@ -110,6 +123,9 @@ export default {
     methods:{
       addNode: function(){      
         this.$store.dispatch('add_empty_node');     
+      },
+      refreshLibrary(){
+        this.$socket.emit('refresh_library');
       },
       runServer: function(){
         this.$store.dispatch('execute_server');
