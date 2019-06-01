@@ -107,8 +107,7 @@ export default {
   },
     data(){
         return{
-            drawer_mini: true,
-            document_name: '',
+            drawer_mini: true,            
             search: '',
             fuse_options: {
               keys:['name'],
@@ -122,7 +121,7 @@ export default {
     },
     methods:{
       addNode: function(){      
-        this.$store.dispatch('add_empty_node');     
+        this.$socket.emit('new_empty_node');     
       },
       refreshLibrary(){
         this.$socket.emit('refresh_library');
@@ -138,11 +137,8 @@ export default {
           this.drawer_mini = !this.drawer_mini;
       },
       addLibraryNode: function(id){
-        this.$socket.emit('get_template', id, this.addNodeAction)
-      },
-      addNodeAction: function(node_data){
-          this.$store.dispatch('add_node', node_data);
-      },
+        this.$socket.emit('load_node', id)
+      },      
       treeFilter: function(item, search, textKey){
 
           var fuse = new Fuse(this.items, this.fuse_options);
@@ -160,6 +156,10 @@ export default {
       filter(){        
         return this.treeFilter;
       },
+      document_name:{
+        get(){ return this.$store.state.document_name},
+        set(val){ this.$store.commit('set_document_name', val);}
+      }
     }
 }
 </script>

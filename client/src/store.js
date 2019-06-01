@@ -24,7 +24,8 @@ export default new Vuex.Store({
     auto_exec: false,
     run_id: 0,
     libraryTree: [],
-    save_dialog: false
+    save_dialog: false,
+    session_id: null,
   },
   mutations: {
     tree_change: function(state, libraryTree){
@@ -53,23 +54,28 @@ export default new Vuex.Store({
     },
     set_document_name: function(state, name){
       state.document_name = name;
+    },
+    set_session_id: function(state, session_id){
+      state.session_id = session_id;
     }
   },
   actions: {
     update_all_cells: function(context){
-      /*
+      
       let graph = context.state.canvas.graph;
 
       for(var node_id in context.state.code_nodes){
         var cell = context.state.code_nodes[node_id].cell;
-        graph.updateCellSize(cell);
-      }
-      */
-      
+        graph.updateCellSize(cell, true);
+      }           
     },
-    sync_server_model: function(context){
-      var xmlString = context.state.canvas.GetModelXML();
-      socket.emit('sync_model', xmlString);
+    push_server_model: function(context){
+      
+      var model_data = {};
+      model_data.session_id = context.state.session_id;
+      model_data.xml = context.state.canvas.GetModelXML();     
+
+      socket.emit('sync_model', model_data);
     },
     open_code_editor: function(context, node){      
       context.commit('set_selected_node', node);
@@ -77,37 +83,27 @@ export default new Vuex.Store({
       context.commit('set_display_code', node.display_code);
       context.commit('set_display_act_code', node.display_act_code);
       context.commit('open_editor', true);
-    },
-    add_empty_node: function(context){      
-      let canvas = context.state.canvas;
-
-      var node =  new CodeNode('Node', context.state.canvas, context);      
-      var node_cell = canvas.addNode(node);
-      var node_id = node_cell.id;
-
-      //Insert component into node
-      var ComponentClass = Vue.extend(NodeDisplay);
-      var instance = new ComponentClass({
-        propsData: {
-          _node: node,
-          store: context,          
-        }
-      });
-      instance.$mount(); // pass nothing
-      document.getElementById('node_'+node_id).appendChild(instance.$el);
-      context.state.node_displays[node_cell.id] = instance;
-      
-      context.state.code_nodes[node_cell.id] = node;
-      node.setCell(node_cell); 
-
-      socket.emit('new_node', node_cell.id);  
-    },
-    add_node: function(context, node_data){
+    },    
+    socket_addNode: function(context, node_data){
       //TODO:      
       //set selected_node and others
 
-      let canvas = context.state.canvas;
-      var node =  new CodeNode('Node', context.state.canvas, context);      
+      let canvas = context.state.canvas;      
+      
+      var id = node_data['id'];
+
+      var node =  new CodeNode('Node', context.state.canvas, context, id);
+      node.inputs = node_data['input_port_names']
+      node.outputs = node_data['out_port_names']
+
+      //If geometry data is available, use it
+      if(node_data['x'] && node_data['y'] && node_data['width'] && node_data['height']){
+        node.x = node_data['x'];
+        node.y = node_data['y'];
+        node.width = node_data['width'];
+        node.height = node_data['height'];
+      }
+
       var node_cell = canvas.addNode(node);
       var node_id = node_cell.id;
 
@@ -120,16 +116,48 @@ export default new Vuex.Store({
         }
       });
       
-      instance.$mount(); // pass nothing
-      document.getElementById('node_'+node_id).appendChild(instance.$el);
-      context.state.node_displays[node_cell.id] = instance;
-      
-      context.state.code_nodes[node_cell.id] = node;
-      node.setCell(node_cell); 
+      node.setCell(node_cell); //Save reference in CodeNode object to the mxgraph cell object
 
-      context.commit('set_selected_node', node); //This is required by the 'save_node_code' action
-      socket.emit('new_node', node_cell.id); //This could be combined with the line below
-      context.dispatch('save_node_code', node_data) //Change the code.
+      node.setCode(node_data.code);
+
+      instance.changeCode(node_data.display_code);
+      node.setDisplayCode(node_data.display_code);
+
+      instance.changeAct(node_data.display_act_code);
+      node.setDisplayActCode(node_data.display_act_code);
+
+      instance.$mount(); // pass nothing
+      document.getElementById('node_'+node_id).appendChild(instance.$el); //Insert display into DOM
+      
+      //Check if needed
+      //instance.updateDisplay();
+      //EventBus.$emit('update_displays');      
+      
+      context.state.node_displays[node_cell.id] = instance; //Save reference to display. Unify with below?      
+      context.state.code_nodes[node_cell.id] = node; //Save reference to the CodeNode object
+
+      //Once everything is rendered, update the cell
+      Vue.nextTick()
+        .then( () => {
+          canvas.updateCellSize(node_cell);
+        });       
+      
+      //context.commit('set_selected_node', node); //This is required by the 'save_node_code' action
+      //socket.emit('new_node', node_cell.id); //This could be combined with the line below
+      //context.dispatch('save_node_code', node_data) //Change the code.
+    },
+    socket_syncSession: function(context, session_id){
+      if(context.state.session_id != session_id){
+        context.commit('set_session_id', session_id);
+        socket.emit('request_model');
+      }
+    },
+    socket_forceSessionId: function(context, session_id){      
+        context.commit('set_session_id', session_id);      
+    },
+    socket_addConnection: function(context, conn_data){
+      context.state.canvas.addEdge(conn_data);
+      context.state.code_nodes[conn_data.target_id].inputs[conn_data.target_var] = {id: conn_data.source_id, var_name: conn_data.source_var};
     },
     socket_setLibraryTree(context, tree){
       context.commit('tree_change', tree);
@@ -212,11 +240,41 @@ export default new Vuex.Store({
         scope_data[key] = ds[key].scope;
       }
 
-      socket.emit('execute', scope_data, (data) => {
+      socket.emit('execute', scope_data, (data) => {        
         context.state.results = data;
         context.state.run_id += 1;
+        context.state.canvas.addResults(data);
+
+        var scopes = {}
+        for(var node in context.state.node_displays){
+          let node_display = context.state.node_displays[node];
+          scopes[node] = node_display.scope;
+        }
+
+        context.state.canvas.addScopes(scopes);
         EventBus.$emit('update_displays');
+        context.dispatch('update_all_cells');
       });
+    },  
+    socket_setResults(context, data){
+      data = JSON.parse(data);
+      context.state.results = data;
+      context.state.run_id += 1;
+      context.state.canvas.addResults(data);      
+      EventBus.$emit('update_displays');
+    },
+    socket_setScopes(context, scopes){
+      scopes = JSON.parse(scopes);
+      for(var node in context.state.node_displays){
+        let node_display = context.state.node_displays[node];
+        for(var var_name in node_display.scope){
+          if(var_name != '__ob__' && var_name != '__proto__')
+            node_display.scope[var_name] = scopes[node][var_name];
+        }        
+      }      
+      context.state.run_id += 1;
+      context.state.canvas.addScopes(scopes);
+      EventBus.$emit('update_displays');
     },
     auto_execute(context){
       if(context.state.auto_exec){

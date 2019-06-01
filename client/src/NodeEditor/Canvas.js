@@ -59,7 +59,9 @@ export default class Canvas{
         graph.autoSizeCells = true;
         //graph.autoSizeCellsOnAdd = true;
         //TODO: Handle autoSize on display (value) change
-        graph.foldingEnabled = false;
+        graph.foldingEnabled = false;    
+        graph.setPanning(true);    
+        graph.scrollTileSize = new mxRectangle(0, 0, 400, 400);
 
         // Sets default styles
         var style = graph.getStylesheet().getDefaultVertexStyle();
@@ -81,6 +83,23 @@ export default class Canvas{
         style[mxConstants.STYLE_LABEL_BACKGROUNDCOLOR] = '#FFFFFF';
         
         
+        var graphGetPreferredSizeForCell = graph.getPreferredSizeForCell;
+        graph.getPreferredSizeForCell = function(cell)
+        {
+            var result = graphGetPreferredSizeForCell.apply(this, arguments);
+            var style = this.getCellStyle(cell);
+
+            var div = document.getElementById('node_'+cell.id);
+
+            console.log('yay');
+            result.width = div.offsetWidth +50;
+            result.height = div.offsetHeight + 50;
+
+            return result;
+        };
+        
+       
+        /*        
         // Enables wrapping for vertex labels
         graph.isWrapping = function(cell)
         {
@@ -93,7 +112,7 @@ export default class Canvas{
             var geometry = this.model.getGeometry(cell);            
             return geometry != null && !geometry.relative
         };
-        
+        */
 
         /*
         var style = graph.getStylesheet().getDefaultEdgeStyle();
@@ -122,13 +141,12 @@ export default class Canvas{
         
         mxEvent.addMouseWheelListener(mxUtils.bind(this, function(evt, up)
         {
-            //Disable alt+zoom
-            if (evt.altKey == true){
-                if(up == true)
-                    graph.zoomIn();
-                else graph.zoomOut();
+            //MouseScroll = zoom
+            if(up == true)
+                graph.zoomIn();
+            else graph.zoomOut();
 
-            }	
+            	
         }));
 
         var keyHandler = new mxKeyHandler(graph);
@@ -216,6 +234,36 @@ export default class Canvas{
         });
     }
 
+    addResults(results){
+        var parent = this.graph.getDefaultParent();
+        
+        this.graph.getModel().beginUpdate();
+        try
+        {
+            parent.results = JSON.stringify(results);
+        }
+        finally
+        {
+            // Updates the display
+            this.graph.getModel().endUpdate();
+        }
+    }
+
+    addScopes(scopes){
+        var parent = this.graph.getDefaultParent();
+        
+        this.graph.getModel().beginUpdate();
+        try
+        {
+            parent.scopes = JSON.stringify(scopes);
+        }
+        finally
+        {
+            // Updates the display
+            this.graph.getModel().endUpdate();
+        }
+    }
+
     addNode(code_node){
 
         // Adds cells to the model in a single step
@@ -224,22 +272,21 @@ export default class Canvas{
         this.graph.getModel().beginUpdate();
         try
         {            
-            var outputs = [];
-            var inputs = [];            
+            var outputs = code_node.outputs;
+            var inputs = code_node.inputs;            
 
-            for(var p in code_node.outputs){
-                outputs.push(p);
-            }            
-
-            for(var p in code_node.inputs){
-                inputs.push(p);
-            }
+            //Takes the id of the CodeNode object.
+            //If it was not set previously, this value will be null
+            //and mxgraph will assign an id that will be later passed to the CodeNode object
+            var id = code_node.id;
 
             //Set cell height based on number of inputs/outputs
             var cell_height = Math.max(outputs.length, inputs.length)*30+40;            
-            //var v1 = this.graph.insertVertex(parent, null, 'Node', 20, 20, 80, cell_height, 'verticalAlign=top'); 
-            //var v1 = this.graph.insertVertex(parent, null, code_node.compiled_display_code, 20, 20, 80, cell_height, 'verticalAlign=top'); 
-            var v1 = this.graph.insertVertex(parent, null, '', 20, 20, 80, cell_height, 'verticalAlign=top'); 
+            
+            if(!code_node.height)
+                code_node.height = cell_height;
+
+            var v1 = this.graph.insertVertex(parent, id, '', code_node.x, code_node.y, code_node.width, code_node.height, 'verticalAlign=middle'); 
             
             v1.value = "<div id='node_"+v1.id+"'></div>"; //TODO: Find a better way to initialize the code in the node
             //TODO: Add default action code (probably should do ="")
@@ -258,6 +305,49 @@ export default class Canvas{
         this.changePorts(v1, inputs, 0, 'input');
 
         return v1
+    }
+
+    addEdge(conn_data){
+
+        // Gets the default parent for inserting new cells. This
+        // is normally the first child of the root (ie. layer 0).
+        var graph = this.graph;
+        var parent = graph.getDefaultParent();
+
+        var model = graph.getModel();      
+      
+        var source_cell = model.cells[conn_data['source_id']];
+        var source_port = null;
+        for(var i = 0; i < source_cell.children.length; i++){
+            let c = source_cell.children[i];
+            if(c.value == conn_data['source_var']){
+            source_port = c;
+            break;
+            }
+        }
+
+        var target_cell = model.cells[conn_data['target_id']];
+        var target_port = null;
+        for(var i = 0; i < target_cell.children.length; i++){
+            let c = target_cell.children[i];
+            if(c.value == conn_data['target_var']){
+            target_port = c;
+            break;
+            }
+        }  
+                        
+        // Adds cells to the model in a single step
+        model.beginUpdate();
+        try
+        {
+            var e1 = graph.insertEdge(parent, null, '', source_port, target_port);
+        }
+        finally
+        {
+            // Updates the display
+            model.endUpdate();
+        }
+        
     }
 
     changePorts(cell, port_names, position, tag){
@@ -329,6 +419,11 @@ export default class Canvas{
 
     updateCell(cell){
         this.graph.getView().clear(cell, false, false);
-        this.graph.getView().validate();
+        this.graph.getView().validate();  
+        this.graph.cellSizeUpdated(cell, true);      
+    }
+
+    updateCellSize(cell){        
+        this.graph.cellSizeUpdated(cell, true);      
     }
 }

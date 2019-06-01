@@ -1,21 +1,44 @@
 from collections import defaultdict
+from Nodes import Node
 
-import xmltodict
+import uuid
+
 
 class Graph(object):
 
-    def __init__(self):
+    def __init__(self, session_id=None):
         self.scope = None  # TODO: Implement scope
         self.nodes = {}
         self.edges = []
         self.adjacency_dict = dict()
         self.terminal_nodes = []  # List of nodes that have no output
         self.xmlModel = None
+        self.node_count = 0
+        self.node_ids = []
 
-    def add_node(self, node):
-        node_id = node.id
+        if session_id is None:
+            self.session_id = str(uuid.uuid4())
+        else:
+            self.session_id = session_id
+
+    def add_node(self, node_id=None, code=None):
+        self.node_count += 1
+
+        if node_id is None or node_id in self.node_ids:
+            # Come up with a valid node id
+            local_count = self.node_count
+            node_id = 'n_'+str(local_count)
+
+            while node_id in self.node_ids:
+                local_count += 1
+                node_id = 'n_'+str(local_count)
+
+        node = Node(self, node_id, code=code)
+
         self.nodes[node_id] = node
         self.adjacency_dict[node_id] = dict()
+
+        return node
 
     def delete_node(self, node_id):
         # Should add a check here to clear all i/o in the node just in case UI does not

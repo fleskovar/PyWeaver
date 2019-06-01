@@ -1,12 +1,15 @@
-Comming up next:
+Comming up next:    
 
-    Load model from xml:
-        Generate server model from xml data
-        Let server command UI and create cells/edges
-        Results store
-        Store state of cell displays
-        Client/Server sync (& hot reload from server)
- 
+    Develop new nodes:        
+        Date/time picker
+
+    UI Improvements:
+        Edge color
+        Edge routing np       
+
+    Code editors:
+        Fix codemirror focus/refresh
+        Code editor 'dirtyness'
 
 Backlog:
 
@@ -19,32 +22,29 @@ Backlog:
         Manage library installs
         Library metadata
         Tree fuzzy keyword search and searchbox chips
-    
-    Code editors:
-        Fix codemirror focus/refresh
-        Code editor 'dirtyness'
 
     Node code change safeguarding
     Node bug display (try/except in server and reflect in client)
 
-    Fix autorun bug (add safeguarding)
+    Fix autorun bug (add safeguarding)    
 
-    UI Improvements:
-        Edge color
-        Edge routing
-        Canvas scroll
+    Make CLI
+
+    UI Improvements:        
         Layers (show)
-        Grouping
-
-    Develop new nodes:
-        Table/grid view
-        Date/time picker
+        Grouping    
 
     Testing
 
+    UI Improvements:
+
+        Plotly: 
+            Cells mouse events 
+
+        Table/grid view:
+            Fix UI bugs
+
     Compile workflow into single python file
 
-    mxGraph:
-        Cells mouse events
-        Cells size
-        Cells default style (aligmnment issues)
+    Replace mxgraph:
+        Find something that integrates more nicely with Vue/Vuetify

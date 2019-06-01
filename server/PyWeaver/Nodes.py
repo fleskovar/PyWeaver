@@ -1,4 +1,3 @@
-import ast
 from collections import OrderedDict
 from code_parsing import parse_function
 
@@ -22,8 +21,6 @@ class Node(object):
 
         if code is not None:
             self.parse_code(code)
-
-        self.parent_node.add_node(self)
 
     def parse_code(self, code):
         self.set_dirty()

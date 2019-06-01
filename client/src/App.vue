@@ -27,9 +27,9 @@
 
     <SideBar/>
 
-    <v-content app> 
-        <v-card height='100%'>
-          <div id='canvas' style='width:100%; height:100%'/>       
+    <v-content style='overflow: hidden'>
+        <v-card flat height='100%'>
+          <div id='canvas'/>       
         </v-card>
     </v-content>
 
@@ -57,7 +57,7 @@ export default {
   components: {
     CodeEditor,
     SideBar,
-    LibrarySaveDialog 
+    LibrarySaveDialog,     
   },
   data () {
     return {           
@@ -69,15 +69,23 @@ export default {
     var canvas = new Canvas(container, this.$store);
     canvas.mount();
     this.$store.commit('set_canvas', canvas);
-    EventBus.$on('update_displays', this.updateCanvas);
-    },
+    EventBus.$on('update_displays', this.updateCanvas); 
+    
+    window.setInterval(() => {this.PushModel();},30000);
+
+  },
 
   methods:{
+
+    PushModel: function(){
+      this.$store.dispatch('push_server_model');
+    },    
     OpenFile: function(){
       var file_obj = document.getElementById('fileInput');
       file_obj.click();
     },
     OpenModel: function(ev){
+
         const file = ev.target.files[0];
         if (!file) {
           return;
@@ -86,9 +94,10 @@ export default {
         reader.onload = (e) => {
           var contents = e.target.result;
           // Display file content
-          this.$store.state.canvas.LoadModel(contents);
+          this.$socket.emit('load_model', contents);
         };
         reader.readAsText(file);
+
       },
       resetServer: function(){
         //Resets server
@@ -123,9 +132,6 @@ export default {
     document_name:{
       get: function(){
         return this.$store.state.document_name;
-      },
-      set:function(val){
-        this.$store.commit('set_document_name', val);
       }
     }
   },
@@ -151,9 +157,9 @@ export default {
 </script>
 
 <style>
-  .canvas{
-    height: 100vh;
-    width: 100vw;
+  #canvas{
+    height: 100%;
+    width: 100%;
     overflow: hidden;
   }
 

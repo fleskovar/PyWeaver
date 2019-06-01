@@ -14,7 +14,7 @@ class NodeTemplate(object):
     def render_template(self):
         render = dict()
 
-        render['id'] = self.lib_id
+        render['lib_id'] = self.lib_id
         render['code'] = self.read_file(self.code_path)
         render['display_code'] = self.read_file(self.ui_code_path)
         render['display_act_code'] = self.read_file(self.ui_script_path)

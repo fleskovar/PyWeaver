@@ -3,12 +3,12 @@ from flask_socketio import SocketIO, emit
 import sys
 from copy import deepcopy
 
-from Nodes import Node
 from Graph import Graph
 from results_encoder import encode
 from LibraryManager import LibraryManager
 
-from model_from_xml import parse_xml, generate_nodes, generate_edges
+from model_manager import create_node, load_xml
+
 
 # Flask server app
 app = Flask(__name__, static_url_path='')
@@ -20,12 +20,24 @@ def root():
     return app.send_static_file('index.html')
 
 
-@socketio.on('new_node')
-def add_new_node(node_id):
+@socketio.on('new_empty_node')
+def add_new_node():
     global graph_root
+    template = dict()  # Set empty template
 
-    # TODO: rethink this
-    n1 = Node(graph_root, node_id)
+    template['code'] = ''
+    template['display_code'] = 'New Node'
+    template['display_act_code'] = '{}'
+
+    create_node(graph_root, template)
+
+
+@socketio.on('load_node')
+def get_template_names(lib_id):
+    global library
+    global graph_root
+    template = library.get_render(lib_id)
+    create_node(graph_root, template)
 
 
 @socketio.on('delete_node')
@@ -35,10 +47,32 @@ def delete_node(node_id):
 
 
 @socketio.on('connect')
-def made_connection():
+def client_connected():
     global library
+    global graph_root
     tree = library.get_tree()
     emit('set_library_tree', tree)
+    emit('sync_session', graph_root.session_id)  # Send session id to the client
+
+@socketio.on('sync_model')
+def sync_model(model_data):
+    global graph_root
+
+    if model_data['session_id'] == graph_root.session_id:
+        graph_root.xmlModel =  model_data['xml']
+    else:
+        # If session_ids dont match, resync
+        emit('sync_session', graph_root.session_id)  # Send session id to the client
+
+@socketio.on('request_model')
+def model_request():
+    global graph_root
+
+    if graph_root.xmlModel is not None:
+        xml = graph_root.xmlModel
+        session_id = graph_root.session_id
+        graph_root = Graph(session_id=session_id)
+        load_xml(graph_root, xml)  # Load and push model into UI
 
 
 @socketio.on('edit_node_code')
@@ -140,13 +174,6 @@ def get_tree():
     tree = library.get_tree()
     return tree
 
-
-@socketio.on('get_template')
-def get_template_names(lib_id):
-    global library
-    return library.get_render(lib_id)
-
-
 @socketio.on('save_to_library')
 def get_template_names(data):
     global library
@@ -201,19 +228,14 @@ def refresh_library():
     tree = library.get_tree()
     emit('set_library_tree', tree)
 
-
-@socketio.on('sync_model')
-def sync_model(xml):
+@socketio.on('load_model')
+def load_model(xml):
     global graph_root
+    graph_root = Graph()
+    emit('force_session_id', graph_root.session_id)  # Force a new session id into the UI
+    load_xml(graph_root, xml)
     graph_root.xmlModel = xml
 
-
-def parse_xml(xml, root):
-
-    cells, nodes, edges = parse_xml(xml)  # Parse xml
-
-    generate_nodes(root, emit, cells, nodes)  # Generate nodes
-    generate_edges(root, emit, cells, edges)  # Generate connections
 
 
 # Register initial modules that should not be deleted when restarting the server
