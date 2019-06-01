@@ -22,12 +22,12 @@
 
 					<v-tab>Display</v-tab>
 					<v-tab-item>                
-						<codemirror :options="dispCmOptions" ref="code_editor" v-model="display_code"/>                
+						<codemirror :options="dispCmOptions" ref="ui_editor" v-model="display_code"/>                
 					</v-tab-item>
 
 					<v-tab>Display Actions</v-tab>
 					<v-tab-item>                
-						<codemirror :options="dispActCmOptions" ref="code_editor" v-model="display_act_code"/>                
+						<codemirror :options="dispActCmOptions" ref="script_editor" v-model="display_act_code"/>                
 					</v-tab-item>
 				</v-tabs>      
 				<v-spacer/>				    
@@ -55,7 +55,10 @@ import { codemirror } from 'vue-codemirror'
 export default{
 	components: {
 		codemirror,
-  	},
+	},
+	mounted(){		
+    window.setInterval(() => {this.updateEditors();},250);
+	},
 	data () {
 		return {
 			cmOptions: {
@@ -97,6 +100,11 @@ export default{
 		}
 	},
 	methods:{
+		updateEditors: function(){
+			this.$refs.code_editor.codemirror.refresh();
+			this.$refs.ui_editor.codemirror.refresh();
+			this.$refs.script_editor.codemirror.refresh();
+    },
 		closeDialog: function(){
 			this.code_dialog = false;
 		},
@@ -154,7 +162,17 @@ export default{
         this.$store.commit('open_editor', val)
       }      
     }, 
-	}
+	},
+	watch:{
+    code_dialog: function(new_val, old_val){
+      if(new_val){        
+        return setTimeout(() => {
+        this.$refs.code_editor.codemirror.refresh();
+        this.$refs.code_editor.codemirror.focus();
+        }, 200);        
+      }
+    }
+  },
 }
 </script>
 

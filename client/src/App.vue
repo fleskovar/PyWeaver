@@ -72,11 +72,9 @@ export default {
     EventBus.$on('update_displays', this.updateCanvas); 
     
     window.setInterval(() => {this.PushModel();},30000);
-
   },
 
-  methods:{
-
+  methods:{    
     PushModel: function(){
       this.$store.dispatch('push_server_model');
     },    
@@ -134,17 +132,7 @@ export default {
         return this.$store.state.document_name;
       }
     }
-  },
-  watch:{
-    code_dialog: function(new_val, old_val){
-      if(new_val){        
-        return setTimeout(() => {
-        this.$refs.code_editor.codemirror.refresh()
-        this.$refs.code_editor.codemirror.focus();
-        }, 200);        
-      }
-    }
-  },
+  },  
   sockets:{
     connect: function(){
       this.connected = true;      
