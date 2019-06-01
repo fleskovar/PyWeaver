@@ -18,4 +18,5 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: Microsoft :: Windows",
     ],
+	scripts=['bin/pyweaver.bat', 'bin/pyweaver-main.py']
 )
