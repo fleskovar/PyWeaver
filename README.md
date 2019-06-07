@@ -2,6 +2,8 @@
 PyWeaver is a visual code editor for Python that leverages web technologies. It is inspired by Jupyter Notebook and Simulink. The project is under development.
 Currently working with Python 2. Python 3 support comming soon.
 
+![pyweaver_example](https://user-images.githubusercontent.com/6884660/58805403-65e72780-85ea-11e9-9d7f-4eb8cb5aeb45.PNG)
+
 ## Motivation
 I spend most of my time analyzing data (mostly time series) of chemical process plants. I wanted a tool that optimizes the workflow of importing, cleaning and analyzing data by expliciting the relationship of the variables involved and defining the flow of information.
 I wanted the tool to have enough flexibility to display different type of plots and UI components and perform any kind of calculation.
