@@ -64,9 +64,11 @@
             </template>
 
              <template v-slot:label="{item}">
-               {{item.name}}
-               <v-btn v-if="!item.children" icon @click='addLibraryNode(item.lib_id)'><v-icon>add_circle_outline</v-icon></v-btn>
-               <v-btn v-if="item.id==0" icon @click='refreshLibrary'><v-icon>refresh</v-icon></v-btn> <!--Adds a special refresh icon for the root folder to trigger library refresh on the server--> 
+              <div @click='addLibraryNode(item.lib_id)'>
+                {{item.name}}
+                <v-icon v-if="!item.children">add_circle_outline</v-icon>
+                <v-btn v-if="item.id==0" icon @click='refreshLibrary'><v-icon>refresh</v-icon></v-btn> <!--Adds a special refresh icon for the root folder to trigger library refresh on the server--> 
+              </div>
             </template>
 
           </v-treeview>
@@ -87,21 +89,28 @@
 
         <v-list-tile>
           <v-list-tile-action>
-            <v-btn icon class="text-lg-right">              
+            <v-btn icon class="text-lg-right" @click='showOptionsDialog=true'>              
               <v-icon>settings</v-icon>
             </v-btn>
           </v-list-tile-action>   
           <v-list-tile-content>SETTINGS</v-list-tile-content>     
         </v-list-tile>
       </v-list>
+
+      <OptionsDialog v-model='showOptionsDialog' v-on:close='showOptionsDialog=false'/>
+
     </v-navigation-drawer>
 </template>
 
 
 <script>
 import Fuse from 'fuse.js';
+import OptionsDialog from './OptionsDialog.vue'
 
 export default {
+  components:{
+    OptionsDialog
+  },
   mounted(){
 
   },
@@ -116,7 +125,8 @@ export default {
               maxPatternLength: 32,
               minMatchCharLength: 1,
               id: "id"
-            }
+            },
+            showOptionsDialog: false
         }
     },
     methods:{

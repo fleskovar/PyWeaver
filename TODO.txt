@@ -1,45 +1,52 @@
-Comming up next:    
+Comming up next:
 
     Node deletion and clean-up
+    Fix autorun bug (add safeguarding) 
 
-    Node Library:
+    Node code change safeguarding
+    Node bug display (try/except in server and reflect in client)
+
+     Node Library:
         Library tooltip/hover help with doc.txt
         Library metadata
         Tree fuzzy keyword search and searchbox chips
 
     Make CLI/Build
 
-    Develop new nodes:        
-        Date/time picker
-
-    UI Improvements:
-        Edge color
-        Edge routing np
-
-    Options:
-        Auto sync
-        Auto run
-        Shortcuts
-
-    Fix autorun bug (add safeguarding)
-
 Backlog:
+
+    Fix dark mode refresh pf Cells
+    Save preferences to file and make server send them on login
+
+    Input/Output order bug?
+
+    Nodes:
+        Optional input (handling of named inputs)
+        Coloring optional input
+        Optional connection/ui input
 
     Node metadata:
         Connector type & validation
 
     Node Library:        
         Package management with zips
-        Manage library installs        
-
-    Node code change safeguarding
-    Node bug display (try/except in server and reflect in client)
+        Manage library installs
 
     UI Improvements:        
         Layers (show)
-        Grouping    
+        Grouping
+        Scrollbars and panning
+        Background grid
+        Light/Dark Skin
+        Node Search/Find on flowsheet => Focus
 
     Testing
+
+    Options:        
+        Shortcuts
+
+    Develop new nodes:        
+        Date/time picker
 
     UI Improvements:
 

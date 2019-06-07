@@ -12,7 +12,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   state: {
     canvas: {},
-    selected_node: {},
+    selected_node: {}, //Cell/Node we double-clicked and is being edited
     open_code_editor: false,
     code: '',
     display_code: '',
@@ -22,12 +22,24 @@ export default new Vuex.Store({
     node_displays: {},
     results: {},
     auto_exec: false,
+    sync_model: true,
     run_id: 0,
     libraryTree: [],
     save_dialog: false,
     session_id: null,
+    code_error_list: [],
+    dark_mode: true,    
   },
   mutations: {
+    set_dark_mode: function(state, val){
+      state.dark_mode = val;
+    },
+    set_auto_exec: function(state, val){
+      state.auto_exec = val;
+    },
+    set_sync_model: function(state, val){
+      state.sync_model = val;
+    },
     tree_change: function(state, libraryTree){
       state.libraryTree = libraryTree;
     },
@@ -71,11 +83,13 @@ export default new Vuex.Store({
     },
     push_server_model: function(context){
       
-      var model_data = {};
-      model_data.session_id = context.state.session_id;
-      model_data.xml = context.state.canvas.GetModelXML();     
+      if(context.state.sync_model){
+        var model_data = {};
+        model_data.session_id = context.state.session_id;
+        model_data.xml = context.state.canvas.GetModelXML();    
 
-      socket.emit('sync_model', model_data);
+        socket.emit('sync_model', model_data);
+      }
     },
     open_code_editor: function(context, node){      
       context.commit('set_selected_node', node);
@@ -284,6 +298,20 @@ export default new Vuex.Store({
     delete_node(context, id){
       //TODO: Delete display component from context.state.node_displays
       socket.emit('delete_node', id);
+    },
+    change_element_color(context, color){      
+      context.state.canvas.setCellColor(color);
+    },
+    change_element_stroke_size(context, size){
+      context.state.canvas.setCellStroke(size);
+    },
+    change_element_dashed(context, is_dashed){
+      context.state.canvas.setDashed(is_dashed);
+    },
+    change_dark_mode(context, val){
+      context.commit('set_dark_mode', val);
+      context.state.canvas.updateSyles();
     }
+
   },
 })

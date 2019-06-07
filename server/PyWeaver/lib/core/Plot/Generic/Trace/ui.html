@@ -1,0 +1,14 @@
+<div style='height: 150px; width: 300'>
+	Trace
+	<br>
+	<br>
+	Name: <input type='text' v-model='scope.trace_name' v-val:trace_name='"New Trace"'>
+	<br>
+	<br>
+	Type: <input list='trace_types' name='trace_types' v-model='scope.trace_type' v-val:trace_name='"scatter"'>
+	<datalist id="trace_types">
+		<option value="scatter">
+		<option value="bar">
+		<option value="line">
+	</datalist>
+</div>

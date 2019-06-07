@@ -1,0 +1,11 @@
+<div style='width: 400px; height: 500px'>
+	Histogram Plot
+	<br>
+	<br>
+	<input type="checkbox" v-model='scope.custom_bins' v-val:custom_bins='false'> Use custom bins<br>
+	<br>
+	Column Name: <input type='number' v-model='scope.bins' v-val:bins='10'>
+	<br>
+	<br>
+	<plot :chart='this.node.chart || {}'></plot>
+</div>

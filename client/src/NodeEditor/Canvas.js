@@ -47,6 +47,11 @@ export default class Canvas{
         };
 
         // Creates the graph inside the given container
+        // Enables guides
+        mxGraphHandler.prototype.guidesEnabled = true;
+         // Enables snapping waypoints to terminals
+        mxEdgeHandler.prototype.snapToTerminals = true;
+        
         var graph = new mxGraph(this.container);  
         this.graph = graph;    
         graph.store = this.store;        
@@ -54,7 +59,8 @@ export default class Canvas{
         graph.setAllowDanglingEdges(false);
         graph.setConnectable(true);
         graph.setMultigraph(true);
-        graph.isCellEditable  = function(cell){return false};
+        graph.isCellEditable  = function(cell){return false};       
+        
         graph.htmlLabels = true;
         graph.autoSizeCells = true;
         //graph.autoSizeCellsOnAdd = true;
@@ -63,25 +69,8 @@ export default class Canvas{
         graph.setPanning(true);    
         graph.scrollTileSize = new mxRectangle(0, 0, 400, 400);
 
-        // Sets default styles
-        var style = graph.getStylesheet().getDefaultVertexStyle();
-        style['fillColor'] = '#FFFFFF';
-        style['strokeColor'] = '#000000';
-        style['fontColor'] = '#000000';
-        style['fontStyle'] = '1';
-        
-        style = graph.getStylesheet().getDefaultEdgeStyle();
-        style['strokeColor'] = '#000000';
-        style['fontColor'] = '#000000';
-        style['fontStyle'] = '0';
-        style['fontStyle'] = '0';
-        style['startSize'] = '8';
-        style['endSize'] = '8';
-        style[mxConstants.STYLE_ROUNDED] = true;
-        style[mxConstants.STYLE_EDGE] = mxEdgeStyle.EntityRelation;
-        style[mxConstants.STYLE_STROKEWIDTH] = '1';
-        style[mxConstants.STYLE_LABEL_BACKGROUNDCOLOR] = '#FFFFFF';
-        
+        // Sets default styles   
+        this.calcDefaultStyles();  
         
         var graphGetPreferredSizeForCell = graph.getPreferredSizeForCell;
         graph.getPreferredSizeForCell = function(cell)
@@ -184,7 +173,7 @@ export default class Canvas{
             this.store.dispatch('add_connection', data);
         });
 
-        //Adding double click event
+        //Adding double click event handler
         graph.addListener(mxEvent.DOUBLE_CLICK, (sender, evt) => {
             var cell = evt.getProperty('cell');            
             if (cell!=null){
@@ -425,5 +414,101 @@ export default class Canvas{
 
     updateCellSize(cell){        
         this.graph.cellSizeUpdated(cell, true);      
+    }
+
+    setCellColor(color){
+        console.log('cell color');
+        var cells = this.graph.selectionModel.cells;
+
+        for(var i = 0; i < cells.length; i++){
+            var cell = cells[i];
+            var style = cell.getStyle();
+
+            var newStyle=mxUtils.setStyle(style,mxConstants.STYLE_STROKECOLOR, color);
+            this.graph.setCellStyle(newStyle,[cell]);
+        }
+    }
+
+    setCellStroke(size){
+        console.log('cell stroke');
+        var cells = this.graph.selectionModel.cells;
+        
+        for(var i = 0; i < cells.length; i++){
+            var cell = cells[i];
+            var style = cell.getStyle();
+
+            var newStyle=mxUtils.setStyle(style,mxConstants.STYLE_STROKEWIDTH, size);
+            this.graph.setCellStyle(newStyle,[cell]);
+        }  
+
+    }
+
+    setDashed(is_dashed){
+
+        var val = 0
+        var cells = this.graph.selectionModel.cells;
+        
+        for(var i = 0; i < cells.length; i++){
+            var cell = cells[i];
+            var style = cell.getStyle();
+
+            if(is_dashed)
+                val = 1;
+            
+            var newStyle=mxUtils.setStyle(style,mxConstants.STYLE_DASHED, val);
+            this.graph.setCellStyle(newStyle,[cell]);
+        }
+    }
+
+    calcDefaultStyles(){
+
+        let graph = this.graph;
+        //Dark mode
+        if(this.store.state.dark_mode){
+            var style = graph.getStylesheet().getDefaultVertexStyle();
+            style['fillColor'] = '#212121';
+            style['strokeColor'] = '#FFFFFF';
+            style['fontColor'] = '#FFFFFF';
+            style['fontStyle'] = '1';
+
+            style = graph.getStylesheet().getDefaultEdgeStyle();
+            style['strokeColor'] = '#FFFFFF';
+            style['fontColor'] = '#FFFFFF';
+            style['fontStyle'] = '0';
+            style['fontStyle'] = '0';
+            style['startSize'] = '8';
+            style['endSize'] = '8';
+            style[mxConstants.STYLE_ROUNDED] = true;
+            style[mxConstants.STYLE_EDGE] = mxEdgeStyle.OrthConnector;
+            style[mxConstants.STYLE_STROKEWIDTH] = '1';
+            style[mxConstants.STYLE_LABEL_BACKGROUNDCOLOR] = '#212121';
+        }
+        else{
+            //Light mode
+            
+            var style = graph.getStylesheet().getDefaultVertexStyle();
+            style['fillColor'] = '#FFFFFF';
+            style['strokeColor'] = '#000000';
+            style['fontColor'] = '#000000';
+            style['fontStyle'] = '1';
+            
+            style = graph.getStylesheet().getDefaultEdgeStyle();
+            style['strokeColor'] = '#000000';
+            style['fontColor'] = '#000000';
+            style['fontStyle'] = '0';
+            style['fontStyle'] = '0';
+            style['startSize'] = '8';
+            style['endSize'] = '8';
+            style[mxConstants.STYLE_ROUNDED] = true;
+            style[mxConstants.STYLE_EDGE] = mxEdgeStyle.EntityRelation;
+            style[mxConstants.STYLE_STROKEWIDTH] = '1';
+            style[mxConstants.STYLE_LABEL_BACKGROUNDCOLOR] = '#FFFFFF';            
+        }
+    }
+
+    updateSyles(){
+        this.calcDefaultStyles();
+        console.log('changed to dark mode');
+
     }
 }

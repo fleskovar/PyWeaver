@@ -9,12 +9,11 @@ import Plotly from 'plotly.js-dist';
 export default {
     props: ["chart"],
     mounted() {
-        Plotly.plot(this.$refs[this.chart.uuid], this.chart.traces, this.chart.layout);
+        Plotly.plot(this.$refs[this.chart.uuid], this.chart.traces, this.chart.layout, {displayModeBar: false});
     },
     watch: {
         chart: {
         handler: function() {
-            console.log('changed');
             Plotly.newPlot(
             this.$refs[this.chart.uuid],
             this.chart.traces,

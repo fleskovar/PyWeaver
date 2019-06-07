@@ -101,9 +101,16 @@ export default{
 	},
 	methods:{
 		updateEditors: function(){
-			this.$refs.code_editor.codemirror.refresh();
-			this.$refs.ui_editor.codemirror.refresh();
-			this.$refs.script_editor.codemirror.refresh();
+			if(this.code_dialog){
+				if(this.$refs.code_editor.codemirror)
+					this.$refs.code_editor.codemirror.refresh();
+
+				if(this.$refs.ui_editor.codemirror)
+					this.$refs.ui_editor.codemirror.refresh();
+				
+				if(this.$refs.script_editor.codemirror)
+					this.$refs.script_editor.codemirror.refresh();
+			}
     },
 		closeDialog: function(){
 			this.code_dialog = false;

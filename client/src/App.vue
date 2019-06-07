@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-toolbar app dark fixed clipped-left>
+    <v-toolbar app dark fixed clipped-left flat>
       <v-toolbar-title class="headline text-uppercase">
         <span>Py</span>
         <span class="font-weight-light">Weaver</span>
@@ -28,16 +28,65 @@
     <SideBar/>
 
     <v-content style='overflow: hidden'>
+        <v-toolbar dark class="grey darken-2" dense>          
+                      
+          Ouline        
+          <v-item-group>
+              <v-btn flat icon @click='SetDashed(false)'>
+                <v-icon>remove</v-icon>
+              </v-btn>
+              <v-btn flat icon @click='SetDashed(true)'>
+                <v-icon>more_horiz</v-icon>
+              </v-btn>              
+          </v-item-group>
+
+          <v-overflow-btn
+            :items="['1', '2', '3', '5', '8']"            
+            label="Stroke size"
+            hide-details
+            overflow
+            style='width: 50px'
+            @change='SetStrokeSize()'
+            v-model='stroke_size'
+          ></v-overflow-btn>
+          
+
+          <v-divider vertical/>
+                
+          <v-item-group>
+              <v-btn flat v-for='c in colors' :key='c.name' :color='c.color' icon @click='SetColor(c.code)'>
+                <v-icon>format_paint</v-icon>
+              </v-btn>                      
+          </v-item-group>
+          
+
+          <v-divider vertical/>
+          <v-text-field small placeholder='Node Library Search...' class='caption' prepend-inner-icon="library_books"/>
+ 
+        </v-toolbar>
+
+        <!-- Using grid
         <v-card flat height='100%'>
-          <div id='canvas'/>       
+          <div class="grey darken-4" id='canvas'
+            style="background:url('grid.gif');"
+          />       
         </v-card>
+        -->
+        <v-card flat height='100%'>
+          <div :class="canvas_color" id='canvas'/>       
+        </v-card>
+        
+        <v-card style='height: 100px' color='red'>
+          <div>ASDASD</div>
+        </v-card>
+        
     </v-content>
 
     <CodeEditor/>
-    <LibrarySaveDialog/>
+    <LibrarySaveDialog/>    
 
     <v-footer class="pa-3" app dark>
-      <v-btn color="gray" dark v-on:click="resetServer">Reset</v-btn>
+      <v-btn color="grey darken-4" dark v-on:click="resetServer">Reset</v-btn>
       <v-spacer></v-spacer>
         <div>&copy; {{ new Date().getFullYear() }}</div>
     </v-footer>
@@ -57,11 +106,22 @@ export default {
   components: {
     CodeEditor,
     SideBar,
-    LibrarySaveDialog,     
+    LibrarySaveDialog,
   },
   data () {
     return {           
-      connected: false,      
+      connected: false,   
+      toggle_exclusive: 2,   
+      colors: [
+        {code:'#F44336', color:'red'},
+        {code:'#2196F3', color:'blue'},
+        {code:'#4CAF50', color:'green'},
+        {code:'#FFFFFF', color:'white'},
+        {code:'#FFEB3B', color:'yellow'},
+        {code:'#E91E63', color:'pink'}
+      ],
+      stroke_size: '',
+      showOptionsDialog: false
     }
   },  
   mounted(){   
@@ -74,7 +134,16 @@ export default {
     window.setInterval(() => {this.PushModel();},30000);
   },
 
-  methods:{    
+  methods:{  
+    SetDashed(val){
+      this.$store.dispatch('change_element_dashed', val);
+    },
+    SetStrokeSize(){
+      this.$store.dispatch('change_element_stroke_size', this.stroke_size);
+    },
+    SetColor(color){
+      this.$store.dispatch('change_element_color', color);
+    },  
     PushModel: function(){
       this.$store.dispatch('push_server_model');
     },    
@@ -130,6 +199,13 @@ export default {
     document_name:{
       get: function(){
         return this.$store.state.document_name;
+      }
+    },
+    canvas_color:{
+      get(){
+        if(this.$store.state.dark_mode)
+          return 'grey darken-4';
+        else return 'white';
       }
     }
   },  
