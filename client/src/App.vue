@@ -40,6 +40,28 @@
               </v-btn>              
           </v-item-group>
 
+          <v-menu offset-y>
+            <template v-slot:activator="{ on }">
+              <v-btn
+                dark
+                v-on="on"
+                icon
+              >
+                <v-icon>format_color_fill</v-icon>
+              </v-btn>
+            </template>
+
+            <v-list dark>
+              <v-list-tile
+                v-for="(c, index) in colors"
+                :key="index"
+                @click="SetColor(c.code)"
+              >
+                <v-list-tile-title><v-icon :color='c.code'>format_color_fill</v-icon></v-list-tile-title>
+              </v-list-tile>
+            </v-list>
+          </v-menu>
+
           <v-overflow-btn
             :items="['1', '2', '3', '5', '8']"            
             label="Stroke size"
@@ -49,16 +71,6 @@
             @change='SetStrokeSize()'
             v-model='stroke_size'
           ></v-overflow-btn>
-          
-
-          <v-divider vertical/>
-                
-          <v-item-group>
-              <v-btn flat v-for='c in colors' :key='c.name' :color='c.color' icon @click='SetColor(c.code)'>
-                <v-icon>format_paint</v-icon>
-              </v-btn>                      
-          </v-item-group>
-          
 
           <v-divider vertical/>
           <v-text-field small placeholder='Node Library Search...' class='caption' prepend-inner-icon="library_books"/>
