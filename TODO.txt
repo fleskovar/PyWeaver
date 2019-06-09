@@ -1,8 +1,5 @@
 Comming up next:
-
-    Node deletion and clean-up
-    Fix autorun bug (add safeguarding) 
-
+    
     Node code change safeguarding
     Node bug display (try/except in server and reflect in client)
 
@@ -17,8 +14,6 @@ Backlog:
 
     Fix dark mode refresh pf Cells
     Save preferences to file and make server send them on login
-
-    Input/Output order bug?
 
     Nodes:
         Optional input (handling of named inputs)
@@ -41,9 +36,6 @@ Backlog:
         Node Search/Find on flowsheet => Focus
 
     Testing
-
-    Options:        
-        Shortcuts
 
     Develop new nodes:        
         Date/time picker

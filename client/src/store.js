@@ -296,8 +296,13 @@ export default new Vuex.Store({
       }
     },
     delete_node(context, id){
-      //TODO: Delete display component from context.state.node_displays
+      //TODO: make sure this does not lead to a memory leak
       socket.emit('delete_node', id);
+
+      //Locally remove display and code node
+      context.state.node_displays[id].$destroy();
+      context.state.node_displays.delete(id);
+      context.state.code_nodes.delete(id);
     },
     change_element_color(context, color){      
       context.state.canvas.setCellColor(color);
