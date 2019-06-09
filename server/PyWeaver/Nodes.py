@@ -1,6 +1,7 @@
 from collections import OrderedDict
 from code_parsing import parse_function
 import traceback
+from copy import deepcopy
 
 
 class Node(object):
@@ -163,6 +164,7 @@ class Node(object):
             #self.input_results[i] = val # Save the results of the inputs to pass them to the UI
             # TODO: find a better way to handle this: it causes data duplication
             input_vals.append(val)
+            input_vals = deepcopy(input_vals) # This should make the original inputs immutable
         return input_vals
 
     def connect_output(self, var, target_node, target_var):
