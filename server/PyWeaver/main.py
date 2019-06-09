@@ -4,7 +4,7 @@ import sys
 from copy import deepcopy
 
 from Graph import Graph
-from results_encoder import encode
+from results_encoder import CustomJSONEncoder
 from LibraryManager import LibraryManager
 
 from model_manager import create_node, load_xml
@@ -12,6 +12,7 @@ from model_manager import create_node, load_xml
 
 # Flask server app
 app = Flask(__name__, static_url_path='')
+app.json_encoder = CustomJSONEncoder
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app)
 
@@ -131,10 +132,8 @@ def execute(scope_data):
         rr = dict()
         for v in graph_root.nodes[n].results:
             # Transforms result into JSON safe data
-            rr[v] = encode(graph_root.nodes[n].results[v])
-
+            rr[v] = graph_root.nodes[n].results[v]
         r[n] = rr
-
     print 'Finished'
     return r
 

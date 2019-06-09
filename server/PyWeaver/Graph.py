@@ -93,7 +93,10 @@ class Graph(object):
                 exe_node.set_dirty()
 
             if exe_node.dirty:
-                exe_node.execute(node_scope)
+                sucess_run = exe_node.execute(node_scope)
+                
+                if sucess_run == False:
+                    break
 
     def build_adjacency_dict(self):
         # TODO: build adjacency dict from edges list

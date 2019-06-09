@@ -21,7 +21,7 @@ export default new Vuex.Store({
     document_name: 'Untitled',
     node_displays: {},
     results: {},
-    auto_exec: false,
+    auto_exec: true,
     sync_model: true,
     run_id: 0,
     libraryTree: [],

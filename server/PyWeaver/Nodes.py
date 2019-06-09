@@ -1,5 +1,6 @@
 from collections import OrderedDict
 from code_parsing import parse_function
+import traceback
 
 
 class Node(object):
@@ -28,80 +29,111 @@ class Node(object):
         success, func_name, input_vars, input_vars_data, output_vars = parse_function(code)
         self.func_name = func_name
         self.func_dict = {}
-        exec code in self.func_dict
-        self.func = self.func_dict[func_name]
-        self.func.__globals__['display'] = {}
-
-        if len(input_vars) < len(self.input_vars):
-            # I could also check that if the smaller new input has some variables in common
-            # with the previous input, then I should only delete the extra variables
-            self.input_vars_data = OrderedDict()
-        elif input_vars[:len(self.input_vars)] != self.input_vars:
-            self.input_vars_data = OrderedDict()
-
-        # if(self.input_vars != input_vars):
-        #    self.input_vars_data = dict()
-
-        if len(output_vars) < len(self.output_vars):
-            # I could also check that if the smaller new input has some variables in common
-            # with the previous input, then I should only delete the extra variables
-            self.output_vars_data = OrderedDict()
-        elif output_vars[:len(self.output_vars)] != self.output_vars:
-            self.output_vars_data = OrderedDict()
-
-        # if(self.output_vars != output_vars):
-        #    self.output_vars_data = dict()
-
-        self.input_vars = input_vars
-
-        # TODO: check if I should delete this
-        # self.input_vars_data = input_vars_data
-
-        self.output_vars = output_vars
         
-        self.results = {}
-        # self.input_results = {}
+        compile_success = False
+        try:
+            exec code in self.func_dict
+            compile_success = True
+        except Exception as e:
+            print(e)
+        
+        if compile_success:
+            self.func = self.func_dict[func_name]
+            self.func.__globals__['display'] = {}
 
-        self.results = OrderedDict()
+            if len(input_vars) < len(self.input_vars):
+                # I could also check that if the smaller new input has some variables in common
+                # with the previous input, then I should only delete the extra variables
+                self.input_vars_data = OrderedDict()
+            elif input_vars[:len(self.input_vars)] != self.input_vars:
+                self.input_vars_data = OrderedDict()
 
-        for o in output_vars:
-            self.results[o] = None
+            # if(self.input_vars != input_vars):
+            #    self.input_vars_data = dict()
 
-        # for o in input_vars:
-        #    self.input_results[o] = None
+            if len(output_vars) < len(self.output_vars):
+                # I could also check that if the smaller new input has some variables in common
+                # with the previous input, then I should only delete the extra variables
+                self.output_vars_data = OrderedDict()
+            elif output_vars[:len(self.output_vars)] != self.output_vars:
+                self.output_vars_data = OrderedDict()
+
+            # if(self.output_vars != output_vars):
+            #    self.output_vars_data = dict()
+
+            self.input_vars = input_vars
+
+            # TODO: check if I should delete this
+            # self.input_vars_data = input_vars_data
+
+            self.output_vars = output_vars
+            
+            self.results = {}
+            # self.input_results = {}
+
+            self.results = OrderedDict()
+
+            for o in output_vars:
+                self.results[o] = None
+
+            # for o in input_vars:
+            #    self.input_results[o] = None
 
     def has_downstream(self):
         val = len(self.output_vars_data.keys()) > 0
         return val
 
     def execute(self, scope_data):
+        sucess_run = True # Determines if the code was sucessfully executed
         #Inject display's scope
         self.func.__globals__['display'] = scope_data
         self.scope = scope_data
         # TODO: Check if function has outputs
         if len(self.input_vars) == 0:
             if len(self.output_vars) != 0:
-                output_vals = self.func()
+                try:
+                    output_vals = self.func()
+                except:
+                    #TODO: Raise error to client
+                    sucess_run = False
             else:
-                self.func()
+                try:
+                    self.func()
+                except:
+                    #TODO: Raise error to client
+                    sucess_run = False
         else:
             # Fetch input values from parent's node scope
             inputs = self.get_inputs()
 
             # TODO: check that if len(inputs) is smaller than required inputs (this means that we don't have all the connections)
             # then don't execute
-            if len(self.output_vars) != 0:
-                output_vals = self.func(*inputs)
-            else:
-                self.func(*inputs)
 
-        if len(self.output_vars) != 0:
-            if isinstance(output_vals, tuple):
-                for i, o in enumerate(self.output_vars):
-                    self.results[o] = output_vals[i]
+            if len(inputs) == len(self.input_vars):
+                if len(self.output_vars) != 0:
+                    try:
+                        output_vals = self.func(*inputs)
+                    except:
+                        #TODO: Raise error to client
+                        sucess_run = False
+                else:
+                    self.func(*inputs)
             else:
-                self.results[self.output_vars[0]] = output_vals
-        self.dirty = False
+                # Cannot exec because we dont have enough inputs
+                #TODO: Raise error to client
+                sucess_run = False
+                output_vals = None 
+
+        if sucess_run:
+            if len(self.output_vars) != 0:
+                if isinstance(output_vals, tuple):
+                    for i, o in enumerate(self.output_vars):
+                        self.results[o] = output_vals[i]
+                else:
+                    self.results[self.output_vars[0]] = output_vals
+            self.dirty = False
+
+        return sucess_run
 
     def get_inputs(self):
         # TODO: Find a way to add/inject parameters
