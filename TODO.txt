@@ -1,12 +1,14 @@
 Comming up next:
     
     Node code change safeguarding
+    
     Node bug display (try/except in server and reflect in client)
 
      Node Library:
         Library tooltip/hover help with doc.txt
         Library metadata
         Tree fuzzy keyword search and searchbox chips
+        Overwrite calcs when selecting them
 
     Make CLI/Build
 

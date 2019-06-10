@@ -28,7 +28,8 @@ export default new Vuex.Store({
     save_dialog: false,
     session_id: null,
     code_error_list: [],
-    dark_mode: true,    
+    dark_mode: true,  
+    code_bugs: []  
   },
   mutations: {
     set_dark_mode: function(state, val){

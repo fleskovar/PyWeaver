@@ -18,6 +18,7 @@ class Node(object):
         self.func_name = None
 
         self.input_vars = []
+        self.input_vars_named = OrderedDict()
         self.input_vars_data = OrderedDict()
         self.output_vars = []
 
@@ -27,7 +28,7 @@ class Node(object):
     def parse_code(self, code):
         self.set_dirty()
         self.code = code
-        success, func_name, input_vars, input_vars_data, output_vars = parse_function(code)
+        success, func_name, input_vars, input_vars_named, input_vars_data, output_vars = parse_function(code)
         self.func_name = func_name
         self.func_dict = {}
         
@@ -63,6 +64,7 @@ class Node(object):
             #    self.output_vars_data = dict()
 
             self.input_vars = input_vars
+            self.input_vars_named = input_vars_named
 
             # TODO: check if I should delete this
             # self.input_vars_data = input_vars_data
@@ -105,15 +107,13 @@ class Node(object):
                     sucess_run = False
         else:
             # Fetch input values from parent's node scope
-            inputs = self.get_inputs()
+            inputs, named_inputs = self.get_inputs()
 
-            # TODO: check that if len(inputs) is smaller than required inputs (this means that we don't have all the connections)
-            # then don't execute
-
-            if len(inputs) == len(self.input_vars):
+            if len(inputs) == len([i for i in self.input_vars_named if self.input_vars_named[i] is False]):
+                # Checks if the total ammount unnamed inputs given to the func are enough to run the calculation
                 if len(self.output_vars) != 0:
                     try:
-                        output_vals = self.func(*inputs)
+                        output_vals = self.func(*inputs, **named_inputs)
                     except:
                         #TODO: Raise error to client
                         sucess_run = False
@@ -137,35 +137,48 @@ class Node(object):
         return sucess_run
 
     def get_inputs(self):
-        # TODO: Find a way to add/inject parameters
-        
+                
         # TODO: Check order of inputs. Somehow, the test version is not working.
         # Inputs are being fed in reverse order
         input_vals = []
-        for i in self.input_vars_data:
-            data_list = self.input_vars_data[i]
+        named_input_vals = dict()
+
+        for i in self.input_vars:
+            has_default = self.input_vars_named[i]  # Flag that indicates if the var has a default value
+            data_list = self.input_vars_data[i] if i in self.input_vars_data else []
             val = None
-            if len(data_list) == 1:
-                # If only one connection is made to this input, pass it as a value
-                data = data_list[0]
-                node_id = data[0]
-                var_name = data[1]
-                val = self.parent_node.get_var_value(node_id, var_name)
-                
-            else:
-                # If multiple connections are made to the variable, vectorize it
-                val = []
-                for data in data_list:
+
+            if len(data_list) > 0:
+
+                # Fetch input only if connections available
+
+                if len(data_list) == 1:
+                    # If only one connection is made to this input, pass it as a value
+                    data = data_list[0]
                     node_id = data[0]
                     var_name = data[1]
-                    result = self.parent_node.get_var_value(node_id, var_name)
-                    val.append(result)
+                    val = self.parent_node.get_var_value(node_id, var_name)                
+                elif len(data_list) > 1:
+                    # If multiple connections are made to the variable, vectorize it
+                    val = []
+                    for data in data_list:
+                        node_id = data[0]
+                        var_name = data[1]
+                        result = self.parent_node.get_var_value(node_id, var_name)
+                        val.append(result)
 
-            #self.input_results[i] = val # Save the results of the inputs to pass them to the UI
-            # TODO: find a better way to handle this: it causes data duplication
-            input_vals.append(val)
-            input_vals = deepcopy(input_vals) # This should make the original inputs immutable
-        return input_vals
+                #self.input_results[i] = val # Save the results of the inputs to pass them to the UI
+
+                # TODO: find a better way to handle this: it causes data duplication
+                if has_default:
+                    named_input_vals[i]=val
+                else:
+                    input_vals.append(val)
+
+        input_vals = deepcopy(input_vals) # This should make the original inputs immutable
+        named_input_vals = deepcopy(named_input_vals)
+
+        return input_vals, named_input_vals
 
     def connect_output(self, var, target_node, target_var):
         self.parent_node.update_adjacency(self, target_node)
