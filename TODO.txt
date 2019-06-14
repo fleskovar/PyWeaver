@@ -7,6 +7,10 @@ Comming up next:
         Enter to below cell
         arrow keys navigation 
         Delete columns
+        -Vector input
+        -Pandas support
+        Auto expand columns
+        Prevent column expand
 
     Key input fix:
         Fix key input capture
