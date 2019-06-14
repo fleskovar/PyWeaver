@@ -84,7 +84,7 @@
           />       
         </v-card>
         -->
-        <v-card flat height='100%'>
+        <v-card flat height='100%'>          
           <div :class="canvas_color" id='canvas'/>       
         </v-card>
         
@@ -118,7 +118,7 @@ export default {
   components: {
     CodeEditor,
     SideBar,
-    LibrarySaveDialog,
+    LibrarySaveDialog,    
   },
   data () {
     return {           
@@ -133,7 +133,7 @@ export default {
         {code:'#E91E63', color:'pink'}
       ],
       stroke_size: '',
-      showOptionsDialog: false
+      showOptionsDialog: false,
     }
   },  
   mounted(){   

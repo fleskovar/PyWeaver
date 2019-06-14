@@ -49,17 +49,16 @@ import 'codemirror/mode/python/python.js'
 import 'codemirror/theme/base16-dark.css'
 import 'codemirror/mode/htmlmixed/htmlmixed.js'
 import 'codemirror/mode/javascript/javascript.js'
-
 import { codemirror } from 'vue-codemirror'
 
-export default{
+export default {
 	components: {
 		codemirror,
 	},
 	mounted(){		
     window.setInterval(() => {this.updateEditors();},250);
 	},
-	data () {
+	data(){
 		return {
 			cmOptions: {
 				// codemirror options
@@ -129,12 +128,14 @@ export default{
 			this.closeDialog();
 		},
 		codeDialogShortcuts: function(e){
-			if (e.keyCode === 13 && e.shiftKey){
-				
-				this.saveCode();
-			}else if(e.keyCode === 27){
-				
-				this.closeDialog();
+			if(this.code_dialog){
+				if (e.keyCode === 13 && e.shiftKey){
+					
+					this.saveCode();
+				}else if(e.keyCode === 27){
+					
+					this.closeDialog();
+				}
 			}
 		},
 	},

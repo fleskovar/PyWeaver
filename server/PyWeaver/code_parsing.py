@@ -47,9 +47,9 @@ def extract_inputs(function_statement):
         input_vars.append(var.id)
         
         if i+1 < named_offset:
-            input_vars_named[var.id] = False
-        else:
             input_vars_named[var.id] = True
+        else:
+            input_vars_named[var.id] = False
 
     return input_vars, input_vars_named
 

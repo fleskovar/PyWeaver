@@ -175,8 +175,9 @@ export default class Canvas{
 
         //Adding double click event handler
         graph.addListener(mxEvent.DOUBLE_CLICK, (sender, evt) => {
-            var cell = evt.getProperty('cell');            
-            if (cell!=null){
+            var cell = evt.getProperty('cell'); 
+            var event = evt.getProperty('event');           
+            if (cell!=null && event.target.localName == 'rect'){
                 if (cell.isNode){
                     let code_node = this.store.state.code_nodes[cell.id];
                     this.store.dispatch('open_code_editor', code_node);
@@ -277,7 +278,7 @@ export default class Canvas{
 
             var v1 = this.graph.insertVertex(parent, id, '', code_node.x, code_node.y, code_node.width, code_node.height, 'verticalAlign=middle'); 
             
-            v1.value = "<div id='node_"+v1.id+"'></div>"; //TODO: Find a better way to initialize the code in the node
+            v1.value = "<div style='border: 1px solid;' id='node_"+v1.id+"' class='node_display'></div>"; //TODO: Find a better way to initialize the code in the node
             //TODO: Add default action code (probably should do ="")
             v1.display_act_code = '';
 

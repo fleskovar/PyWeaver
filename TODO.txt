@@ -1,6 +1,18 @@
 Comming up next:
     
-    Node code change safeguarding
+    Node code change safeguarding:
+        Check for ast.Name instance when doing output extraction
+
+    Table Input:
+        Reworking
+        Copy/Paste on td
+        Multi td selection
+        Delete rows
+        Delete columns
+        Add columns / column name
+
+    Key input fix:
+        Fix key input capture
     
     Node bug display (try/except in server and reflect in client)
 

@@ -1,132 +1,224 @@
 <template>
-    <table>
-        <thead>
-        <tr>
-            <th v-for="(key, index) in columns" @click="sortBy(key)" :class="{ active: sortKey == key }" :key='index'>
-            {{ key | capitalize }}
-            <span class="arrow" :class="sortOrders[key] > 0 ? 'asc' : 'dsc'">
+    <table :key='table_key' class='pyw-table'>
+    <thead>
+
+      <tr>
+        <th></th>
+        <th v-for="(key, index) in columns" :key='index' class='pyw-table-header'>
+          <button color='grey lighten-2' style='min-width: 0; width: 25px; height: 25px; min-height: 0;'>
+            <v-icon style='font-size: 10px;'>
+              close
+            </v-icon>
+          </button>
+        </th>
+
+        <th class='pyw-table-header'>
+          <button color='grey lighten-2' style='min-width: 0; width: 25px; height: 25px; min-height: 0;' @click='addColumn()'>
+            <v-icon style='font-size: 10px;'>
+              add
+            </v-icon>
+          </button>
+        </th>
+      </tr>
+
+      <tr>
+        <th></th>
+        <th v-for="(key, index) in columns" :key='index' class='pyw-table-header'>          
+          Type: <select v-model='column_types[index]'>
+            <option value="Number" selected="selected">Number</option>
+            <option value="Text">Text</option>
+            <option value="Date">Date</option>
+          </select>
+        </th>
+      </tr>
+
+      <tr>
+        <th style='user-select: none' class='table-header'></th>        
+        <Cell v-for="(key, index) in columns"
+          :key='index'
+          v-bind:value='columns[index]'
+          v-on:input='(val) => columnChanged(val, index)'          
+          :cell_class='"pyw-table-header"'                        
+          ></Cell>
+          <th class='pyw-table-header'></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="(row, i) in value" :key='"row_"+i'> 
+          
+          <td style='user-select: none' class='pyw-table-header'>
+            <span v-if='i < value.length-1'>
+              <v-btn icon style='min-width: 0; width: 25px; height: 25px; min-height: 0;' color='grey lighten-2'>
+                <v-icon style='font-size: 10px;'>close</v-icon>
+              </v-btn>              
+              {{i}}
             </span>
-            </th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr v-for="(entry, r_index) in filteredData" :key='r_index'>
-            <td>{{r_index}}<td> <!--Row index-->
-            <td v-for="(key, c_index) in columns" :key='r_index+"_"+c_index'>
-                <cell-grid :entry="entry" :k="key"></cell-grid>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+          </td> 
+
+          <Cell v-for="(col_name, j) in columns"
+           :key='"cell_"+i+"_"+j'
+           v-bind:value='row[j]'
+           v-on:input='(val) => cellChanged(val, i, j)'
+           @focused='selected_cell={i: i, j: j}'
+           @paste="(val) =>{parseVal(val, i, j)}"
+           :cell_class='"pyw-table-td"'
+           ></Cell>
+      </tr>
+    </tbody>
+  </table>
 </template>
 
-<style scoped>
-    table {
-    border: 2px solid #42b983;
+<style>
+    .pyw-table {
     border-radius: 3px;
     background-color: #fff;
+    color: rgba(0, 0, 0, 0.66);
+    border-spacing: 0;
+    border-collapse: collapse;
     }
 
-    th {
-    background-color: #42b983;
-    color: rgba(255, 255, 255, 0.66);
+    .table-action-btn {
+      min-width: 0;
+      width: 25px;
+      height: 25px;
+      min-height: 0;
+    }
+
+    .pyw-table-header {
+    background-color: #93e0be;
+    border: 1px solid #000000;
+    color: rgba(0, 0, 0, 0.66);
     cursor: pointer;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
     }
-
-    td {
-    background-color: #f9f9f9;
+    
+    .pyw-table-td {
+      background-color: #f9f9f9;
+      min-width: 50px;
+      min-height: 25px;
+      padding: 5px 20px;
+      border: 1px solid #000000;
     }
-
-    th,
-    td {
-    min-width: 120px;
-    padding: 5px 20px;
-    }
-
-    th.active {
-    color: #fff;
-    }
-
-    th.active .arrow {
-    opacity: 1;
-    }
-
-    .arrow {
-    display: inline-block;
-    vertical-align: middle;
-    width: 0;
-    height: 0;
-    margin-left: 5px;
-    opacity: 0.66;
-    }
-
-    .arrow.asc {
-    border-left: 4px solid transparent;
-    border-right: 4px solid transparent;
-    border-bottom: 4px solid #fff;
-    }
-
-    .arrow.dsc {
-    border-left: 4px solid transparent;
-    border-right: 4px solid transparent;
-    border-top: 4px solid #fff;
-    }
+    
 </style>
 
 <script>
+import Cell from './Cell'
+
 export default {
-    props: {
-    data: Array,
-    columns: Array,
-    filterKey: String
+    props: ['value', 'columns', 'filterKey'],
+  components:{
+    Cell
   },
-  data: function() {
-    var sortOrders = {}
-    this.columns.forEach(function(key) {
-      sortOrders[key] = 1
-    })
-    return {
-      sortKey: '',
-      sortOrders: sortOrders
-    }
-  },
-  computed: {
-    filteredData: function() {
-      var sortKey = this.sortKey
-      var filterKey = this.filterKey && this.filterKey.toLowerCase()
-      var order = this.sortOrders[sortKey] || 1
-      var data = this.data
-      if (filterKey) {
-        data = data.filter(function(row) {
-          return Object.keys(row).some(function(key) {
-            return String(row[key]).toLowerCase().indexOf(filterKey) > -1
-          })
-        })
-      }
-      if (sortKey) {
-        data = data.slice().sort(function(a, b) {
-          a = a[sortKey]
-          b = b[sortKey]
-          return (a === b ? 0 : a > b ? 1 : -1) * order
-        })
-      }
-      return data
-    }
-  },
-  filters: {
-    capitalize: function(str) {
-      return str.charAt(0).toUpperCase() + str.slice(1)
+  data: function() {    
+    return {      
+      selected_cell: {i:0, j:0},
+      table_key: -1,
+      column_types: []
     }
   },
   methods: {
-    sortBy: function(key) {
-      this.sortKey = key
-      this.sortOrders[key] = this.sortOrders[key] * -1
-    }
+    cellChanged: function(val, i, j){
+      this.value[i][j] = val;
+      this.paddFinalRow();
+      this.redrawTable();
+    },
+    deleteRow: function(i){
+
+    },
+    deleteColumn: function(j){
+
+    },
+    addColumn: function(){
+      var col = 1;
+
+      while(this.columns.indexOf(col.toString())>0){
+        col += 1;
+      }
+
+      this.columns.push(col.toString());
+      this.redrawTable();
+    },    
+    columnChanged: function(val, i){
+      this.columns[i] = val;
+      this.redrawTable();
+    },
+    redrawTable: function(){
+      this.table_key = this.table_key * -1;
+    },    
+    parseVal: function(val, i, j){
+      console.log(val+"_"+i+"_"+j);
+      this.parseText(val, i, j);
+      this.redrawTable();
+    },
+    parseText(val, row, col){
+
+        var current_rows = this.value.length;
+        
+        var max_cols = this.columns;
+
+        var lines = val.split(/\r?\n/); //Regex split of new lines
+        var new_lines = lines.length;
+        
+        for(var i = 0; i < new_lines; i++){
+            
+            var row_index = i + row;
+            
+            if(row_index > current_rows-1){
+                //Checks if we need to an extra row
+                this.value.push([]); //Append empty row at the bottom
+                current_rows += 1;
+            }
+
+            let line = lines[i];
+            var col_values = line.split('\t'); //Split tabs
+            var new_cols = col_values.length;
+        
+            var current_cols= this.value[row_index].length;
+
+            for(var j = 0; j < new_cols; j++){                        
+                var col_index = col + j;
+
+                if(col_index <= current_cols-1)
+                    this.value[row_index][col_index] = col_values[j];       
+                else{
+                    this.value[row_index].push(col_values[j]);
+                    current_cols += 1;
+                }
+            }
+            
+            if(current_cols > max_cols)
+                max_cols = current_cols;
+        }
+
+        this.paddFinalRow();
+        //this.updateRedrawKey();               
+    },
+    checkForEmptyRow(row){
+
+      var return_val = true;
+
+      for(var i=0; i<row.length; i++){
+        if (row[i].trim().length > 0)
+          return_val = false;
+          break
+      }
+
+      return return_val
+
+    },
+
+    paddFinalRow(){
+      //Keep an empty row at the bottom 
+        var final_length = this.value.length;
+        if(this.value[final_length-1].length > 0 && !this.checkForEmptyRow(this.value[final_length-1]))
+        {
+            this.value.push([]);
+        }
+    },
   }
 }
 </script>

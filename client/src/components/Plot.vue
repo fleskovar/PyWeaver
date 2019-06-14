@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div :ref="chart.uuid"></div>   
+		<div ref="plot_div"></div>   
 	</div>
 </template>
 
@@ -9,7 +9,7 @@ import Plotly from 'plotly.js-dist';
 export default {
     props: ["chart"],
     mounted() {
-        Plotly.plot(this.$refs[this.chart.uuid], this.chart.traces, this.chart.layout, {displayModeBar: false});
+        Plotly.plot(this.$refs.plot_div, this.chart.traces, this.chart.layout, {displayModeBar: false});
     },
     watch: {
         chart: {

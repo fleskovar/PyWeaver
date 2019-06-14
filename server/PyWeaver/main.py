@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, json
 from flask_socketio import SocketIO, emit
 import sys
 from copy import deepcopy
@@ -14,7 +14,7 @@ from model_manager import create_node, load_xml
 app = Flask(__name__, static_url_path='')
 app.json_encoder = CustomJSONEncoder
 app.config['SECRET_KEY'] = 'secret!'
-socketio = SocketIO(app)
+socketio = SocketIO(app, json=json)
 
 @app.route('/')
 def root():

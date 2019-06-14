@@ -302,8 +302,8 @@ export default new Vuex.Store({
 
       //Locally remove display and code node
       context.state.node_displays[id].$destroy();
-      context.state.node_displays.delete(id);
-      context.state.code_nodes.delete(id);
+      delete context.state.node_displays[id];
+      delete context.state.code_nodes[id];
     },
     change_element_color(context, color){      
       context.state.canvas.setCellColor(color);
