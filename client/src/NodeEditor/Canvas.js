@@ -465,7 +465,7 @@ export default class Canvas{
 
         let graph = this.graph;
         //Dark mode
-        if(this.store.state.dark_mode){
+        if(this.store.state.config.dark_mode){
             var style = graph.getStylesheet().getDefaultVertexStyle();
             style['fillColor'] = '#212121';
             style['strokeColor'] = '#FFFFFF';

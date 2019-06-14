@@ -13,7 +13,7 @@
         </th>
 
         <th class='pyw-table-header'>
-          <button color='grey lighten-2' style='min-width: 0; width: 25px; height: 25px; min-height: 0;' @click='addColumn()'>
+          <button color='grey lighten-2' style='min-width: 0; width: 25px; height: 25px; min-height: 0;' @click='addColumn()' v-if='enable_column_expand'>
             <v-icon style='font-size: 10px;'>
               add
             </v-icon>
@@ -46,8 +46,8 @@
     <tbody>
       <tr v-for="(row, i) in value" :key='"row_"+i'> 
           
-          <td style='user-select: none' class='pyw-table-header'>
-            <span v-if='i < value.length-1'>
+          <td style='user-select: none' class='pyw-table-header' v-if='i < value.length-1'>
+            <span>
               <button style='min-width: 0; width: 25px; height: 25px; min-height: 0;' color='grey lighten-2' @click='deleteRow(i)'>
                 <v-icon style='font-size: 10px;'>close</v-icon>
               </button>              
@@ -55,12 +55,18 @@
             </span>
           </td> 
 
+          <td v-if='i == value.length-1' style='min-width: 40px; min-height: 30px' class='pyw-table-header'>
+            <span ></span>
+          </td>
+
           <Cell v-for="(col_name, j) in columns"
            :key='"cell_"+i+"_"+j'
+           :ref='"cell_"+i+"_"+j'
            v-bind:value='row[j]'
            v-on:input='(val) => cellChanged(val, i, j)'
            @focused='selected_cell={i: i, j: j}'
            @paste="(val) =>{parseVal(val, i, j)}"
+           @focus_lower="focusLower(i, j)"
            :cell_class='"pyw-table-td"'
            ></Cell>
       </tr>
@@ -109,7 +115,18 @@
 import Cell from './Cell'
 
 export default {
-    props: ['value', 'columns', 'filterKey'],
+  props:{
+    value:{
+      type: Array
+    },
+    columns:{
+      type: Array
+    },
+    enable_column_expand:{
+      type: Boolean,
+      default: true
+    }
+  }, 
   components:{
     Cell
   },
@@ -117,10 +134,14 @@ export default {
     return {      
       selected_cell: {i:0, j:0},
       table_key: -1,
-      column_types: []
+      column_types: [],
     }
   },
   methods: {
+    focusLower: function(i, j){
+      var ref_code = "cell_"+(i+1).toString()+"_"+j.toString();
+      this.$refs[ref_code][0].selectCell();
+    },
     cellChanged: function(val, i, j){
       this.value[i][j] = val;
       this.paddFinalRow();
@@ -151,7 +172,6 @@ export default {
       this.table_key = this.table_key * -1;
     },    
     parseVal: function(val, i, j){
-      console.log(val+"_"+i+"_"+j);
       this.parseText(val, i, j);
       this.redrawTable();
     },

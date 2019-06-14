@@ -1,15 +1,16 @@
 <template>
-    <td @dblclick="editing" tabindex="1" @click='captureFocus()' @blur='is_focused=false' :class='comp_cell_class' >
+    <td @dblclick="editing" tabindex="1" @click='captureFocus()' @blur='is_focused=false' :class='comp_cell_class' @keydown="processKeyDown($event)" ref="cell">
       <div style='width: minmax(100px, auto)'>
           <div v-show="edit == false">
             <label style='user-select: none'> {{ value }}</label>
           </div>
           <input ref="cellinput" type="text" v-show="edit == true" v-model="cell_input"
             @change="$emit('input', cell_input)"
-            @focus="focused" @blur="edit = false"
-            @keyup.enter="edit == false"
+            @focus="focused"
+            @blur="edit = false"
+            @keydown.enter="finishEdit($event)"
             @paste ='onPaste($event)'
-            >
+          >
       </div>
     </td>
 </template>
@@ -39,14 +40,37 @@ export default {
   },
   methods: {
     focused: function() {
-      console.log('focused')
+      //console.log('focused')
+    },
+    finishEdit(evt){
+      //evt.preventDefault();
+      this.edit = false;
+      this.$emit('input', this.cell_input);
+
+      this.$nextTick(function () {
+              this.$emit('focus_lower')
+        });      
+    },
+    processKeyDown: function(evt){
+      if(this.is_focused && !this.edit){
+        if ( (evt.keyCode >= 48 && evt.keyCode <= 57) || (evt.keyCode >= 65 && evt.keyCode <= 90) || (evt.keyCode >= 96 && evt.keyCode <= 105))
+        {
+          this.cell_input = '';
+          this.editing();
+        }
+      }
     },
     captureFocus: function(){
       if(!this.edit){
-        this.$el.focus();
+        this.$refs.cell.focus();
         this.is_focused = true;
       }
       this.$emit('focused');
+    },
+    selectCell(){
+      this.$nextTick(function () {
+              this.$refs.cell.click()
+        });      
     },
     editing: function() {
       this.edit = true;

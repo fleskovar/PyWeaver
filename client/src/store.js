@@ -21,31 +21,34 @@ export default new Vuex.Store({
     document_name: 'Untitled',
     node_displays: {},
     results: {},
-    auto_exec: true,
-    sync_model: true,
+    config:{
+      auto_exec: true,
+      sync_model: true,
+      dark_mode: true,
+    },    
     run_id: 0,
     libraryTree: [],
     save_dialog: false,
     session_id: null,
-    code_error_list: [],
+    code_error_dict: {},
     code_parse_error_list: [],
-    dark_mode: true,
+    
   },
   mutations: {
     add_code_error: function(state, e){
-      state.code_error_list.push(e);
+      state.code_error_dict[e.id] = {line: e.line, type: e.error_tyoe, error: e.error};
     },
     clear_code_error_list: function(state){
-      state.code_error_list = [];
+      state.code_error_dict = {};
     },
     set_dark_mode: function(state, val){
-      state.dark_mode = val;
+      state.config.dark_mode = val;
     },
     set_auto_exec: function(state, val){
-      state.auto_exec = val;
+      state.config.auto_exec = val;
     },
     set_sync_model: function(state, val){
-      state.sync_model = val;
+      state.config.sync_model = val;
     },
     tree_change: function(state, libraryTree){
       state.libraryTree = libraryTree;
@@ -54,6 +57,7 @@ export default new Vuex.Store({
       state.selected_node = node;
     },
     open_editor: function(state, val){
+      //bugHighlight
       state.open_code_editor = val;
     },
     set_dialog_open: function(state, val){
@@ -90,13 +94,16 @@ export default new Vuex.Store({
     },
     push_server_model: function(context){
       
-      if(context.state.sync_model){
-        var model_data = {};
-        model_data.session_id = context.state.session_id;
-        model_data.xml = context.state.canvas.GetModelXML();    
-
-        socket.emit('sync_model', model_data);
+      if(context.state.config.sync_model){
+        context.dispatch('sync_model_with_server');
       }
+    },
+    sync_model_with_server: function(context){
+      var model_data = {};
+      model_data.session_id = context.state.session_id;
+      model_data.xml = context.state.canvas.GetModelXML();    
+
+      socket.emit('sync_model', model_data);
     },
     open_code_editor: function(context, node){      
       context.commit('set_selected_node', node);
@@ -302,7 +309,7 @@ export default new Vuex.Store({
       EventBus.$emit('update_displays');
     },
     auto_execute(context){
-      if(context.state.auto_exec){
+      if(context.state.config.auto_exec){
         context.dispatch('execute_server');
       }
     },
@@ -327,6 +334,9 @@ export default new Vuex.Store({
     change_dark_mode(context, val){
       context.commit('set_dark_mode', val);
       context.state.canvas.updateSyles();
+    },
+    save_config_file(context){
+      socket.emit('save_config_file', context.config);
     }
 
   },

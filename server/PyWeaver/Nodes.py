@@ -3,6 +3,7 @@ from collections import OrderedDict
 from code_parsing import parse_function
 import traceback
 from copy import deepcopy
+import sys, os
 
 
 class Node(object):
@@ -101,14 +102,16 @@ class Node(object):
                 except Exception as e:
                     #TODO: Raise error to client
                     sucess_run = False
-                    self.send_error_to_server(sys.exc_info())
+                    exc_type, exc_obj, exc_tb = sys.exc_info()
+                    self.send_error_to_server(exc_type, exc_obj, exc_tb)
             else:
                 try:
                     self.func()
                 except Exception as e:
                     #TODO: Raise error to client
                     sucess_run = False
-                    self.send_error_to_server(sys.exc_info())
+                    exc_type, exc_obj, exc_tb = sys.exc_info()
+                    self.send_error_to_server(exc_type, exc_obj, exc_tb)
         else:
             # Fetch input values from parent's node scope
             inputs, named_inputs = self.get_inputs()
@@ -121,7 +124,8 @@ class Node(object):
                     except Exception as e:
                         #TODO: Raise error to client
                         sucess_run = False
-                        self.send_error_to_server(sys.exc_info())
+                        exc_type, exc_obj, exc_tb = sys.exc_info()
+                        self.send_error_to_server(exc_type, exc_obj, exc_tb)
                         
                 else:
                     self.func(*inputs)
@@ -240,6 +244,6 @@ class Node(object):
         exception = dict()
         exception['id'] = self.id
         exception['line'] = exc_tb.tb_lineno
-        exception['error_type'] = exc_type
-        exception['error'] = traceback.format_exc()
+        exception['error_type'] = str(exc_type)
+        exception['error'] = str(traceback.format_exc())
         emit('add_error', exception)

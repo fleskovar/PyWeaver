@@ -20,6 +20,13 @@ socketio = SocketIO(app, json=json)
 def root():
     return app.send_static_file('index.html')
 
+@app.route('/config.json')
+def get_config_file():
+    f = open('client_pref.json')
+    config = f.read()
+    f.close()
+    return config
+
 
 @socketio.on('new_empty_node')
 def add_new_node():
@@ -34,11 +41,16 @@ def add_new_node():
 
 
 @socketio.on('load_node')
-def get_template_names(lib_id):
+def load_node(lib_id):
     global library
     global graph_root
     template = library.get_render(lib_id)
-    create_node(graph_root, template)
+
+    if template is not None:
+        # If template was found
+        create_node(graph_root, template)
+
+    
 
 
 @socketio.on('delete_node')
@@ -174,7 +186,7 @@ def get_tree():
     return tree
 
 @socketio.on('save_to_library')
-def get_template_names(data):
+def save_to_library(data):
     global library
     path = data['path']
     node_data = data['node_data']
@@ -235,7 +247,12 @@ def load_model(xml):
     load_xml(graph_root, xml)
     graph_root.xmlModel = xml
 
-
+@socketio.on('save_config_file')
+def save_config_file(xml):
+    f = open('client_pref.json', 'w')
+    f.write(xml)
+    f.close()
+    
 
 # Register initial modules that should not be deleted when restarting the server
 init_modules = sys.modules.keys()

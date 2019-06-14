@@ -35,7 +35,7 @@
 
 			<v-card-actions>     
 				<v-spacer/>         
-				<v-btn color="green" flat v-on:click='saveCode' dark>Update</v-btn>                          
+				<v-btn color="green" flat v-on:click='saveCode' dark>Update</v-btn>                 
 			</v-card-actions>
 
         </v-card>              
@@ -96,9 +96,18 @@ export default {
 				theme: 'base16-dark',
 				autoRefresh: true,        
 			},
+			has_error: false,
 		}
 	},
 	methods:{
+		bugHighlight(){
+			if(this.error_line != -1)
+				this.$refs.code_editor.cminstance.addLineClass(this.error_line-1, 'background', 'line-error');
+		},
+		bugUnHighlight(){
+			if(this.error_line != -1)
+				this.$refs.code_editor.cminstance.removeLineClass(this.error_line, 'background', 'line-error');
+		},
 		updateEditors: function(){
 			if(this.code_dialog){
 				if(this.$refs.code_editor.codemirror)
@@ -110,8 +119,9 @@ export default {
 				if(this.$refs.script_editor.codemirror)
 					this.$refs.script_editor.codemirror.refresh();
 			}
-    },
+    	},
 		closeDialog: function(){
+			this.bugUnHighlight();
 			this.code_dialog = false;
 		},
 		openSaveDialog: function(){
@@ -140,49 +150,61 @@ export default {
 		},
 	},
 	computed:{
+		error_line:{
+			get: function(){
+				var node_id = this.$store.state.selected_node.id;
+				if(node_id && this.$store.state.code_error_dict[node_id]){
+					return this.$store.state.code_error_dict[node_id].line
+				}else{
+					return -1
+				}
+			}
+		},
 		code:{
-      get: function(){return this.$store.state.code},
-      
-      set: function(val)
-      {
-        this.$store.commit('set_code', val);
-      }      
-    },
-    display_code:{
-      get: function(){return this.$store.state.display_code},      
-      set: function(val)
-      {
-        this.$store.commit('set_display_code', val)
-      }      
-    },
-    display_act_code:{
-      get: function(){return this.$store.state.display_act_code},      
-      set: function(val)
-      {
-        this.$store.commit('set_display_act_code', val)
-      }      
-	},
-	code_dialog:{
-      get: function(){return this.$store.state.open_code_editor},
-      
-      set: function(val)
-      {
-        this.$store.commit('open_editor', val)
-      }      
-    }, 
-	},
-	watch:{
-    code_dialog: function(new_val, old_val){
-      if(new_val){        
-        return setTimeout(() => {
-        this.$refs.code_editor.codemirror.refresh();
-        this.$refs.code_editor.codemirror.focus();
-        }, 200);        
-      }
-    }
+		get: function(){return this.$store.state.code},
+		
+		set: function(val)
+		{
+			this.$store.commit('set_code', val);
+		}      
+		},
+		display_code:{
+		get: function(){return this.$store.state.display_code},      
+		set: function(val)
+		{
+			this.$store.commit('set_display_code', val)
+		}      
+		},
+		display_act_code:{
+		get: function(){return this.$store.state.display_act_code},      
+		set: function(val)
+		{
+			this.$store.commit('set_display_act_code', val)
+		}      
+		},
+		code_dialog:{
+		get: function(){return this.$store.state.open_code_editor},
+		
+		set: function(val)
+		{
+			this.$store.commit('open_editor', val)
+		}      
+		}, 
+		},
+		watch:{
+		code_dialog: function(new_val, old_val){
+		if(new_val){        
+			this.bugHighlight();        
+		}
+		}
   },
 }
 </script>
 
 <style>
+	.line-error {
+            background: rgb(94, 22, 25) !important;
+            color: #8a1f11 !important;
+        }
+
 </style>

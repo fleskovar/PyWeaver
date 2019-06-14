@@ -14,7 +14,7 @@
             <v-card-text>
                 <v-checkbox v-model="autoRun" :label="`Automatically run flowsheet`"/>
                 <v-checkbox v-model="autoSync" :label="`Automatically sync model`"/>
-                <v-checkbox v-model="darkMode" :label="`Dark Mode`"/>
+                <v-checkbox v-model="darkMode" :label="`Dark Mode (requires page reload)`"/>
             </v-card-text>
 
         </v-card>
@@ -31,16 +31,26 @@ export default {
     },
     computed:{
         autoRun:{
-            get(){return this.$store.state.auto_exec},
-            set(val){ this.$store.commit('set_auto_exec', val)}
+            get(){return this.$store.state.config.auto_exec},
+            set(val){ 
+                this.$store.commit('set_auto_exec', val);
+                this.$store.dispatch('save_config_file');
+            }
         },
         autoSync:{
-            get(){return this.$store.state.sync_model},
-            set(val){ this.$store.commit('set_auto_sync', val)}
+            get(){return this.$store.state.config.sync_model},
+            set(val){ 
+                this.$store.commit('set_auto_sync', val);
+                this.$store.dispatch('save_config_file');
+            }
         },
         darkMode:{
-            get(){return this.$store.state.dark_mode},
-            set(val){ this.$store.dispatch('change_dark_mode', val)}            
+            get(){return this.$store.state.config.dark_mode},
+            set(val){ 
+                this.$store.dispatch('change_dark_mode', val);
+                this.$$store.dispatch('sync_model_with_server');
+                this.$store.dispatch('save_config_file');
+            }            
         }
     }
 }

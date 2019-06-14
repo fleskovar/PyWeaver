@@ -1,5 +1,4 @@
 import os, inspect, shutil
-from zipfile import ZipFile
 
 from NodeTemplate import NodeTemplate
 
@@ -118,7 +117,10 @@ class LibraryManager(object):
         return template_paths, tree
 
     def get_render(self, lib_id):
-        return self.templates[lib_id].render_template()
+        if lib_id in self.templates:
+            return self.templates[lib_id].render_template()
+        else:
+            return None
 
     def get_template_names(self):
         return self.names

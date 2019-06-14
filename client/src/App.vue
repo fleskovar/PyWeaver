@@ -215,7 +215,7 @@ export default {
     },
     canvas_color:{
       get(){
-        if(this.$store.state.dark_mode)
+        if(this.$store.state.config.dark_mode)
           return 'grey darken-4';
         else return 'white';
       }
