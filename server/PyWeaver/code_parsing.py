@@ -67,6 +67,8 @@ def extract_outputs(return_statement):
                 output_vars.append(e.id)
     else:
         # Return statement returns only one value
-        output_vars.append(return_statement.id)
+        if isinstance(return_statement, ast.Name):
+            if(return_statement.id != 'None'):
+                output_vars.append(return_statement.id)
 
     return output_vars

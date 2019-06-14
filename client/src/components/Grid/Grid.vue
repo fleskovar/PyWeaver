@@ -48,9 +48,9 @@
           
           <td style='user-select: none' class='pyw-table-header'>
             <span v-if='i < value.length-1'>
-              <v-btn icon style='min-width: 0; width: 25px; height: 25px; min-height: 0;' color='grey lighten-2'>
+              <button style='min-width: 0; width: 25px; height: 25px; min-height: 0;' color='grey lighten-2' @click='deleteRow(i)'>
                 <v-icon style='font-size: 10px;'>close</v-icon>
-              </v-btn>              
+              </button>              
               {{i}}
             </span>
           </td> 
@@ -127,7 +127,8 @@ export default {
       this.redrawTable();
     },
     deleteRow: function(i){
-
+      this.value.splice(i, 1);
+      this.redrawTable();
     },
     deleteColumn: function(j){
 

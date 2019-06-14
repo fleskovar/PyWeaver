@@ -28,10 +28,16 @@ export default new Vuex.Store({
     save_dialog: false,
     session_id: null,
     code_error_list: [],
-    dark_mode: true,  
-    code_bugs: []  
+    code_parse_error_list: [],
+    dark_mode: true,
   },
   mutations: {
+    add_code_error: function(state, e){
+      state.code_error_list.push(e);
+    },
+    clear_code_error_list: function(state){
+      state.code_error_list = [];
+    },
     set_dark_mode: function(state, val){
       state.dark_mode = val;
     },
@@ -170,6 +176,9 @@ export default new Vuex.Store({
     socket_forceSessionId: function(context, session_id){      
         context.commit('set_session_id', session_id);      
     },
+    socket_addError: function(context, error_data){      
+         context.commit('add_code_error', error_data);   
+    },
     socket_addConnection: function(context, conn_data){
       context.state.canvas.addEdge(conn_data);
       context.state.code_nodes[conn_data.target_id].inputs[conn_data.target_var] = {id: conn_data.source_id, var_name: conn_data.source_var};
@@ -249,6 +258,7 @@ export default new Vuex.Store({
     execute_server(context){
 
       //Compiles the scope data of each display and passes it to the serve
+      context.commit('clear_code_error_list');
       var scope_data = {}
       let ds = context.state.node_displays;
       for(var key in ds){

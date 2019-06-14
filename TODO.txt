@@ -1,15 +1,12 @@
 Comming up next:
-    
-    Node code change safeguarding:
-        Check for ast.Name instance when doing output extraction
 
     Table Input:
-        Reworking
         Copy/Paste on td
         Multi td selection
-        Delete rows
+        Start edit on keys
+        Enter to below cell
+        arrow keys navigation 
         Delete columns
-        Add columns / column name
 
     Key input fix:
         Fix key input capture

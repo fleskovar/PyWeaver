@@ -1,3 +1,4 @@
+from flask_socketio import emit
 from collections import OrderedDict
 from code_parsing import parse_function
 import traceback
@@ -37,7 +38,7 @@ class Node(object):
             exec code in self.func_dict
             compile_success = True
         except Exception as e:
-            print(e)
+            print(e)            
         
         if compile_success:
             self.func = self.func_dict[func_name]
@@ -88,6 +89,7 @@ class Node(object):
 
     def execute(self, scope_data):
         sucess_run = True # Determines if the code was sucessfully executed
+        
         #Inject display's scope
         self.func.__globals__['display'] = scope_data
         self.scope = scope_data
@@ -96,15 +98,17 @@ class Node(object):
             if len(self.output_vars) != 0:
                 try:
                     output_vals = self.func()
-                except:
+                except Exception as e:
                     #TODO: Raise error to client
                     sucess_run = False
+                    self.send_error_to_server(sys.exc_info())
             else:
                 try:
                     self.func()
-                except:
+                except Exception as e:
                     #TODO: Raise error to client
                     sucess_run = False
+                    self.send_error_to_server(sys.exc_info())
         else:
             # Fetch input values from parent's node scope
             inputs, named_inputs = self.get_inputs()
@@ -114,9 +118,11 @@ class Node(object):
                 if len(self.output_vars) != 0:
                     try:
                         output_vals = self.func(*inputs, **named_inputs)
-                    except:
+                    except Exception as e:
                         #TODO: Raise error to client
                         sucess_run = False
+                        self.send_error_to_server(sys.exc_info())
+                        
                 else:
                     self.func(*inputs)
             else:
@@ -229,3 +235,11 @@ class Node(object):
             data = self.output_vars_data[var] # Get the connection data (We are interested in the id of the nodes downstream)
             for d in data:
                 self.parent_node.nodes[d[0]].set_dirty() # Propagate dirty state downstream
+
+    def send_error_to_server(self, exc_type, exc_obj, exc_tb):
+        exception = dict()
+        exception['id'] = self.id
+        exception['line'] = exc_tb.tb_lineno
+        exception['error_type'] = exc_type
+        exception['error'] = traceback.format_exc()
+        emit('add_error', exception)
