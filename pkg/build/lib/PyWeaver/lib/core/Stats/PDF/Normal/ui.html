@@ -1,0 +1,20 @@
+<div style='width: 200px; height: 200px'>
+    <b>Normal Distribution</b>
+    <br>
+    <br>
+    mu: <input type='float' v-model='scope.mu' v-val:mu='0'>
+    <br>
+    <br>
+    sd: {{scope.sd}}
+    <br>
+    0.1
+    <input @change= '$forceUpdate()'max='20' min='0.1' step='0.1' type='range' v-model='scope.sd' v-val:sd='1.0'></inputs>
+    20
+    <br>	
+    <br>
+    Start: <input type='float' v-model='scope.domain_start' v-val:domain_start='-10.0'></inputs>
+    <br>
+    End: <input type='float' v-model='scope.domain_end' v-val:domain_end='10.0'></inputs>
+    <br>
+    Points: <input type='float' v-model='scope.points' v-val:points='100.0'></inputs>
+</div>

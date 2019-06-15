@@ -1,0 +1,2 @@
+recursive-include PyWeaver/lib *
+recursive-include PyWeaver/static *
