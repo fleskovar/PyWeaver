@@ -1,13 +1,11 @@
 import numpy as np
 import pandas as pd
 import seaborn as sns
-import cStringIO
+from io import StringIO
 import base64
 
 def f(data):
-	
-	print data
-	
+		
 	if type(data) != list:
 		data = [data]
 
@@ -27,7 +25,7 @@ def f(data):
 		column = data[0]['data']		
 		fig = sns.distplot(column).figure	
 	
-	my_stringIObytes = cStringIO.StringIO()
+	my_stringIObytes = StringIO()
 	fig.savefig(my_stringIObytes, format='jpg')
 	my_stringIObytes.seek(0)
 	img = base64.b64encode(my_stringIObytes.read())

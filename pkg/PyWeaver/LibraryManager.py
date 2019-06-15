@@ -62,7 +62,7 @@ class LibraryManager(object):
         # TODO: refactor this... use os.walk()
         root_name = 'Node Library'
         queue = [root_name]
-        queue = zip(queue, [lib_path]*len(queue))
+        queue = list(zip(queue, [lib_path]*len(queue)))
         child_folders = []
         template_paths = []
         tree = []
@@ -109,7 +109,7 @@ class LibraryManager(object):
                 tree_elements[os.path.join(d[1], f)] = tree_obj
 
             if child_folders:
-                child_folders = zip(child_folders, map(lambda x: os.path.join(d[1], x), child_folders))
+                child_folders = list(zip(child_folders, map(lambda x: os.path.join(d[1], x), child_folders)))
 
             queue = queue + child_folders  # Add extra dirs to queue
             child_folders = []

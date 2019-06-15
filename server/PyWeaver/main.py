@@ -3,11 +3,10 @@ from flask_socketio import SocketIO, emit
 import sys
 from copy import deepcopy
 
-from Graph import Graph
-from results_encoder import CustomJSONEncoder
-from LibraryManager import LibraryManager
-
-from model_manager import create_node, load_xml
+from PyWeaver.Graph import Graph
+from PyWeaver.results_encoder import CustomJSONEncoder
+from PyWeaver.LibraryManager import LibraryManager
+from PyWeaver.model_manager import create_node, load_xml
 
 
 # Flask server app

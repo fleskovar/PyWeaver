@@ -44,12 +44,12 @@ def extract_inputs(function_statement):
 
     for i, var in enumerate(function_statement.args.args):
         
-        input_vars.append(var.id)
+        input_vars.append(var.arg)
         
         if i+1 < named_offset:
-            input_vars_named[var.id] = True
+            input_vars_named[var.arg] = True
         else:
-            input_vars_named[var.id] = False
+            input_vars_named[var.arg] = False
 
     return input_vars, input_vars_named
 

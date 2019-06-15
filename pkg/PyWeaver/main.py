@@ -3,11 +3,10 @@ from flask_socketio import SocketIO, emit
 import sys
 from copy import deepcopy
 
-from Graph import Graph
-from results_encoder import CustomJSONEncoder
-from LibraryManager import LibraryManager
-
-from model_manager import create_node, load_xml
+from PyWeaver.Graph import Graph
+from PyWeaver.results_encoder import CustomJSONEncoder
+from PyWeaver.LibraryManager import LibraryManager
+from PyWeaver.model_manager import create_node, load_xml
 
 
 # Flask server app
@@ -136,7 +135,6 @@ def delete_connection(data):
 def execute(scope_data):
     global graph_root
 
-    print 'Running'
     graph_root.execute(scope_data)
 
     r = dict()
@@ -146,7 +144,6 @@ def execute(scope_data):
             # Transforms result into JSON safe data
             rr[v] = graph_root.nodes[n].results[v]
         r[n] = rr
-    print 'Finished'
     return r
 
 
@@ -262,6 +259,6 @@ graph_root = Graph()
 library = LibraryManager()
 
 if __name__ == '__main__':
-    print 'Started'
+    print('Started')
     socketio.run(app, host='localhost', port=5000)
 

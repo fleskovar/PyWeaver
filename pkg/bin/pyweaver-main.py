@@ -1,23 +1,30 @@
-from flask import Flask
+from flask import Flask, json
 from flask_socketio import SocketIO, emit
 import sys
 from copy import deepcopy
 
-from Graph import Graph
-from results_encoder import encode
-from LibraryManager import LibraryManager
-
-from model_manager import create_node, load_xml
+from PyWeaver.Graph import Graph
+from PyWeaver.results_encoder import CustomJSONEncoder
+from PyWeaver.LibraryManager import LibraryManager
+from PyWeaver.model_manager import create_node, load_xml
 
 
 # Flask server app
 app = Flask(__name__, static_url_path='')
+app.json_encoder = CustomJSONEncoder
 app.config['SECRET_KEY'] = 'secret!'
-socketio = SocketIO(app)
+socketio = SocketIO(app, json=json)
 
 @app.route('/')
 def root():
     return app.send_static_file('index.html')
+
+@app.route('/config.json')
+def get_config_file():
+    f = open('client_pref.json')
+    config = f.read()
+    f.close()
+    return config
 
 
 @socketio.on('new_empty_node')
@@ -33,11 +40,16 @@ def add_new_node():
 
 
 @socketio.on('load_node')
-def get_template_names(lib_id):
+def load_node(lib_id):
     global library
     global graph_root
     template = library.get_render(lib_id)
-    create_node(graph_root, template)
+
+    if template is not None:
+        # If template was found
+        create_node(graph_root, template)
+
+    
 
 
 @socketio.on('delete_node')
@@ -123,7 +135,6 @@ def delete_connection(data):
 def execute(scope_data):
     global graph_root
 
-    print 'Running'
     graph_root.execute(scope_data)
 
     r = dict()
@@ -131,11 +142,8 @@ def execute(scope_data):
         rr = dict()
         for v in graph_root.nodes[n].results:
             # Transforms result into JSON safe data
-            rr[v] = encode(graph_root.nodes[n].results[v])
-
+            rr[v] = graph_root.nodes[n].results[v]
         r[n] = rr
-
-    print 'Finished'
     return r
 
 
@@ -175,7 +183,7 @@ def get_tree():
     return tree
 
 @socketio.on('save_to_library')
-def get_template_names(data):
+def save_to_library(data):
     global library
     path = data['path']
     node_data = data['node_data']
@@ -236,7 +244,12 @@ def load_model(xml):
     load_xml(graph_root, xml)
     graph_root.xmlModel = xml
 
-
+@socketio.on('save_config_file')
+def save_config_file(xml):
+    f = open('client_pref.json', 'w')
+    f.write(xml)
+    f.close()
+    
 
 # Register initial modules that should not be deleted when restarting the server
 init_modules = sys.modules.keys()
@@ -246,6 +259,6 @@ graph_root = Graph()
 library = LibraryManager()
 
 if __name__ == '__main__':
-    print 'Started'
+    print('Started')
     socketio.run(app, host='localhost', port=5000)
 

@@ -1,6 +1,6 @@
 import os, inspect, shutil
 
-from NodeTemplate import NodeTemplate
+from PyWeaver.NodeTemplate import NodeTemplate
 
 class LibraryManager(object):
 

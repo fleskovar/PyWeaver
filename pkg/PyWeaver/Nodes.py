@@ -2,6 +2,7 @@ from flask_socketio import emit
 from collections import OrderedDict
 from code_parsing import parse_function
 import traceback
+import re
 from copy import deepcopy
 import sys, os
 
@@ -18,6 +19,7 @@ class Node(object):
         self.id = id
         self.output_vars_data = OrderedDict()
         self.func_name = None
+        self.func = None
 
         self.input_vars = []
         self.input_vars_named = OrderedDict()
@@ -36,7 +38,7 @@ class Node(object):
         
         compile_success = False
         try:
-            exec code in self.func_dict
+            exec(code, self.func_dict)
             compile_success = True
         except Exception as e:
             print(e)            
@@ -92,59 +94,66 @@ class Node(object):
         sucess_run = True # Determines if the code was sucessfully executed
         
         #Inject display's scope
-        self.func.__globals__['display'] = scope_data
-        self.scope = scope_data
-        # TODO: Check if function has outputs
-        if len(self.input_vars) == 0:
-            if len(self.output_vars) != 0:
-                try:
-                    output_vals = self.func()
-                except Exception as e:
-                    #TODO: Raise error to client
-                    sucess_run = False
-                    exc_type, exc_obj, exc_tb = sys.exc_info()
-                    self.send_error_to_server(exc_type, exc_obj, exc_tb)
-            else:
-                try:
-                    self.func()
-                except Exception as e:
-                    #TODO: Raise error to client
-                    sucess_run = False
-                    exc_type, exc_obj, exc_tb = sys.exc_info()
-                    self.send_error_to_server(exc_type, exc_obj, exc_tb)
-        else:
-            # Fetch input values from parent's node scope
-            inputs, named_inputs = self.get_inputs()
-
-            if len(inputs) == len([i for i in self.input_vars_named if self.input_vars_named[i] is False]):
-                # Checks if the total ammount unnamed inputs given to the func are enough to run the calculation
+        if self.func is not None:
+            self.func.__globals__['display'] = scope_data
+            self.scope = scope_data
+            # TODO: Check if function has outputs
+            if len(self.input_vars) == 0:
                 if len(self.output_vars) != 0:
                     try:
-                        output_vals = self.func(*inputs, **named_inputs)
+                        output_vals = self.func()
                     except Exception as e:
-                        #TODO: Raise error to client
+                        print(e)
                         sucess_run = False
                         exc_type, exc_obj, exc_tb = sys.exc_info()
                         self.send_error_to_server(exc_type, exc_obj, exc_tb)
-                        
                 else:
-                    self.func(*inputs)
+                    try:
+                        self.func()
+                    except Exception as e:
+                        print(e)
+                        sucess_run = False
+                        exc_type, exc_obj, exc_tb = sys.exc_info()
+                        self.send_error_to_server(exc_type, exc_obj, exc_tb)
             else:
-                # Cannot exec because we dont have enough inputs
-                #TODO: Raise error to client
-                sucess_run = False
-                output_vals = None 
+                # Fetch input values from parent's node scope
+                inputs, named_inputs = self.get_inputs()
 
-        if sucess_run:
-            if len(self.output_vars) != 0:
-                if isinstance(output_vals, tuple):
-                    for i, o in enumerate(self.output_vars):
-                        self.results[o] = output_vals[i]
+                if len(inputs) == len([i for i in self.input_vars_named if self.input_vars_named[i] is False]):
+                    # Checks if the total ammount unnamed inputs given to the func are enough to run the calculation
+                    if len(self.output_vars) != 0:
+                        try:
+                            output_vals = self.func(*inputs, **named_inputs)
+                        except Exception as e:
+                            print(e)
+                            sucess_run = False
+                            exc_type, exc_obj, exc_tb = sys.exc_info()
+                            self.send_error_to_server(exc_type, exc_obj, exc_tb)
+
+                    else:
+                        self.func(*inputs)
                 else:
-                    self.results[self.output_vars[0]] = output_vals
-            self.dirty = False
+                    # Cannot exec because we dont have enough inputs
+                    overlay_data = {}
+                    overlay_data['node_id'] = self.id
+                    overlay_data['overlay_type'] = 'warning'
+                    emit('set_node_overlay', overlay_data)
 
-        return sucess_run
+                    sucess_run = False
+                    output_vals = None
+
+            if sucess_run:
+                if len(self.output_vars) != 0:
+                    if isinstance(output_vals, tuple):
+                        for i, o in enumerate(self.output_vars):
+                            self.results[o] = output_vals[i]
+                    else:
+                        self.results[self.output_vars[0]] = output_vals
+                self.dirty = False
+
+            return sucess_run
+        else:
+            return False  #No function object found
 
     def get_inputs(self):
                 
@@ -241,9 +250,22 @@ class Node(object):
                 self.parent_node.nodes[d[0]].set_dirty() # Propagate dirty state downstream
 
     def send_error_to_server(self, exc_type, exc_obj, exc_tb):
+        error = str(traceback.format_exc())
+
+        try:
+            regex_l = re.search('(File "<string>", line )([0-9]*)', error)
+            line_num = float(regex_l.group(2))
+        except:
+            line_num = exc_tb.tb_lineno
+
         exception = dict()
         exception['id'] = self.id
-        exception['line'] = exc_tb.tb_lineno
+        exception['line'] = line_num
         exception['error_type'] = str(exc_type)
-        exception['error'] = str(traceback.format_exc())
+        exception['error'] = error
         emit('add_error', exception)
+
+        overlay_data = {}
+        overlay_data['node_id'] = self.id
+        overlay_data['overlay_type'] = 'error'
+        emit('set_node_overlay', overlay_data)

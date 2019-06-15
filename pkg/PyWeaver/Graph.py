@@ -1,6 +1,7 @@
 from collections import defaultdict
 from Nodes import Node
 import sys, os
+from flask_socketio import emit
 
 import uuid
 
@@ -54,8 +55,7 @@ class Graph(object):
         # This ensures that all nodes are computed in the correct order.
         self.add_to_adjacency_dict(target_node.id, source_node.id)
 
-    def make_connection(self, source_id, source_var, target_id, target_var):
-        print 'making conn'
+    def make_connection(self, source_id, source_var, target_id, target_var):        
         source_b = self.nodes[source_id]
         target_b = self.nodes[target_id]
         source_b.connect_output(source_var, target_b, target_var)
@@ -94,10 +94,21 @@ class Graph(object):
                 exe_node.set_dirty()
 
             if exe_node.dirty:
+
+                overlay_data = {}
+                overlay_data['node_id'] = id
+                overlay_data['overlay_type'] = 'exec'
+                emit('set_node_overlay', overlay_data)
+
                 sucess_run = exe_node.execute(node_scope)
                 
-                if sucess_run == False:
+                if sucess_run == False:                    
                     break
+                else:
+                    overlay_data = {}
+                    overlay_data['node_id'] = id
+                    overlay_data['overlay_type'] = 'ok'
+                    emit('set_node_overlay', overlay_data)
 
     def build_adjacency_dict(self):
         # TODO: build adjacency dict from edges list
