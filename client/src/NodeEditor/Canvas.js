@@ -72,7 +72,6 @@ export default class Canvas{
         graph.foldingEnabled = false;    
         graph.setPanning(true);    
         graph.scrollTileSize = new mxRectangle(0, 0, 400, 400);
-        graph.setTooltips(true);
 
         // Sets default styles   
         this.calcDefaultStyles();  

@@ -18,7 +18,7 @@
 					<v-tab>Code</v-tab>
 					<v-tab-item>
 						<codemirror :options="cmOptions" ref="code_editor" v-model="code"/>
-						<div :key='bug_key'>{{error_text}}</div>
+						<v-card dark :key='bug_key'>{{error_text}}</v-card>
 					</v-tab-item>
 
 					<v-tab>Display</v-tab>
@@ -106,8 +106,9 @@ export default {
 			this.bug_key = this.bug_key * -1;
 			if(this.error_line != -1){
 				var actual_line = this.error_line-1;
-				console.log('error in line '+actual_line);
 				this.$refs.code_editor.cminstance.addLineClass(actual_line, 'background', 'line-error');
+				this.$refs.code_editor.codemirror.refresh();
+
 				}
 		},
 		bugUnHighlight(){
@@ -174,7 +175,7 @@ export default {
 				if(node_id && this.$store.state.code_error_dict[node_id]){
 					return this.$store.state.code_error_dict[node_id].error
 				}else{
-					return ''
+					return 'Error text'
 				}
 			}
 		},
