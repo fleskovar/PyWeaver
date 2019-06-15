@@ -1,5 +1,5 @@
 from collections import defaultdict
-from Nodes import Node
+from PyWeaver.Nodes import Node
 import sys, os
 from flask_socketio import emit
 

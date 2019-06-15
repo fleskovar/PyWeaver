@@ -1,6 +1,6 @@
 from flask_socketio import emit
 from collections import OrderedDict
-from code_parsing import parse_function
+from PyWeaver.code_parsing import parse_function
 import traceback
 import re
 from copy import deepcopy
