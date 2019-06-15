@@ -136,7 +136,6 @@ def delete_connection(data):
 def execute(scope_data):
     global graph_root
 
-    print 'Running'
     graph_root.execute(scope_data)
 
     r = dict()
@@ -146,7 +145,6 @@ def execute(scope_data):
             # Transforms result into JSON safe data
             rr[v] = graph_root.nodes[n].results[v]
         r[n] = rr
-    print 'Finished'
     return r
 
 
@@ -262,6 +260,6 @@ graph_root = Graph()
 library = LibraryManager()
 
 if __name__ == '__main__':
-    print 'Started'
+    print('Started')
     socketio.run(app, host='localhost', port=5000)
 

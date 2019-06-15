@@ -4,7 +4,6 @@
       <v-toolbar-title class="headline text-uppercase">
         <span>Py</span>
         <span class="font-weight-light">Weaver</span>
-        <span>2</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
       

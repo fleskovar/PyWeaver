@@ -36,7 +36,7 @@ class Node(object):
         
         compile_success = False
         try:
-            exec code in self.func_dict
+            exec(code, self.func_dict)
             compile_success = True
         except Exception as e:
             print(e)            
@@ -100,7 +100,7 @@ class Node(object):
                 try:
                     output_vals = self.func()
                 except Exception as e:
-                    #TODO: Raise error to client
+                    print(e)
                     sucess_run = False
                     exc_type, exc_obj, exc_tb = sys.exc_info()
                     self.send_error_to_server(exc_type, exc_obj, exc_tb)
@@ -108,7 +108,7 @@ class Node(object):
                 try:
                     self.func()
                 except Exception as e:
-                    #TODO: Raise error to client
+                    print(e)
                     sucess_run = False
                     exc_type, exc_obj, exc_tb = sys.exc_info()
                     self.send_error_to_server(exc_type, exc_obj, exc_tb)
@@ -122,7 +122,7 @@ class Node(object):
                     try:
                         output_vals = self.func(*inputs, **named_inputs)
                     except Exception as e:
-                        #TODO: Raise error to client
+                        print(e)
                         sucess_run = False
                         exc_type, exc_obj, exc_tb = sys.exc_info()
                         self.send_error_to_server(exc_type, exc_obj, exc_tb)
@@ -131,7 +131,11 @@ class Node(object):
                     self.func(*inputs)
             else:
                 # Cannot exec because we dont have enough inputs
-                #TODO: Raise error to client
+                overlay_data = {}
+                overlay_data['node_id'] = self.id
+                overlay_data['overlay_type'] = 'warning'
+                emit('set_node_overlay', overlay_data)
+
                 sucess_run = False
                 output_vals = None 
 
@@ -247,3 +251,8 @@ class Node(object):
         exception['error_type'] = str(exc_type)
         exception['error'] = str(traceback.format_exc())
         emit('add_error', exception)
+
+        overlay_data = {}
+        overlay_data['node_id'] = self.id
+        overlay_data['overlay_type'] = 'error'
+        emit('set_node_overlay', overlay_data)

@@ -6,9 +6,7 @@ def f(mu=None, sd=None):
 	if sd is None:
 		sd = float(display['sd'])
 	if mu is None:
-		mu = float(display['mu'])
-		
-	print mu, sd
+		mu = float(display['mu'])		
 	
 	points = float(display['points'])
 	domain_start = float(display['domain_start'])

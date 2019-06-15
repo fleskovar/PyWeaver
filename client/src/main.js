@@ -20,6 +20,7 @@ Vue.directive('observe-visibility', ObserveVisibility)
 
 Vue.config.productionTip = false;
 
+/*
 //Gets initial configuration for client
 var xhr = new XMLHttpRequest();
 xhr.open("GET", "/config.json", true);
@@ -47,3 +48,9 @@ xhr.ontimeout = function (e) {
   }).$mount('#app')
 };
 xhr.send();
+*/
+Vue.use(VueSocketio, socket, {store});
+  new Vue({
+    store,
+    render: h => h(App),
+  }).$mount('#app')

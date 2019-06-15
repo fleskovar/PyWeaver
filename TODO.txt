@@ -3,37 +3,28 @@ Comming up next:
     Table Input:
         Copy/Paste on td
         Multi td selection
-        Start edit on keys
         Enter to below cell
         arrow keys navigation 
         Delete columns
-        -Vector input
         -Pandas support
         Auto expand columns
-        Prevent column expand
 
-    Key input fix:
-        Fix key input capture
-    
-    Node bug display (try/except in server and reflect in client)
-
-     Node Library:
-        Library tooltip/hover help with doc.txt
-        Library metadata
-        Tree fuzzy keyword search and searchbox chips
-        Overwrite calcs when selecting them
+    Node Library:
+       Library tooltip/hover help with doc.txt
+       Library metadata
+       Tree fuzzy keyword search and searchbox chips
+       Overwrite calcs when selecting them
+       Icons stay on selection
 
     Make CLI/Build
 
 Backlog:
 
-    Fix dark mode refresh pf Cells
-    Save preferences to file and make server send them on login
+    Fix dark mode refresh pf Cells  
+    Pass config to client  
 
     Nodes:
-        Optional input (handling of named inputs)
         Coloring optional input
-        Optional connection/ui input
 
     Node metadata:
         Connector type & validation
@@ -60,9 +51,6 @@ Backlog:
         Plotly: 
             Cells mouse events 
 
-        Table/grid view:
-            Fix UI bugs
-
     Compile workflow into single python file
 
     Replace mxgraph:
@@ -70,3 +58,18 @@ Backlog:
 
     Code editors:        
         Code editor 'dirtyness'
+
+    Key input fix:
+        Fix key input capture
+
+    Make UI generate i/o connections?
+    UI driven code?
+    UI driven data input/output?
+
+    Event nodes:
+        Calc = calc_event
+        Other events that trigger computation
+
+    UI builder:
+        Drag and drop UI builder?
+        Web app maker?

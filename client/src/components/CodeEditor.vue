@@ -18,6 +18,7 @@
 					<v-tab>Code</v-tab>
 					<v-tab-item>
 						<codemirror :options="cmOptions" ref="code_editor" v-model="code"/>
+						<div :key='bug_key'>{{error_text}}</div>
 					</v-tab-item>
 
 					<v-tab>Display</v-tab>
@@ -60,6 +61,7 @@ export default {
 	},
 	data(){
 		return {
+			bug_key: -1,
 			cmOptions: {
 				// codemirror options
 				tabSize: 4,
@@ -101,12 +103,18 @@ export default {
 	},
 	methods:{
 		bugHighlight(){
-			if(this.error_line != -1)
-				this.$refs.code_editor.cminstance.addLineClass(this.error_line-1, 'background', 'line-error');
+			this.bug_key = this.bug_key * -1;
+			if(this.error_line != -1){
+				var actual_line = this.error_line-1;
+				console.log('error in line '+actual_line);
+				this.$refs.code_editor.cminstance.addLineClass(actual_line, 'background', 'line-error');
+				}
 		},
 		bugUnHighlight(){
-			if(this.error_line != -1)
-				this.$refs.code_editor.cminstance.removeLineClass(this.error_line, 'background', 'line-error');
+			if(this.error_line != -1){
+				var actual_line = this.error_line-1;
+				this.$refs.code_editor.cminstance.removeLineClass(actual_line, 'background', 'line-error');
+				}
 		},
 		updateEditors: function(){
 			if(this.code_dialog){
@@ -160,44 +168,55 @@ export default {
 				}
 			}
 		},
+		error_text:{
+			get(){
+				var node_id = this.$store.state.selected_node.id;
+				if(node_id && this.$store.state.code_error_dict[node_id]){
+					return this.$store.state.code_error_dict[node_id].error
+				}else{
+					return ''
+				}
+			}
+		},
 		code:{
-		get: function(){return this.$store.state.code},
-		
-		set: function(val)
-		{
-			this.$store.commit('set_code', val);
-		}      
+			get: function(){return this.$store.state.code},
+			
+			set: function(val)
+			{
+				this.$store.commit('set_code', val);
+			}      
 		},
 		display_code:{
-		get: function(){return this.$store.state.display_code},      
-		set: function(val)
-		{
-			this.$store.commit('set_display_code', val)
-		}      
+			get: function(){return this.$store.state.display_code},      
+			set: function(val)
+			{
+				this.$store.commit('set_display_code', val)
+			}      
 		},
 		display_act_code:{
-		get: function(){return this.$store.state.display_act_code},      
-		set: function(val)
-		{
-			this.$store.commit('set_display_act_code', val)
-		}      
+			get: function(){return this.$store.state.display_act_code},
+
+			set: function(val)
+			{
+				this.$store.commit('set_display_act_code', val)
+			}      
 		},
 		code_dialog:{
-		get: function(){return this.$store.state.open_code_editor},
-		
-		set: function(val)
-		{
-			this.$store.commit('open_editor', val)
-		}      
+			get: function(){return this.$store.state.open_code_editor},
+			
+			set: function(val)
+			{
+				this.$store.commit('open_editor', val)
+			}      
 		}, 
-		},
-		watch:{
+	},
+	watch:{
 		code_dialog: function(new_val, old_val){
-		if(new_val){        
-			this.bugHighlight();        
+			if(new_val){        
+				this.bugHighlight();        
+			}
 		}
-		}
-  },
+	},
 }
 </script>
 

@@ -1,4 +1,8 @@
 import EventBus from '../EventBus.js'
+import ok_icon  from '../../img/success.png'
+import error_icon  from '../../img/error.png'
+import calc_icon  from '../../img/hourglass.png'
+import warning_icon  from '../../img/warning.png'
 
 export default class Canvas{
 
@@ -68,6 +72,7 @@ export default class Canvas{
         graph.foldingEnabled = false;    
         graph.setPanning(true);    
         graph.scrollTileSize = new mxRectangle(0, 0, 400, 400);
+        graph.setTooltips(true);
 
         // Sets default styles   
         this.calcDefaultStyles();  
@@ -80,7 +85,6 @@ export default class Canvas{
 
             var div = document.getElementById('node_'+cell.id);
 
-            console.log('yay');
             result.width = div.offsetWidth +50;
             result.height = div.offsetHeight + 50;
 
@@ -187,7 +191,6 @@ export default class Canvas{
 
         graph.addListener(mxEvent.MOUSE_MOVE, (sender, evt) => {
             if(graph.isMouseDown){
-                console.log('yay');
             }
         });
         
@@ -418,7 +421,6 @@ export default class Canvas{
     }
 
     setCellColor(color){
-        console.log('cell color');
         var cells = this.graph.selectionModel.cells;
 
         for(var i = 0; i < cells.length; i++){
@@ -431,7 +433,6 @@ export default class Canvas{
     }
 
     setCellStroke(size){
-        console.log('cell stroke');
         var cells = this.graph.selectionModel.cells;
         
         for(var i = 0; i < cells.length; i++){
@@ -509,7 +510,38 @@ export default class Canvas{
 
     updateSyles(){
         this.calcDefaultStyles();
-        console.log('changed to dark mode');
+    }
 
+    setOverlay(cell, overlay_name){
+
+        var img = null;
+        var tooltip_text = ''
+
+        if(overlay_name == 'ok')
+        {
+            tooltip_text = 'Calculation succeeded';
+            img = new mxImage(ok_icon, 16, 16);
+            
+        }
+        else if (overlay_name == 'error')
+        {
+            tooltip_text = 'Error';
+            img = new mxImage(error_icon, 16, 16);            
+        }
+        else if (overlay_name == 'warning')
+        {
+            tooltip_text = 'Not enough inputs';
+            img = new mxImage(warning_icon, 16, 16);            
+        }
+        else{
+            tooltip_text = 'Executing...';
+            img = new mxImage(calc_icon, 16, 16);            
+        }
+        var overlay = new mxCellOverlay(img, tooltip_text);
+        this.graph.addCellOverlay(cell, overlay);
+    }
+
+    removeOverlay(cell){
+        this.graph.removeCellOverlays(cell);
     }
 }

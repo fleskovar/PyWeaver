@@ -336,7 +336,14 @@ export default new Vuex.Store({
       context.state.canvas.updateSyles();
     },
     save_config_file(context){
-      socket.emit('save_config_file', context.config);
+      socket.emit('save_config_file', JSON.stringify(context.state.config));
+    },
+    socket_setNodeOverlay(context, overlay_data){
+      var node_id = overlay_data['node_id'];
+      var overlay_type = overlay_data['overlay_type'];
+      var cell = context.state.code_nodes[node_id].cell;
+      context.state.canvas.removeOverlay(cell);
+      context.state.canvas.setOverlay(cell, overlay_type);
     }
 
   },
