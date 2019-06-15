@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="pyweaver",
-    version="0.0.3",
+    version="0.0.4",
     author="Example Author",
     author_email="francisco.leskovar@gmail.com",
     description="Web based Python visual programming",
@@ -15,7 +15,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/fleskovar/PyWeaver",
-    download_url = 'https://github.com/fleskovar/PyWeaver/archive/v0.0.3.tar.gz',
+    download_url = 'https://github.com/fleskovar/PyWeaver/archive/v0.0.4.tar.gz',
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
