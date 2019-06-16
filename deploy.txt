@@ -1,0 +1,4 @@
+change version number in setup.py
+python setup.py sdist bdist_wheel
+upload to github
+twine upload dist/*
