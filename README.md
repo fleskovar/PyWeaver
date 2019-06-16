@@ -1,6 +1,14 @@
 # PyWeaver
-PyWeaver is a visual code editor for Python that leverages web technologies. It is inspired by Jupyter Notebook and Simulink. The project is under development.
-Currently working with Python 2. Python 3 support comming soon.
+PyWeaver is a visual code editor for Python 3 that leverages web technologies. It is inspired by Jupyter Notebook and Simulink. The project is under development.
+
+## Installation
+```
+pip install pyweaver
+```
+To run the app simply open a cmd and:
+```
+pyweaver
+```
 
 ![pyweaver_example](https://user-images.githubusercontent.com/6884660/58805403-65e72780-85ea-11e9-9d7f-4eb8cb5aeb45.PNG)
 
