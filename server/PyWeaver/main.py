@@ -188,8 +188,9 @@ def save_to_library(data):
     global library
     path = data['path']
     node_data = data['node_data']
+    overwrite = data['overwrite']
 
-    library.save(path, node_data)
+    library.save(path, node_data, overwrite)
 
     library = LibraryManager()
     tree = library.get_tree()

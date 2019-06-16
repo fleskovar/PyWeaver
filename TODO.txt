@@ -10,13 +10,7 @@ Comming up next:
         Auto expand columns
 
     Node Library:
-       Library tooltip/hover help with doc.txt
-       Library metadata
-       Tree fuzzy keyword search and searchbox chips
-       Overwrite calcs when selecting them
-       Icons stay on selection
-
-    Make CLI/Build
+       Tree fuzzy keyword search and searchbox chips     
 
 Backlog:
 

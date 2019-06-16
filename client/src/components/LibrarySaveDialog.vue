@@ -18,20 +18,20 @@
                             <v-card style='overflow-y: scroll; border: 2px solid grey; border-radius: 1px;' height='500px' flat>
                                 <v-treeview :items="libraryTree" ref='tree' activatable :active.sync="selected_folder" return-object>                        
                                         <template v-slot:prepend="{ item }">
-                                            <div @mouseover="hover_tree_id = item.id" @mouseleave="hover_tree_id = -1">
+                                            <div @click="hover_tree_id = item.id">
                                                 <v-icon v-if="item.children">folder</v-icon>
                                                 <v-icon v-if="!item.children">insert_drive_file</v-icon>
                                             </div>
                                         </template>
 
                                         <template v-slot:label="{item}">
-                                            <div @mouseover="hover_tree_id = item.id" @mouseleave="hover_tree_id = -1">
+                                            <div @click="hover_tree_id = item.id">
                                                 <v-text-field v-if= 'false' :value='item.name' disabled solo flat single-line/>
                                                 <span>{{item.name}}</span>
                                                 &ensp;
                                                 <a><v-icon v-if="item.id == hover_tree_id" @click='openEditNameDialog(item)'>edit</v-icon></a>
                                                 <a><v-icon v-if="item.id == hover_tree_id && item.children" @click='openNewFolderDialog(item)'>create_new_folder</v-icon></a>
-                                                <a><v-icon v-if="item.id == hover_tree_id && item.children" @click='openDeleteFolderDialog(item)'>delete_forever</v-icon></a>                                    
+                                                <a><v-icon v-if="item.id == hover_tree_id" @click='openDeleteFolderDialog(item)'>delete_forever</v-icon></a>                                    
                                             </div>
                                         </template>                        
                                 </v-treeview>
@@ -44,14 +44,14 @@
                                 
                                 <v-textarea
                                 label="Node Description"
-                                value="Short description of what the node does."
+                                v-model="description"
                                 no-resize
                                 outline
                                 ></v-textarea>
 
                                 <v-textarea
                                 label="Search keywords"
-                                value=""
+                                v-model="keywords"
                                 hint = 'Comma separated keywords'
                                 no-resize
                                 outline
@@ -167,31 +167,53 @@ export default {
             selected_item: {},    
             new_folder_name: 'New Folder',  
             new_item_name: '',
+            description: 'Short description of what the node does.',
+            keywords: '',
         }
     },
     methods:{
         closeDialog(){
+            this.description = 'Short description of what the node does.';
             this.$store.commit('set_dialog_open', false);
         },
         saveNode(){
+            
             if(this.save_name)
             {
                 var data = {};
-                var node_data = {};
+                data.overwrite = false;
+                var proceed = true;
+                if(this.selected_folder[0].lib_id){
+                    proceed = confirm("Overwrite existing module?");
+                    data.overwrite = true;
+                }
+                
+                if(proceed){                                    
 
-                let node = this.$store.state.selected_node;
-                node_data.name = this.save_name;
-                node_data.code = node.code;
-                node_data.display_code = node.display_code;
-                node_data.display_act_code = node.display_act_code;
+                    let node = this.$store.state.selected_node;
+                    
+                    var node_data = {};
+                    node_data.name = this.save_name;
+                    node_data.code = node.code;
+                    node_data.display_code = node.display_code;
+                    node_data.display_act_code = node.display_act_code;
+                    
+                    var meta_obj = {
+                        description: this.description,
+                        keywords: this.keywords,
+                        test_vals: '',
+                        connections: ''
+                    };
+                    node_data.meta = JSON.stringify(meta_obj);
 
-                var path = this.selected_folder[0].path;
+                    var path = this.selected_folder[0].path;
 
-                data.path = path;
-                data.node_data = node_data;
+                    data.path = path;
+                    data.node_data = node_data;
 
-                this.$socket.emit('save_to_library', data);
-                this.closeDialog();
+                    this.$socket.emit('save_to_library', data);
+                    this.closeDialog();
+                }
             }
         },        
         openNewFolderDialog(item){

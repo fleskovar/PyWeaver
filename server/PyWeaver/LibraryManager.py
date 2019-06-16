@@ -44,7 +44,7 @@ class LibraryManager(object):
                     ui_code_path = file_path
                 elif f.endswith('.js'):
                     ui_script_path = file_path
-                elif f.endswith('.xml'):
+                elif f.endswith('.json'):
                     meta_path = file_path
                 elif f.endswith('.txt'):
                     doc_path = file_path
@@ -99,6 +99,9 @@ class LibraryManager(object):
                     # We found files, this folder is a template this should break the  loop
                     template_paths.append(os.path.join(d[1], f))
                     tree_obj['lib_id'] = lib_id
+                    tree_obj['path'] = os.path.join(d[1], f)
+                    # TODO: add metadata here
+                    #tree_obj['meta'] = read .json file
                     lib_id += 1
                 else:
                     tree_obj['children'] = []
@@ -128,16 +131,18 @@ class LibraryManager(object):
     def get_tree(self):
         return self.tree
 
-    def save(self, path, node_data):
+    def save(self, path, node_data, overwrite):
         name = node_data['name']
+        cwd = path
 
-        # Validate that the name is nor already in use
-        name = self.get_unique_name(path, name)  # If name is in use, append '_i' at the end
-
-        cwd = os.path.join(path, name)
+        if overwrite is False:
+            # Validate that the name is nor already in use
+            name = self.get_unique_name(path, name)  # If name is in use, append '_i' at the end
+            cwd = os.path.join(path, name)
+        else:
+            shutil.rmtree(path, ignore_errors=True)
 
         os.mkdir(cwd)  # Creates the new folder
-
         python_file = os.path.join(cwd, 'code.py')
         f = open(python_file, "w+")
         f.write(node_data['code'])
@@ -151,6 +156,11 @@ class LibraryManager(object):
         js_file = os.path.join(cwd, 'ui_script.js')
         f = open(js_file, "w+")
         f.write(node_data['display_act_code'])
+        f.close()
+
+        meta_file = os.path.join(cwd, 'meta.json')
+        f = open(meta_file, "w+")
+        f.write(node_data['meta'])
         f.close()
 
     def new_folder(self, folder_path, folder_name):
