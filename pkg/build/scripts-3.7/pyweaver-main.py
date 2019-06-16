@@ -1,3 +1,3 @@
-from PyWeaver import main
+from PyWeaver.main import start
 
-main.start()
+start()
