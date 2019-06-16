@@ -18,13 +18,6 @@ I wanted the tool to have enough flexibility to display different type of plots 
 
 Ultimately, PyWeaver will have the functionality to store and grow a library of computational nodes that users will be able to drag & drop to define their workflows. They will also be able to easily develop their own nodes to fit their specific needs.
 
-## Installation
-If you want to run the current development version:
-Clone the repo, cd into client, npm i and npm run serve.
-Also, cd into server, run python main.py.
-
-This will be improved shortly.
-
 ![pyweaver_1](https://user-images.githubusercontent.com/6884660/57988776-70d97e00-7a68-11e9-9bb5-7f304aec0bac.PNG)
 
 ## How it works
