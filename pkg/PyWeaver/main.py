@@ -2,6 +2,7 @@ from flask import Flask, json
 from flask_socketio import SocketIO, emit
 import sys
 from copy import deepcopy
+import webbrowser
 
 from PyWeaver.Graph import Graph
 from PyWeaver.results_encoder import CustomJSONEncoder
@@ -258,7 +259,13 @@ init_path = deepcopy(sys.path)
 graph_root = Graph()
 library = LibraryManager()
 
-if __name__ == '__main__':
-    print('Started')
-    socketio.run(app, host='localhost', port=5000)
 
+def start():
+    print('Started at localhost:5000. Make sure to use Chrome')
+    socketio.run(app, host='localhost', port=5000)
+    client_url = "https://localhost:5000"
+    webbrowser.open_new(client_url)
+
+
+if __name__ == '__main__':
+    start()
