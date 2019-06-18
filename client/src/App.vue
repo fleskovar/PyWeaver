@@ -72,9 +72,39 @@
           ></v-overflow-btn>
 
           <v-divider vertical/>
-          <v-text-field small placeholder='Node Library Search...' class='caption' prepend-inner-icon="library_books"/>
- 
+          <v-autocomplete ref='search_bar'
+           small placeholder='Node Library Search...'
+           class='caption'
+           prepend-inner-icon="library_books"
+           :items="calc_list"
+           :filter="nodeLibraryFilter"
+           return-object
+           v-model='library_search_val'
+           auto-select-first
+           @change='librarySearchSelection(library_search_val)'
+           >
+
+            <template v-slot:selection="data">
+                {{data.item.name}}
+            </template>
+
+            <template v-slot:item="data">              
+                <template>
+                  <v-list-tile-avatar @click='librarySearchSelection(data.item)'>
+                    <img :src="data.item.avatar">
+                  </v-list-tile-avatar>
+                  <v-list-tile-content @click='librarySearchSelection(data.item)'>
+                    <v-list-tile-title v-html="data.item.name"></v-list-tile-title>
+                    <v-list-tile-sub-title v-html="data.item.path"></v-list-tile-sub-title>
+                  </v-list-tile-content>
+                </template>              
+            </template>
+
+          </v-autocomplete>
+
         </v-toolbar>
+
+
 
         <!-- Using grid
         <v-card flat height='100%'>
@@ -133,8 +163,9 @@ export default {
       ],
       stroke_size: '',
       showOptionsDialog: false,
+      library_search_val: null,
     }
-  },  
+  },
   mounted(){   
     var container = document.getElementById('canvas');    
     var canvas = new Canvas(container, this.$store);
@@ -143,9 +174,37 @@ export default {
     EventBus.$on('update_displays', this.updateCanvas); 
     
     window.setInterval(() => {this.PushModel();},30000);
-  },
 
-  methods:{  
+    var vm = this;
+    window.addEventListener('keyup', function(event) {
+      // If down arrow was pressed...
+      if (event.keyCode == 32 && (event.target.localName != 'input' || event.target.localName != 'textarea'))
+      { 
+        vm.captureSearchFocus();
+      }
+    });
+
+  },
+  methods:{      
+    librarySearchSelection: function(item){
+      this.$socket.emit('load_node', item.lib_id);
+      this.library_search_val= null;
+    },
+    nodeLibraryFilter (item, queryText, itemText) {
+      /*
+      const textOne = item.name.toLowerCase()
+      const textTwo = item.abbr.toLowerCase()
+      const searchText = queryText.toLowerCase()
+
+      return textOne.indexOf(searchText) > -1 ||
+        textTwo.indexOf(searchText) > -1
+      */
+      return item.name == queryText
+    },
+    captureSearchFocus(){      
+      this.$refs.search_bar.focus();
+      this.library_search_val= null;
+    },
     SetDashed(val){
       this.$store.dispatch('change_element_dashed', val);
     },
@@ -210,6 +269,11 @@ export default {
     document_name:{
       get: function(){
         return this.$store.state.document_name;
+      }
+    },
+    calc_list:{
+      get: function(){
+        return this.$store.state.calcs_list;
       }
     },
     canvas_color:{

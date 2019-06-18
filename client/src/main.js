@@ -13,6 +13,8 @@ import DisplayConstants from './Constants.js'
 import 'roboto-fontface/css/roboto/roboto-fontface.css'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 
+import axios from 'axios'
+
 Vue.use(DisplayConstants);
 Vue.component('plot', Plot);
 Vue.component('grid', Grid);
@@ -20,37 +22,23 @@ Vue.directive('observe-visibility', ObserveVisibility)
 
 Vue.config.productionTip = false;
 
-/*
-//Gets initial configuration for client
-var xhr = new XMLHttpRequest();
-xhr.open("GET", "/config.json", true);
-xhr.timeout = 2000; // time in milliseconds
 
-xhr.onload = function () {
-  // Request finished. Do processing here.
-  try{
-    var config = JSON.parse(xhr.responseText);
-    store.state.config = config;
-  }catch{}
-  Vue.use(VueSocketio, socket, {store});
-  new Vue({
-    store,
-    render: h => h(App),
-  }).$mount('#app')
-};
+var ax = axios.create({
+  timeout: 5000,
+  baseURL: 'http://localhost:5000/',
+});
 
-xhr.ontimeout = function (e) {
-  // XMLHttpRequest timed out. Do something here.
-  Vue.use(VueSocketio, socket, {store});
-  new Vue({
-    store,
-    render: h => h(App),
-  }).$mount('#app')
-};
-xhr.send();
-*/
-Vue.use(VueSocketio, socket, {store});
-  new Vue({
-    store,
-    render: h => h(App),
-  }).$mount('#app')
+ax.get('/config', {withCredentials: false})
+  .then(function (response) {
+    store.state.config = response.data;
+  })
+  .catch(function (error) {
+    console.log(error);
+  }).then(function(){
+    Vue.use(VueSocketio, socket, {store});
+    new Vue({
+      store,
+      render: h => h(App),
+    }).$mount('#app')
+  });
+

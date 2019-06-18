@@ -20,8 +20,9 @@ socketio = SocketIO(app, json=json)
 def root():
     return app.send_static_file('index.html')
 
-@app.route('/config.json')
+@app.route('/config')
 def get_config_file():
+    print('config request')
     f = open('client_pref.json')
     config = f.read()
     f.close()
@@ -235,8 +236,14 @@ def rename_folder(folder_data):
 def refresh_library():
     global library
     library = LibraryManager()
-    tree = library.get_tree()
-    emit('set_library_tree', tree)
+    tree, calcs_list = library.get_tree()
+
+    data={
+        'tree': tree,
+        'calcs': calcs_list
+    }
+
+    emit('set_library_tree', data)
 
 @socketio.on('load_model')
 def load_model(xml):
@@ -265,7 +272,8 @@ def start():
     print('Started at localhost:5000. Make sure to use Chrome')
     socketio.run(app, host='localhost', port=5000)
     client_url = "https://localhost:5000"
-    webbrowser.open_new(client_url)
+    browser = webbrowser.get()
+    browser.open_new(client_url)
 
 
 if __name__ == '__main__':

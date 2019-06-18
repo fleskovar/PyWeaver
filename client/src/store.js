@@ -32,9 +32,13 @@ export default new Vuex.Store({
     session_id: null,
     code_error_dict: {},
     code_parse_error_list: [],
+    calcs_list: [],
     
   },
   mutations: {
+    calc_list_change: function(state, calcs){
+      state.calcs_list = calcs;
+    },
     add_code_error: function(state, e){
       state.code_error_dict[e.id] = {line: e.line, type: e.error_tyoe, error: e.error};
     },
@@ -190,8 +194,9 @@ export default new Vuex.Store({
       context.state.canvas.addEdge(conn_data);
       context.state.code_nodes[conn_data.target_id].inputs[conn_data.target_var] = {id: conn_data.source_id, var_name: conn_data.source_var};
     },
-    socket_setLibraryTree(context, tree){
-      context.commit('tree_change', tree);
+    socket_setLibraryTree(context, data){
+      context.commit('tree_change', data[0]);
+      context.commit('calc_list_change', data[1]);
     },
     socket_changeNodeInputPorts(context, port_names){      
       let canvas = context.state.canvas;

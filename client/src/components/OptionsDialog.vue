@@ -48,7 +48,7 @@ export default {
             get(){return this.$store.state.config.dark_mode},
             set(val){ 
                 this.$store.dispatch('change_dark_mode', val);
-                this.$$store.dispatch('sync_model_with_server');
+                this.$store.dispatch('sync_model_with_server');
                 this.$store.dispatch('save_config_file');
             }            
         }
