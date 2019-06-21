@@ -7,39 +7,52 @@ PyWeaver/LibraryManager.py
 PyWeaver/NodeTemplate.py
 PyWeaver/Nodes.py
 PyWeaver/__init__.py
+PyWeaver/client_pref.json
 PyWeaver/code_parsing.py
 PyWeaver/main.py
 PyWeaver/model_manager.py
 PyWeaver/results_encoder.py
 PyWeaver/lib/core/Input/Grid/code.py
+PyWeaver/lib/core/Input/Grid/meta.json
 PyWeaver/lib/core/Input/Grid/ui.html
 PyWeaver/lib/core/Input/Grid/ui_script.js
 PyWeaver/lib/core/Input/Vector/code.py
+PyWeaver/lib/core/Input/Vector/meta.json
 PyWeaver/lib/core/Input/Vector/ui.html
 PyWeaver/lib/core/Input/Vector/ui_script.js
 PyWeaver/lib/core/Plot/Generic/Chart/code.py
+PyWeaver/lib/core/Plot/Generic/Chart/meta.json
 PyWeaver/lib/core/Plot/Generic/Chart/ui.html
 PyWeaver/lib/core/Plot/Generic/Chart/ui_script.js
 PyWeaver/lib/core/Plot/Generic/Trace/code.py
+PyWeaver/lib/core/Plot/Generic/Trace/meta.json
 PyWeaver/lib/core/Plot/Generic/Trace/ui.html
 PyWeaver/lib/core/Plot/Generic/Trace/ui_script.js
-PyWeaver/lib/core/Plot/Scatter/meta.xml
+PyWeaver/lib/core/Plot/Scatter/meta.json
 PyWeaver/lib/core/Plot/Scatter/reedme.txt
 PyWeaver/lib/core/Plot/Scatter/script.js
 PyWeaver/lib/core/Plot/Scatter/simple_plot_logic.py
 PyWeaver/lib/core/Plot/Scatter/ui.html
 PyWeaver/lib/core/Plot/Statistics/Histogram/code.py
+PyWeaver/lib/core/Plot/Statistics/Histogram/meta.json
 PyWeaver/lib/core/Plot/Statistics/Histogram/ui.html
 PyWeaver/lib/core/Plot/Statistics/Histogram/ui_script.js
 PyWeaver/lib/core/Plot/Statistics/Pair Plot/code.py
+PyWeaver/lib/core/Plot/Statistics/Pair Plot/meta.json
 PyWeaver/lib/core/Plot/Statistics/Pair Plot/ui.html
 PyWeaver/lib/core/Plot/Statistics/Pair Plot/ui_script.js
 PyWeaver/lib/core/Stats/Approximations/Approximate Normal/code.py
+PyWeaver/lib/core/Stats/Approximations/Approximate Normal/meta.json
 PyWeaver/lib/core/Stats/Approximations/Approximate Normal/ui.html
 PyWeaver/lib/core/Stats/Approximations/Approximate Normal/ui_script.js
 PyWeaver/lib/core/Stats/PDF/Normal/code.py
+PyWeaver/lib/core/Stats/PDF/Normal/meta.json
 PyWeaver/lib/core/Stats/PDF/Normal/script.js
 PyWeaver/lib/core/Stats/PDF/Normal/ui.html
+PyWeaver/lib/core/Time Series/Filter/Hample Filter/code.py
+PyWeaver/lib/core/Time Series/Filter/Hample Filter/meta.json
+PyWeaver/lib/core/Time Series/Filter/Hample Filter/ui.html
+PyWeaver/lib/core/Time Series/Filter/Hample Filter/ui_script.js
 PyWeaver/lib/core/Vector Manipulation/Bins/code.py
 PyWeaver/lib/core/Vector Manipulation/Bins/ui.html
 PyWeaver/lib/core/Vector Manipulation/Bins/ui_script.js
@@ -50,7 +63,7 @@ PyWeaver/static/favicon.ico
 PyWeaver/static/grid.gif
 PyWeaver/static/index.html
 PyWeaver/static/css/app.0f269eea.css
-PyWeaver/static/css/chunk-vendors.5f6e0a8b.css
+PyWeaver/static/css/chunk-vendors.a78af2c6.css
 PyWeaver/static/fonts/MaterialIcons-Regular.0509ab09.woff2
 PyWeaver/static/fonts/MaterialIcons-Regular.29b882f0.woff
 PyWeaver/static/fonts/MaterialIcons-Regular.96c47680.eot
@@ -83,10 +96,10 @@ PyWeaver/static/img/error.3aacd2be.png
 PyWeaver/static/img/hourglass.14df74c7.png
 PyWeaver/static/img/success.0295b738.png
 PyWeaver/static/img/warning.a999d80d.png
-PyWeaver/static/js/app.4cf17b1a.js
-PyWeaver/static/js/app.4cf17b1a.js.map
-PyWeaver/static/js/chunk-vendors.b2ed7773.js
-PyWeaver/static/js/chunk-vendors.b2ed7773.js.map
+PyWeaver/static/js/app.753ac40d.js
+PyWeaver/static/js/app.753ac40d.js.map
+PyWeaver/static/js/chunk-vendors.5a64a76d.js
+PyWeaver/static/js/chunk-vendors.5a64a76d.js.map
 PyWeaver/static/mxGraph/css/common.css
 PyWeaver/static/mxGraph/css/explorer.css
 PyWeaver/static/mxGraph/images/button.gif

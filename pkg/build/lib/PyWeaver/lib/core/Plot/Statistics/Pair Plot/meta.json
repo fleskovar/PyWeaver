@@ -1,0 +1,4 @@
+{
+    "keywords": ["plotly", "scatter", "plot", "histogram", "statistics", "pair", "multiple", "matrix", "correlation"],
+    "description": "Quick pair plot. If only a single series is provided returns a histogram"
+}

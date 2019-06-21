@@ -1,11 +1,11 @@
 from flask_socketio import emit
 from collections import OrderedDict
-from PyWeaver.code_parsing import parse_function
 import traceback
 import re
 from copy import deepcopy
 import sys, os
 
+from PyWeaver.code_parsing import parse_function
 
 class Node(object):
 

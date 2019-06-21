@@ -3,6 +3,7 @@ from flask_socketio import SocketIO, emit
 import sys
 from copy import deepcopy
 import webbrowser
+import os, inspect, shutil
 
 from PyWeaver.Graph import Graph
 from PyWeaver.results_encoder import CustomJSONEncoder
@@ -23,7 +24,9 @@ def root():
 @app.route('/config')
 def get_config_file():
     print('config request')
-    f = open('client_pref.json')
+    cwd = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+    config_path = os.path.join(cwd, 'client_pref.json')
+    f = open(config_path)
     config = f.read()
     f.close()
     return config
@@ -255,7 +258,9 @@ def load_model(xml):
 
 @socketio.on('save_config_file')
 def save_config_file(xml):
-    f = open('client_pref.json', 'w')
+    cwd = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+    config_path = os.path.join(cwd, 'client_pref.json')
+    f = open(config_path, 'w')
     f.write(xml)
     f.close()
     
@@ -263,17 +268,17 @@ def save_config_file(xml):
 # Register initial modules that should not be deleted when restarting the server
 init_modules = sys.modules.keys()
 init_path = deepcopy(sys.path)
-
 graph_root = Graph()
 library = LibraryManager()
 
 
 def start():
     print('Started at localhost:5000. Make sure to use Chrome')
-    socketio.run(app, host='localhost', port=5000)
-    client_url = "https://localhost:5000"
+    client_url = "http://localhost:5000"
     browser = webbrowser.get()
     browser.open_new(client_url)
+    socketio.run(app, host='localhost', port=5000)
+
 
 
 if __name__ == '__main__':

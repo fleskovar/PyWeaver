@@ -1,0 +1,4 @@
+{
+    "keywords": ["normal", "distribution", "mu", "std", "sigma", "mean", "gaussian"],
+    "description": "Generates a normal distribution with the given mean and standard deviation"
+}

@@ -1,0 +1,4 @@
+{
+    "keywords": ["plotly", "series", "plot", "scatter", "line", "bars", "chart" ,"figure"],
+    "description": "Generic Plotly plot. Requires a 'Trace' component as input"
+}

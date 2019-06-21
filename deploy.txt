@@ -1,4 +1,9 @@
+C:/Users/Fran/Anaconda3/Scripts/activate
+conda activate base
+
 change version number in setup.py
 python setup.py sdist bdist_wheel
 upload to github
 twine upload dist/*
+or
+pip install dist/pyweaver-0.0.8-py3-none-any.whl

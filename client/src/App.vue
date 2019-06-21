@@ -6,18 +6,6 @@
         <span class="font-weight-light">Weaver</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      
-      <v-toolbar-items>
-        <v-btn flat small v-on:click='OpenFile'>          
-          <span>Open file</span>
-          <v-icon>folder_open</v-icon>
-        </v-btn>
-        
-        <v-btn flat small v-on:click='SaveModel'>
-          <span>Save model</span>
-          <v-icon>cloud_download</v-icon>
-        </v-btn>
-      </v-toolbar-items>
         
       <v-chip color="green" text-color="white" v-if='connected'>Connected</v-chip>  
       <v-chip color="red" text-color="white" v-if='!connected'>Disconnected</v-chip>
@@ -27,6 +15,32 @@
     <SideBar/>
 
     <v-content style='overflow: hidden'>
+        
+        <!--Server Control + Files save/load -->
+        <v-toolbar dark class="grey darken-1" dense>                  
+          <v-item-group dense>
+            <v-btn flat small icon @click='OpenFile'>          
+              <v-icon>folder_open</v-icon>
+            </v-btn>
+            <v-btn flat small icon @click='SaveModel'>
+              <v-icon>cloud_download</v-icon>
+            </v-btn>
+          </v-item-group>
+          <v-divider vertical/>        
+          <v-item-group dense>
+            <v-btn flat icon small @click="runServer()">
+              <v-icon small>play_arrow</v-icon>
+            </v-btn>
+            <v-btn flat icon small>
+              <v-icon small>pause</v-icon>
+            </v-btn>  
+            <v-btn flat icon small @click="resetServer">
+              <v-icon small>refresh</v-icon>
+            </v-btn>            
+          </v-item-group>
+        </v-toolbar>
+
+        <!--Edges and cells format + Library quick search-->
         <v-toolbar dark class="grey darken-2" dense>          
                       
           Ouline        
@@ -82,12 +96,22 @@
            v-model='library_search_val'
            auto-select-first
            @change='librarySearchSelection(library_search_val)'
+           @blur='librarySearchMenu = false'
+           @keyup.esc='loseLibrarySearchFocus()'
+           :menu-props="{
+             value: librarySearchMenu,
+             openOnClick: true, 
+             dark: true,
+             closeOnContentClick:true, 
+             closeOnClick:true,
+             }"
            >
 
             <template v-slot:selection="data">
                 {{data.item.name}}
             </template>
 
+            <!--
             <template v-slot:item="data">              
                 <template>
                   <v-list-tile-avatar @click='librarySearchSelection(data.item)'>
@@ -95,7 +119,20 @@
                   </v-list-tile-avatar>
                   <v-list-tile-content @click='librarySearchSelection(data.item)'>
                     <v-list-tile-title v-html="data.item.name"></v-list-tile-title>
-                    <v-list-tile-sub-title v-html="data.item.path"></v-list-tile-sub-title>
+                    <v-list-tile-sub-title v-html="data.item.description"></v-list-tile-sub-title>
+                  </v-list-tile-content>
+                </template>              
+            </template>
+            -->
+
+            <template v-slot:item="data">              
+                <template>
+                  <v-list-tile-avatar>
+                    <img :src="data.item.avatar">
+                  </v-list-tile-avatar>
+                  <v-list-tile-content>
+                    <v-list-tile-title v-html="data.item.name"></v-list-tile-title>
+                    <v-list-tile-sub-title v-html="data.item.description"></v-list-tile-sub-title>
                   </v-list-tile-content>
                 </template>              
             </template>
@@ -103,7 +140,6 @@
           </v-autocomplete>
 
         </v-toolbar>
-
 
 
         <!-- Using grid
@@ -127,7 +163,6 @@
     <LibrarySaveDialog/>    
 
     <v-footer class="pa-3" app dark>
-      <v-btn color="grey darken-4" dark v-on:click="resetServer">Reset</v-btn>
       <v-spacer></v-spacer>
         <div>&copy; {{ new Date().getFullYear() }}</div>
     </v-footer>
@@ -141,6 +176,7 @@ import CodeEditor from './components/CodeEditor'
 import SideBar from './components/SideBar'
 import LibrarySaveDialog from './components/LibrarySaveDialog'
 import EventBus from './EventBus.js'
+import fuzzysort from 'fuzzysort'
 
 export default {
   name: 'App',
@@ -164,6 +200,8 @@ export default {
       stroke_size: '',
       showOptionsDialog: false,
       library_search_val: null,
+      librarySearchMenu: false,
+      library_sort: null,
     }
   },
   mounted(){   
@@ -172,38 +210,65 @@ export default {
     canvas.mount();
     this.$store.commit('set_canvas', canvas);
     EventBus.$on('update_displays', this.updateCanvas); 
+    //this.library_sort = fuzzysort.new({threshold: -1000});
+    this.library_sort = fuzzysort.new();
     
     window.setInterval(() => {this.PushModel();},30000);
 
     var vm = this;
     window.addEventListener('keyup', function(event) {
       // If down arrow was pressed...
-      if (event.keyCode == 32 && (event.target.localName != 'input' || event.target.localName != 'textarea'))
+      if (event.target.localName != 'input' && event.target.localName != 'textarea')
       { 
-        vm.captureSearchFocus();
+        if(event.keyCode == 32){
+          vm.captureSearchFocus();
+        }
+        else if(event.keyCode === 13 && event.shiftKey){
+          vm.runServer();
+        }        
       }
     });
 
   },
-  methods:{      
+  methods:{    
+    loseLibrarySearchFocus(){
+      this.$nextTick(() => {
+        this.library_search_val = false;
+        this.librarySearchMenu = false;        
+      });
+    },
+    runServer: function(){
+      this.$store.dispatch('execute_server');
+    },  
     librarySearchSelection: function(item){
-      this.$socket.emit('load_node', item.lib_id);
-      this.library_search_val= null;
+      if(item && item.hasOwnProperty('lib_id')){
+        this.$socket.emit('load_node', item.lib_id);
+        this.$nextTick(() => {
+          this.library_search_val= null; 
+        });        
+      }
     },
     nodeLibraryFilter (item, queryText, itemText) {
-      /*
-      const textOne = item.name.toLowerCase()
-      const textTwo = item.abbr.toLowerCase()
-      const searchText = queryText.toLowerCase()
+      if(item){
+        /*
+        var results = this.library_sort.go(queryText, this.calc_list,
+        {
+          keys: ['name', 'keywords', 'description'],       
+          scoreFn: (a) => Math.max(a[0]?a[0].score:-1000, a[1]?a[1].score-100:-1000),
+        });
+        */
 
-      return textOne.indexOf(searchText) > -1 ||
-        textTwo.indexOf(searchText) > -1
-      */
-      return item.name == queryText
+        var results = this.library_sort.single(queryText, item.name);
+        console.log(results);
+        if(results)
+          return true
+        else return false     
+      }else return true
     },
     captureSearchFocus(){      
       this.$refs.search_bar.focus();
       this.library_search_val= null;
+      this.librarySearchMenu = true;
     },
     SetDashed(val){
       this.$store.dispatch('change_element_dashed', val);
@@ -238,7 +303,12 @@ export default {
       },
       resetServer: function(){
         //Resets server
-        this.$socket.emit('reset');
+        var proceed = false;
+        
+        proceed = confirm("Reset server? This will erase all unsaved data");
+
+        if(proceed)
+          this.$socket.emit('reset');
         },
       SaveModel: function(){
         var xmlString = this.$store.state.canvas.GetModelXML();

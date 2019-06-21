@@ -134,11 +134,11 @@ export default class Canvas{
         mxEvent.addMouseWheelListener(mxUtils.bind(this, function(evt, up)
         {
             //MouseScroll = zoom
-            if(up == true)
-                graph.zoomIn();
-            else graph.zoomOut();
-
-            	
+            if(evt.target.localName == 'svg'){
+                if(up == true)
+                    graph.zoomIn();
+                else graph.zoomOut();
+            }	
         }));
 
         var keyHandler = new mxKeyHandler(graph);
@@ -351,9 +351,9 @@ export default class Canvas{
         var style_string = '';
 
         if(position == 0)
-            style_string = 'labelPosition=right;align=left;deletable=0'; //Input port
+            style_string = 'labelPosition=left;verticalLabelPosition=top;align=right;deletable=0'; //Input port
         else 
-            style_string = 'labelPosition=left;align=right;deletable=0'; //Output port
+            style_string = 'labelPosition=right;verticalLabelPosition=top;align=left;deletable=0'; //Output port
 
         //Remove ports that are not listed in the new array
         this.graph.getModel().beginUpdate();

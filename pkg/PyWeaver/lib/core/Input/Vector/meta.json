@@ -1,0 +1,4 @@
+{
+    "keywords": ["spreadsheet", "columns", "rows", "excell", "cell", "vector", "numpy", "1D"],
+    "description": "Vector / Column input. Single column supporting numbers, text & dates."
+}

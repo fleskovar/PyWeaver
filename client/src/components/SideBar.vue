@@ -23,7 +23,7 @@
 
         <v-divider/>
 
-        <v-list-tile @click="addNode" @keydown.shift.enter="canvasShortcuts">
+        <v-list-tile @click="addNode">
           <v-list-tile-action>
             <v-btn icon class="text-lg-right">              
               <v-icon>add</v-icon>
@@ -41,34 +41,21 @@
             </v-btn>
           </v-list-tile-action>   
           <v-list-tile-content>Node Library</v-list-tile-content>     
-        </v-list-tile>        
+        </v-list-tile>      
 
-        <v-card v-show='!drawer_mini' style='padding: 10px'>
-          <v-text-field
-            v-model="search"
-            label="Search Node Library"
-            dark
-            flat
-            solo-inverted
-            hide-details
-            clearable
-            clear-icon="mdi-close-circle-outline"
-          />
-        </v-card>
+        
 
         <v-card v-show='!drawer_mini' style='padding: 20px; overflow-y: scroll' height='300px' flat>          
-          <v-treeview :items="items" ref='tree' :search="search" :filter="filter" open-on-click>
+          <v-treeview :items="items" ref='tree' open-on-click>
             <template v-slot:prepend="{ item }">
               <v-icon v-if="item.children">folder</v-icon>
               <v-icon v-if="!item.children">insert_drive_file</v-icon>
             </template>
 
-             <template v-slot:label="{item}">
-              <div @click='addLibraryNode(item.lib_id)'>
-                {{item.name}}
-                <v-icon v-if="!item.children">add_circle_outline</v-icon>
-                <v-btn v-if="item.id==0" icon @click='refreshLibrary'><v-icon>refresh</v-icon></v-btn> <!--Adds a special refresh icon for the root folder to trigger library refresh on the server--> 
-              </div>
+             <template v-slot:label="{item}">              
+              <span @dblclick='addLibraryNode(item.lib_id)'>{{item.name}}</span>
+              <!--<v-icon v-if="!item.children">add_circle_outline</v-icon>-->
+              <v-btn v-if="item.id==0" icon @click='refreshLibrary'><v-icon>refresh</v-icon></v-btn> <!--Adds a special refresh icon for the root folder to trigger library refresh on the server--> 
             </template>
 
           </v-treeview>
@@ -76,18 +63,8 @@
 
         <v-divider/>
 
-        <v-list-tile @click="runServer">
-          <v-list-tile-action>
-            <v-btn icon class="text-lg-right">              
-              <v-icon>computer</v-icon>
-            </v-btn>
-          </v-list-tile-action>   
-          <v-list-tile-content>RUN</v-list-tile-content>     
-        </v-list-tile>
 
-        <v-divider/>
-
-        <v-list-tile>
+        <v-list-tile @click='showOptionsDialog=true'>
           <v-list-tile-action>
             <v-btn icon class="text-lg-right" @click='showOptionsDialog=true'>              
               <v-icon>settings</v-icon>
@@ -104,7 +81,6 @@
 
 
 <script>
-import Fuse from 'fuse.js';
 import OptionsDialog from './OptionsDialog.vue'
 
 export default {
@@ -117,15 +93,6 @@ export default {
     data(){
         return{
             drawer_mini: true,            
-            search: '',
-            fuse_options: {
-              keys:['name'],
-              distance: 100,
-              location: 0,
-              maxPatternLength: 32,
-              minMatchCharLength: 1,
-              id: "id"
-            },
             showOptionsDialog: false
         }
     },
@@ -136,9 +103,6 @@ export default {
       refreshLibrary(){
         this.$socket.emit('refresh_library');
       },
-      runServer: function(){
-        this.$store.dispatch('execute_server');
-      },
       resetServer: function(){
         //Resets server
         this.$socket.emit('reset');
@@ -148,24 +112,15 @@ export default {
       },
       addLibraryNode: function(id){
         this.$socket.emit('load_node', id)
-      },      
-      treeFilter: function(item, search, textKey){
-
-          var fuse = new Fuse(this.items, this.fuse_options);
-          var search_results = fuse.search(search);
-
-          return search_results.indexOf(item.id) > -1
-      },
+      },     
+      
     },
     computed:{
       items:{
         get(){
           return this.$store.state.libraryTree;
         }
-      },
-      filter(){        
-        return this.treeFilter;
-      },
+      },      
       document_name:{
         get(){ return this.$store.state.document_name},
         set(val){ this.$store.commit('set_document_name', val);}

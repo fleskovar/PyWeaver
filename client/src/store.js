@@ -24,7 +24,7 @@ export default new Vuex.Store({
     config:{
       auto_exec: true,
       sync_model: true,
-      dark_mode: true,
+      dark_mode: false,
     },    
     run_id: 0,
     libraryTree: [],

@@ -1,2 +1,3 @@
 recursive-include PyWeaver/lib *
 recursive-include PyWeaver/static *
+include PyWeaver/client_pref.json

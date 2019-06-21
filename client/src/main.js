@@ -42,3 +42,11 @@ ax.get('/config', {withCredentials: false})
     }).$mount('#app')
   });
 
+/*
+Vue.use(VueSocketio, socket, {store});
+    new Vue({
+      store,
+      render: h => h(App),
+    }).$mount('#app')
+
+*/

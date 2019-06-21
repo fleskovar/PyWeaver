@@ -1,10 +1,9 @@
 from collections import defaultdict
-from PyWeaver.Nodes import Node
 import sys, os
 from flask_socketio import emit
-
 import uuid
 
+from PyWeaver.Nodes import Node
 
 class Graph(object):
 
@@ -87,7 +86,11 @@ class Graph(object):
 
         for id in exec_list:
             exe_node = self.nodes[id]
-            node_scope = scope_data[id]
+            if id in scope_data:
+                node_scope = scope_data[id]
+            else:
+                # If the id was not found in the input data, set the local sope to an empty object
+                node_scope = {}
 
             if exe_node.scope != node_scope:
                 # If the scope of the function changed, set dirty and propagate

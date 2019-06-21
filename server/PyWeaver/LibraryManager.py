@@ -1,4 +1,5 @@
 import os, inspect, shutil
+import json
 
 from PyWeaver.NodeTemplate import NodeTemplate
 
@@ -51,9 +52,23 @@ class LibraryManager(object):
 
                     # Append metadata to calc
                     calc = [c for c in calcs_list if c['path'] == p][0]
+                    
                     f = open(file_path)
-                    calc['meta'] = f.read()
-                    f.close()
+                    meta = json.loads(f.read())
+                    f.close()                    
+                    
+                    calc['keywords'] = []
+
+                    if 'keywords' in meta:
+                        calc['keywords'] = meta['keywords']
+
+                    calc['description'] = ''
+
+                    if 'description' in meta:
+                        calc['description'] = meta['description']
+                    
+                    
+                    
 
                 elif f.endswith('.txt'):
                     doc_path = file_path

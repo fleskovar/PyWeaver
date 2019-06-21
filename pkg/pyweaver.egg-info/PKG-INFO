@@ -1,12 +1,12 @@
 Metadata-Version: 2.1
 Name: pyweaver
-Version: 0.0.7
+Version: 0.0.8
 Summary: Web based Python visual programming
 Home-page: https://github.com/fleskovar/PyWeaver
 Author: Example Author
 Author-email: francisco.leskovar@gmail.com
 License: UNKNOWN
-Download-URL: https://github.com/fleskovar/PyWeaver/archive/v0.0.7.tar.gz
+Download-URL: https://github.com/fleskovar/PyWeaver/archive/v0.0.8.tar.gz
 Description: # PyWeaver
         PyWeaver is a visual code editor for Python that leverages web technologies. It is inspired by Jupyter Notebook and Simulink. The project is under development.
         Currently working with Python 2. Python 3 support comming soon.

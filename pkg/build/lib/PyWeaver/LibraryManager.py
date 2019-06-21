@@ -1,26 +1,29 @@
 import os, inspect, shutil
+import json
 
 from PyWeaver.NodeTemplate import NodeTemplate
 
 class LibraryManager(object):
 
     def __init__(self):
-        templates, names, tree = self.build_templates()
+        templates, names, tree, calcs_list = self.build_templates()
         self.templates = templates
         self.names = names
         self.tree = tree
+        self.calcs_list = calcs_list
 
 
     def build_templates(self):
         cwd = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
         templates_cwd = os.path.join(cwd, 'lib')
 
-        template_paths, tree = self.find_templates(templates_cwd)
-        templates, names = self.compile_templates(template_paths)
+        template_paths, tree, calcs_list = self.find_templates(templates_cwd)
+        templates, names = self.compile_templates(template_paths, calcs_list)
 
-        return templates, names, tree
+        return templates, names, tree, calcs_list
 
-    def compile_templates(self, paths):
+
+    def compile_templates(self, paths, calcs_list):
 
         n_temps = dict()
         lib_id = 0
@@ -44,8 +47,29 @@ class LibraryManager(object):
                     ui_code_path = file_path
                 elif f.endswith('.js'):
                     ui_script_path = file_path
-                elif f.endswith('.xml'):
+                elif f.endswith('.json'):
                     meta_path = file_path
+
+                    # Append metadata to calc
+                    calc = [c for c in calcs_list if c['path'] == p][0]
+                    
+                    f = open(file_path)
+                    meta = json.loads(f.read())
+                    f.close()                    
+                    
+                    calc['keywords'] = []
+
+                    if 'keywords' in meta:
+                        calc['keywords'] = meta['keywords']
+
+                    calc['description'] = ''
+
+                    if 'description' in meta:
+                        calc['description'] = meta['description']
+                    
+                    
+                    
+
                 elif f.endswith('.txt'):
                     doc_path = file_path
 
@@ -69,6 +93,7 @@ class LibraryManager(object):
         lib_id = 0
         tree_id = 0
         tree_elements = dict()
+        calcs_list = []
 
         tree_obj = {}
         tree_obj['id'] = tree_id
@@ -99,6 +124,10 @@ class LibraryManager(object):
                     # We found files, this folder is a template this should break the  loop
                     template_paths.append(os.path.join(d[1], f))
                     tree_obj['lib_id'] = lib_id
+                    tree_obj['path'] = os.path.join(d[1], f)
+                    # TODO: add metadata here
+                    #tree_obj['meta'] = read .json file
+                    calcs_list.append(tree_obj)
                     lib_id += 1
                 else:
                     tree_obj['children'] = []
@@ -114,7 +143,7 @@ class LibraryManager(object):
             queue = queue + child_folders  # Add extra dirs to queue
             child_folders = []
 
-        return template_paths, tree
+        return template_paths, tree, calcs_list
 
     def get_render(self, lib_id):
         if lib_id in self.templates:
@@ -126,18 +155,20 @@ class LibraryManager(object):
         return self.names
 
     def get_tree(self):
-        return self.tree
+        return self.tree, self.calcs_list
 
-    def save(self, path, node_data):
+    def save(self, path, node_data, overwrite):
         name = node_data['name']
+        cwd = path
 
-        # Validate that the name is nor already in use
-        name = self.get_unique_name(path, name)  # If name is in use, append '_i' at the end
-
-        cwd = os.path.join(path, name)
+        if overwrite is False:
+            # Validate that the name is nor already in use
+            name = self.get_unique_name(path, name)  # If name is in use, append '_i' at the end
+            cwd = os.path.join(path, name)
+        else:
+            shutil.rmtree(path, ignore_errors=True)
 
         os.mkdir(cwd)  # Creates the new folder
-
         python_file = os.path.join(cwd, 'code.py')
         f = open(python_file, "w+")
         f.write(node_data['code'])
@@ -153,6 +184,11 @@ class LibraryManager(object):
         f.write(node_data['display_act_code'])
         f.close()
 
+        meta_file = os.path.join(cwd, 'meta.json')
+        f = open(meta_file, "w+")
+        f.write(node_data['meta'])
+        f.close()
+
     def new_folder(self, folder_path, folder_name):
 
         # Validate that the name is nor already in use
@@ -164,7 +200,7 @@ class LibraryManager(object):
 
     def rename_folder(self, folder_path, folder_name):
 
-        # Validate that the name is nor already in use
+        # Validate that the name is not already in use
         folder_name = self.get_unique_name(folder_path, folder_name)  # If name is in use, append '_i' at the end
 
         os.rename(folder_path, os.path.join(os.path.dirname(folder_path), folder_name))  # Rename folder

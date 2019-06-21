@@ -1,0 +1,4 @@
+{
+    "keywords": ["normal", "distribution", "approximate", "regression", "mu", "std", "sigma", "mean"],
+    "description": "Finds the mean and standard deviation for the normal distribution that best describes data"
+}
