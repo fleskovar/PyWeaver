@@ -138,6 +138,11 @@
             </template>
 
           </v-autocomplete>
+          <v-btn icon @click="$socket.emit('refresh_library')">
+            <v-icon>
+              refresh
+            </v-icon>
+          </v-btn>
 
         </v-toolbar>
 
@@ -187,7 +192,6 @@ export default {
   },
   data () {
     return {           
-      connected: false,   
       toggle_exclusive: 2,   
       colors: [
         {code:'#F44336', color:'red'},
@@ -202,6 +206,7 @@ export default {
       library_search_val: null,
       librarySearchMenu: false,
       library_sort: null,
+      connected: false
     }
   },
   mounted(){   
@@ -229,9 +234,14 @@ export default {
       }
     });
 
+    this.$socket.emit('refresh_library');
+
+    this.connected = this.$socket.connected;
+
   },
   methods:{    
     loseLibrarySearchFocus(){
+      this.$refs.search_bar.blur();
       this.$nextTick(() => {
         this.library_search_val = false;
         this.librarySearchMenu = false;        
@@ -335,7 +345,8 @@ export default {
         this.$store.dispatch('update_all_cells');
       }
   },
-  computed:{           
+  computed:{      
+      
     document_name:{
       get: function(){
         return this.$store.state.document_name;
@@ -356,7 +367,8 @@ export default {
   },  
   sockets:{
     connect: function(){
-      this.connected = true;      
+      this.connected = true;
+      this.$socket.emit('refresh_library');      
     },
     disconnect: function(){
       this.connected = false;

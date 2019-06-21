@@ -5,7 +5,7 @@ import re
 from copy import deepcopy
 import sys, os
 
-from PyWeaver.code_parsing import parse_function
+from code_parsing import parse_function
 
 class Node(object):
 

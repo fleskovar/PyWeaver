@@ -5,7 +5,6 @@ import store from './store'
 import VueSocketio from 'vue-socket.io-extended'
 import socket from './socket.js';
 
-import EventBus from './EventBus.js'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import Plot from './components/Plot.vue'
 import Grid from './components/Grid/Grid.vue'
@@ -18,6 +17,8 @@ import axios from 'axios'
 Vue.use(DisplayConstants);
 Vue.component('plot', Plot);
 Vue.component('grid', Grid);
+
+
 Vue.directive('observe-visibility', ObserveVisibility)
 
 Vue.config.productionTip = false;

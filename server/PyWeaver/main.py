@@ -5,10 +5,10 @@ from copy import deepcopy
 import webbrowser
 import os, inspect, shutil
 
-from PyWeaver.Graph import Graph
-from PyWeaver.results_encoder import CustomJSONEncoder
-from PyWeaver.LibraryManager import LibraryManager
-from PyWeaver.model_manager import create_node, load_xml
+from Graph import Graph
+from results_encoder import CustomJSONEncoder
+from LibraryManager import LibraryManager
+from model_manager import create_node, load_xml
 
 
 # Flask server app
@@ -23,7 +23,6 @@ def root():
 
 @app.route('/config')
 def get_config_file():
-    print('config request')
     cwd = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
     config_path = os.path.join(cwd, 'client_pref.json')
     f = open(config_path)
@@ -68,7 +67,9 @@ def client_connected():
     global library
     global graph_root
     tree = library.get_tree()
-    emit('set_library_tree', tree)
+    
+    send_library_tree_data()
+
     emit('sync_session', graph_root.session_id)  # Send session id to the client
 
 @socketio.on('sync_model')
@@ -180,6 +181,16 @@ def get_template_names():
     global library
     return library.get_template_names()
 
+def send_library_tree_data():
+    global library
+    tree, calcs_list = library.get_tree()
+
+    data={
+        'tree': tree,
+        'calcs': calcs_list
+    }
+
+    emit('set_library_tree', data)
 
 @socketio.on('get_tree')
 def get_tree():
@@ -198,7 +209,8 @@ def save_to_library(data):
 
     library = LibraryManager()
     tree = library.get_tree()
-    emit('set_library_tree', tree)
+    
+    send_library_tree_data()
 
 
 @socketio.on('new_folder')
@@ -210,7 +222,8 @@ def new_folder(folder_data):
 
     library = LibraryManager()
     tree = library.get_tree()
-    emit('set_library_tree', tree)
+    
+    send_library_tree_data()
 
 
 @socketio.on('delete_folder')
@@ -220,7 +233,8 @@ def delete_folder(path):
 
     library = LibraryManager()
     tree = library.get_tree()
-    emit('set_library_tree', tree)
+    
+    send_library_tree_data()
 
 
 @socketio.on('rename_folder')
@@ -232,21 +246,19 @@ def rename_folder(folder_data):
 
     library = LibraryManager()
     tree = library.get_tree()
-    emit('set_library_tree', tree)
+    
+    send_library_tree_data()
 
+@socketio.on('get_library')
+def get_library():
+    global library    
+    pass
 
 @socketio.on('refresh_library')
 def refresh_library():
     global library
-    library = LibraryManager()
-    tree, calcs_list = library.get_tree()
-
-    data={
-        'tree': tree,
-        'calcs': calcs_list
-    }
-
-    emit('set_library_tree', data)
+    library = LibraryManager()    
+    send_library_tree_data()
 
 @socketio.on('load_model')
 def load_model(xml):

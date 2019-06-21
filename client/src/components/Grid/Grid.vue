@@ -22,7 +22,7 @@
       </tr>
 
       <tr>
-        <th></th>
+        <th ></th>
         <th v-for="(key, index) in columns" :key='index' class='pyw-table-header'>          
           Type: <select v-model='column_types[index]'>
             <option value="Number" selected="selected">Number</option>
@@ -30,6 +30,7 @@
             <option value="Date">Date</option>
           </select>
         </th>
+        <th class='pyw-table-header'></th>
       </tr>
 
       <tr>
@@ -69,6 +70,8 @@
            @focus_lower="focusLower(i, j)"
            :cell_class='"pyw-table-td"'
            ></Cell>
+
+           <td class='pyw-table-td'> ... </td>
       </tr>
     </tbody>
   </table>
@@ -146,6 +149,11 @@ export default {
       this.value[i][j] = val;
       this.paddFinalRow();
       this.redrawTable();
+      var next_row_i = i + 1;
+      this.$nextTick(() => {
+        this.$refs["cell_"+next_row_i+"_"+j][0].$el.click();
+      });
+      
     },
     deleteRow: function(i){
       this.value.splice(i, 1);

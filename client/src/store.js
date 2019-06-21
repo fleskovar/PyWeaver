@@ -195,8 +195,8 @@ export default new Vuex.Store({
       context.state.code_nodes[conn_data.target_id].inputs[conn_data.target_var] = {id: conn_data.source_id, var_name: conn_data.source_var};
     },
     socket_setLibraryTree(context, data){
-      context.commit('tree_change', data[0]);
-      context.commit('calc_list_change', data[1]);
+      context.commit('tree_change', data.tree);
+      context.commit('calc_list_change', data.calcs);      
     },
     socket_changeNodeInputPorts(context, port_names){      
       let canvas = context.state.canvas;
