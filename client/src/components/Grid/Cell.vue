@@ -1,5 +1,16 @@
 <template>
-    <td @dblclick="editing" tabindex="1" @click='captureFocus()' @blur='is_focused=false' :class='comp_cell_class' @keydown="processKeyDown($event)" ref="cell">
+    <td 
+      @keyup.up='$emit("up")'
+      @keyup.down='$emit("down")' 
+      @keyup.left='$emit("left")' 
+      @keyup.right='$emit("right")'  
+      @dblclick="editing" tabindex="1" 
+      @click='captureFocus()' 
+      @blur='is_focused=false' 
+      :class='comp_cell_class' 
+      @keydown="processKeyDown($event)" 
+      ref="cell">
+      
       <div style='width: minmax(100px, auto)'>
           <div v-show="edit == false">
             <label style='user-select: none'> {{ value }}</label>
@@ -9,7 +20,7 @@
             @focus="focused"
             @blur="edit = false"
             @keydown.enter="finishEdit($event)"
-            @paste ='onPaste($event)'
+            @paste ='onPaste($event)'            
           >
       </div>
     </td>
@@ -39,6 +50,9 @@ export default {
     }
   },
   methods: {
+    log(){
+      console.log("cell_"+this.i+"_"+this.j);
+    },
     focused: function() {
       //console.log('focused')
     },
@@ -59,6 +73,10 @@ export default {
           this.editing();
         }
       }
+    },
+    loseFocus: function(){
+      this.$refs.cell.blur();
+      this.is_focused = false;
     },
     captureFocus: function(){
       if(!this.edit){

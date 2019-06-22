@@ -62,14 +62,20 @@
 
           <Cell v-for="(col_name, j) in columns"
            :key='"cell_"+i+"_"+j'
-           :ref='"cell_"+i+"_"+j'
+           :ref='"cell_"+i+"_"+j'           
            v-bind:value='row[j]'
            v-on:input='(val) => cellChanged(val, i, j)'
            @focused='selected_cell={i: i, j: j}'
            @paste="(val) =>{parseVal(val, i, j)}"
            @focus_lower="focusLower(i, j)"
+           @up='moveRow(-1, i, j)'
+           @down='moveRow(1, i, j)'
+           @left='moveCol(-1, i, j)'
+           @right='moveCol(1, i, j)'
            :cell_class='"pyw-table-td"'
-           ></Cell>
+           >
+           
+           </Cell>
 
            <td class='pyw-table-td'> ... </td>
       </tr>
@@ -144,6 +150,24 @@ export default {
     focusLower: function(i, j){
       var ref_code = "cell_"+(i+1).toString()+"_"+j.toString();
       this.$refs[ref_code][0].selectCell();
+    },
+    moveCol: function(dir, i, j){
+      var new_col = j + dir;
+      var current_code = "cell_"+i+"_"+j;
+      try{        
+        var ref_code = "cell_"+i+"_"+new_col;
+        this.$refs[ref_code][0].selectCell();
+        this.$refs[current_code][0].loseFocus();
+      }catch{}      
+    },
+    moveRow: function(dir, i, j){
+      var new_row = i + dir;
+      var current_code = "cell_"+i+"_"+j;
+      try{        
+        var ref_code = "cell_"+new_row+"_"+j;
+        this.$refs[ref_code][0].selectCell();
+        this.$refs[current_code][0].loseFocus();
+      }catch{}
     },
     cellChanged: function(val, i, j){
       this.value[i][j] = val;

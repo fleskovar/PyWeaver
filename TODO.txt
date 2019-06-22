@@ -2,40 +2,54 @@ Comming up next:
 
     Table Input:
         Copy/Paste on td
-        Multi td selection
-        Enter to below cell
-        arrow keys navigation 
+        Multi td selection         
         Delete columns
         -Pandas support
-        Auto expand columns
+        Escape cancells edit
 
-    Node Library:
-       Tree fuzzy keyword search and searchbox chips     
+    Node display:
+        Fire auto-recalc on display input change
+
+    Server error:
+        File "main.py", line 146, in execute
+            for v in graph_root.nodes[n].results:
+            AttributeError: 'Node' object has no attribute 'results'
+			
+	Fix optional input
 
 Backlog:
 
-    Fix dark mode refresh pf Cells  
-    Pass config to client  
+    Fix dark mode refresh pf Cells    
 
     Nodes:
+        Optional input (handling of named inputs)
         Coloring optional input
-
-    Node metadata:
+        Optional connection/ui input
         Connector type & validation
+        Connector special scope 'multi-input': true
+        Cell selection disabled on display
+        No cell dragging with secondary button
 
     Node Library:        
         Package management with zips
         Manage library installs
+        Images for calcs
 
     UI Improvements:        
         Layers (show)
         Grouping
         Scrollbars and panning
         Background grid
-        Light/Dark Skin
         Node Search/Find on flowsheet => Focus
+        Tooltips
+        Tabs?
+        New window plot/table/ui display (multi monitor)
+        Mini-map
 
     Testing
+
+    Code reload:
+        Cells dont get properly updated until zoom in/out
 
     Develop new nodes:        
         Date/time picker
@@ -45,25 +59,17 @@ Backlog:
         Plotly: 
             Cells mouse events 
 
-    Compile workflow into single python file
+    Python:
+        Compile workflow into single python file
+        Pass node/string of nodes as a function
+        Celery/Paralelization
+        Graph not computing for all independent branches (check execution order algorithm)
 
     Replace mxgraph:
-        Find something that integrates more nicely with Vue/Vuetify
+        Find something that integrates more nicely with Vue/Vuetify?
 
     Code editors:        
         Code editor 'dirtyness'
 
     Key input fix:
-        Fix key input capture
-
-    Make UI generate i/o connections?
-    UI driven code?
-    UI driven data input/output?
-
-    Event nodes:
-        Calc = calc_event
-        Other events that trigger computation
-
-    UI builder:
-        Drag and drop UI builder?
-        Web app maker?
+        Fix key input capture --still and issue (bug deleting cells)

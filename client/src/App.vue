@@ -269,7 +269,6 @@ export default {
         */
 
         var results = this.library_sort.single(queryText, item.name);
-        console.log(results);
         if(results)
           return true
         else return false     
