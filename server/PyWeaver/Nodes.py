@@ -20,6 +20,7 @@ class Node(object):
         self.output_vars_data = OrderedDict()
         self.func_name = None
         self.func = None
+        self.results = OrderedDict()
 
         self.input_vars = []
         self.input_vars_named = OrderedDict()
@@ -75,9 +76,6 @@ class Node(object):
 
             self.output_vars = output_vars
             
-            self.results = {}
-            # self.input_results = {}
-
             self.results = OrderedDict()
 
             for o in output_vars:

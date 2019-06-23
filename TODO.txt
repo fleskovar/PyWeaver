@@ -1,23 +1,21 @@
 Comming up next:
 
     Table Input:
-        Copy/Paste on td
         Multi td selection         
         Delete columns
-        -Pandas support
         Escape cancells edit
 
     Node display:
         Fire auto-recalc on display input change
-
-    Server error:
-        File "main.py", line 146, in execute
-            for v in graph_root.nodes[n].results:
-            AttributeError: 'Node' object has no attribute 'results'
 			
 	Fix optional input
 
 Backlog:
+
+    Server/client startup:
+        Initial delay when loading from library
+        Add 'thinking' icon
+        Delay in model sync with server
 
     Fix dark mode refresh pf Cells    
 

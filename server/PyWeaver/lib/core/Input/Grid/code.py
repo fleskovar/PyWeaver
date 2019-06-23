@@ -1,17 +1,25 @@
 import numpy as np
+import pandas as pd
+
+
 def f():
-	
-	export_with_name = display['export_name']
-	
-	x = display['grid_data']
-	x = x[:-1]
-	x = np.array(x)
-	x = x.astype('float64')
 
-	return_val = x
+    x = display['grid_data']['data']
+    cols = display['grid_data']['columns']
+    x = x[:-1]  # Get rid of the empty bottom row
+    df = pd.DataFrame(x, columns=cols)
 
-	if export_with_name == True:
-		col_name = display['col_name']
-		return_val = dict(name= col_name, data= x)
+    col_types = display['grid_data']['column_types']
 
-	return return_val
+    for i, t in enumerate(col_types):
+        c = cols[i]  # Column name
+
+        if t == 'Number':
+            df[c] = pd.to_numeric(df[c])
+        elif t == 'Date':
+            df[c] = pd.to_datetime(df[c])
+        else:
+            # Default: convert to text
+            df[c] = pd.to_string(df[c])
+        
+    return df

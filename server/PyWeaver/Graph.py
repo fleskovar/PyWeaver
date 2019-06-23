@@ -44,7 +44,8 @@ class Graph(object):
     def delete_node(self, node_id):
         # Should add a check here to clear all i/o in the node just in case UI does not
         # properly trigger the deletion of all variables
-        del self.nodes[node_id]
+        if node_id in self.nodes:
+            del self.nodes[node_id]
 
     def update_adjacency(self, source_node, target_node):
         self.edges.append((source_node.id, target_node.id))

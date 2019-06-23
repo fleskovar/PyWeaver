@@ -8,7 +8,7 @@
       @click='captureFocus()' 
       @blur='is_focused=false' 
       :class='comp_cell_class' 
-      @keydown="processKeyDown($event)" 
+      @keydown="processKeyDown($event)"
       ref="cell">
       
       <div style='width: minmax(100px, auto)'>
@@ -50,9 +50,6 @@ export default {
     }
   },
   methods: {
-    log(){
-      console.log("cell_"+this.i+"_"+this.j);
-    },
     focused: function() {
       //console.log('focused')
     },
@@ -98,7 +95,6 @@ export default {
         });
     },
     onPaste(evt){
-          console.log('pasted');
           evt.preventDefault();
           var val = evt.clipboardData.getData("text/plain");
           this.$emit('paste', val);
