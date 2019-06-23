@@ -9,13 +9,15 @@
       @blur='is_focused=false' 
       :class='comp_cell_class' 
       @keydown="processKeyDown($event)"
-      ref="cell">
+      ref="cell"
+      align="right"
+      >
       
       <div style='width: minmax(100px, auto)'>
           <div v-show="edit == false">
             <label style='user-select: none'> {{ value }}</label>
           </div>
-          <input ref="cellinput" type="text" v-show="edit == true" v-model="cell_input"
+          <input ref="cellinput" type="text" v-show="edit == true" v-model="cell_input" style='max-width: 30px'
             @change="$emit('input', cell_input)"
             @focus="focused"
             @blur="edit = false"

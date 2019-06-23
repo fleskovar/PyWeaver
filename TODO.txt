@@ -1,16 +1,32 @@
 Comming up next:
 
     Table Input:
-        Multi td selection         
-        Delete columns
+        Multi td selection
         Escape cancells edit
+        Clear all button
+        Copy from table
+        Shift+arrows
+        Delete key clears cell
+        Context menu
 
     Node display:
         Fire auto-recalc on display input change
 			
 	Fix optional input
 
+    UI Improvements:
+        Grouping
+        Scrollbars and panning
+        Background grid
+        Mini-map
+
+    Code editor:
+        On import, make all tabs = 4 spaces
+
 Backlog:
+
+    Table/Vector/Time Series:
+        Output
 
     Server/client startup:
         Initial delay when loading from library

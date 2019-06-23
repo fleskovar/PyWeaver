@@ -5,7 +5,7 @@
       <tr>
         <th></th>
         <th v-for="(key, index) in value.columns" :key='index' class='pyw-table-header'>
-          <button color='grey lighten-2' style='min-width: 0; width: 25px; height: 25px; min-height: 0;'>
+          <button color='grey lighten-2' style='min-width: 0; width: 25px; height: 25px; min-height: 0;' @click='deleteColumn(index)'>
             <v-icon style='font-size: 10px;'>
               close
             </v-icon>
@@ -148,6 +148,22 @@ export default {
     }
   },
   methods: {
+    deleteColumn: function(index){
+      for(var i = 0; i < this.value.data.length; i++){
+
+        var row = this.value.data[i];
+
+        if(index <= row.length-1){
+          //The row has enough columns to delete
+          this.value.data[i].splice(index, 1);
+        }
+      }
+
+      this.value.columns.splice(index, 1);
+      this.value.column_types.splice(index, 1);
+      this.redrawTable();
+
+    },
     focusLower: function(i, j){
       var ref_code = "cell_"+(i+1).toString()+"_"+j.toString();
       this.$refs[ref_code][0].selectCell();
@@ -183,9 +199,6 @@ export default {
     deleteRow: function(i){
       this.value.data.splice(i, 1);
       this.redrawTable();
-    },
-    deleteColumn: function(j){
-
     },
     addColumn: function(){
       var col = 1;
@@ -257,9 +270,11 @@ export default {
       var return_val = true;
 
       for(var i=0; i<row.length; i++){
-        if (row[i].trim().length > 0)
-          return_val = false;
-          break
+        if(i in row){
+          if (row[i].trim().length > 0)
+            return_val = false;
+            break
+        }
       }
 
       return return_val
