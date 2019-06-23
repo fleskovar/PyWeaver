@@ -39,7 +39,8 @@
           :key='index'
           v-bind:value='value.columns[index]'
           v-on:input='(val) => columnChanged(val, index)'          
-          :cell_class='"pyw-table-header"'                        
+          :cell_class='"pyw-table-header"'       
+          :align='"center"'                 
           ></Cell>
           <th class='pyw-table-header'></th>
       </tr>
@@ -73,6 +74,7 @@
            @left='moveCol(-1, i, j)'
            @right='moveCol(1, i, j)'
            :cell_class='"pyw-table-td"'
+           :align='"right"' 
            >
            
            </Cell>
@@ -86,7 +88,7 @@
 <style>
     .pyw-table {
     border-radius: 3px;
-    background-color: #fff;
+    background-color: #ffffff;
     color: rgba(0, 0, 0, 0.66);
     border-spacing: 0;
     border-collapse: collapse;
@@ -100,8 +102,8 @@
     }
 
     .pyw-table-header {
-    background-color: #93e0be;
-    border: 1px solid #000000;
+    background-color: #dbe2df;
+    border: 1px solid rgb(168, 167, 167);
     color: rgba(0, 0, 0, 0.66);
     cursor: pointer;
     -webkit-user-select: none;
@@ -111,11 +113,11 @@
     }
     
     .pyw-table-td {
-      background-color: #f9f9f9;
+      background-color: #ffffff;
       min-width: 50px;
       min-height: 25px;
       padding: 5px 20px;
-      border: 1px solid #000000;
+      border: 1px solid rgb(168, 167, 167);
     }
     
 </style>

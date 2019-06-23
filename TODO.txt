@@ -2,7 +2,6 @@ Comming up next:
 
     Table Input:
         Multi td selection
-        Escape cancells edit
         Clear all button
         Copy from table
         Shift+arrows

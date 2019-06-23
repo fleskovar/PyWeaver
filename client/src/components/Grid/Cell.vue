@@ -10,7 +10,7 @@
       :class='comp_cell_class' 
       @keydown="processKeyDown($event)"
       ref="cell"
-      align="right"
+      :align="align"
       >
       
       <div style='width: minmax(100px, auto)'>
@@ -22,7 +22,8 @@
             @focus="focused"
             @blur="edit = false"
             @keydown.enter="finishEdit($event)"
-            @paste ='onPaste($event)'            
+            @paste ='onPaste($event)'   
+            @keydown.esc="cancelEdit()"         
           >
       </div>
     </td>
@@ -30,12 +31,13 @@
 
 <script>
 export default {
-    props: ['value', 'cell_class'],
+    props: ['value', 'cell_class', 'align'],
   data: function() {
     return {
       edit: false,
       is_focused: false,
-      cell_input: this.value
+      cell_input: this.value,
+      previous_val: ''
     }
   },
   computed: {
@@ -89,7 +91,13 @@ export default {
               this.$refs.cell.click()
         });      
     },
+    cancelEdit(){
+      this.value = this.previous_val;
+      this.cell_input = this.previous_val;
+      this.edit = false;
+    },
     editing: function() {
+      this.previous_val = this.value;
       this.edit = true;
           
           this.$nextTick(function () {
@@ -108,11 +116,11 @@ export default {
 
 <style scoped>
 .selected{
-  background-color: #c1f8c1;
+  background-color: #ffffff;
 }
 
 .unselected{
-  background-color: #f1f1f1;
+  background-color: #ffffff;
 }
 </style>
 
