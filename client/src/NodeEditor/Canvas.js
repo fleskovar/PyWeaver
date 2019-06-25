@@ -63,9 +63,28 @@ export default class Canvas{
         graph.setAllowDanglingEdges(false);
         graph.setConnectable(true);
         graph.setMultigraph(true);
-        graph.isCellEditable  = function(cell){return false};       
         
-        graph.htmlLabels = true;
+        //Only edges are editable
+        graph.isCellEditable  = function(cell){
+            
+            return cell.edge
+        };       
+        
+        //Only cells have html tags
+        graph.isLabelMovable  = function(cell){
+            
+            return false
+            //return cell.edge
+        }; 
+        
+        //Only cells have html tags
+        graph.isHtmlLabel  = function(cell){
+            
+            return !cell.edge
+        };
+
+
+
         graph.autoSizeCells = true;
         //graph.autoSizeCellsOnAdd = true;
         //TODO: Handle autoSize on display (value) change
@@ -80,14 +99,17 @@ export default class Canvas{
         graph.getPreferredSizeForCell = function(cell)
         {
             var result = graphGetPreferredSizeForCell.apply(this, arguments);
-            var style = this.getCellStyle(cell);
+            if(cell.edge){
+                return result;
+            }
+            else{
+                var div = document.getElementById('node_'+cell.id);
 
-            var div = document.getElementById('node_'+cell.id);
+                result.width = div.offsetWidth +50;
+                result.height = div.offsetHeight + 50;
 
-            result.width = div.offsetWidth +50;
-            result.height = div.offsetHeight + 50;
-
-            return result;
+                return result;
+            }
         };
         
        

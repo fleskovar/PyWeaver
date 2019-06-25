@@ -22,6 +22,9 @@ Comming up next:
     Code editor:
         On import, make all tabs = 4 spaces
 
+    Nodes not being properly deleted on serve:
+        Setting overlay of already deleted node
+
 Backlog:
 
     Table/Vector/Time Series:
