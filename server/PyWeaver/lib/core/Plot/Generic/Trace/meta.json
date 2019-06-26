@@ -1,4 +1,1 @@
-{
-    "keywords": ["plotly", "trace", "plot", "scatter", "line", "bars", "chart" ,"series"],
-    "description": "Generic Trace por plotly plot."
-}
+{"description":"Generates line, bars or scatter plotly traces","keywords":"","test_vals":"","connections":""}

@@ -29,6 +29,7 @@ setuptools.setup(
           'numpy',
           'xmltodict',
           'pandas',
-          'scipy'
+          'scipy',
+          'ruptures'
       ],
 )
