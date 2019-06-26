@@ -1,5 +1,19 @@
 import numpy as np
 
 def f(x):
-    y = np.piecewise(x, [x < 0.5, x >= 0.5], [-1, 1])
+    conds = [
+        x < 0,
+        (x >= 0.3) & (x < 0.6),
+        x>=0.6
+    ]
+    
+    funcs = [
+        lambda x: x,
+        lambda x: 2,
+        lambda x: x**2
+    ]
+    
+    
+    
+    y = np.piecewise(x, conds, funcs)
     return y

@@ -523,7 +523,7 @@ export default class Canvas{
             style['startSize'] = '8';
             style['endSize'] = '8';
             style[mxConstants.STYLE_ROUNDED] = true;
-            style[mxConstants.STYLE_EDGE] = mxEdgeStyle.EntityRelation;
+            style[mxConstants.STYLE_EDGE] = mxEdgeStyle.OrthConnector;
             style[mxConstants.STYLE_STROKEWIDTH] = '1';
             style[mxConstants.STYLE_LABEL_BACKGROUNDCOLOR] = '#FFFFFF';            
         }
