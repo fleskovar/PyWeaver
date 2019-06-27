@@ -1,5 +1,22 @@
 Comming up next:
 
+    Node Library:
+        Interactive filter (plotly moving points example)
+        Signal derivative/integrate
+        Smooth derivative
+        Upsample/Downsample
+        Regression returs functions
+        GP
+        Exponential decay filter
+        First/Second order filter
+        Convolution
+        Wavelet
+        Windowing
+        Grouping / Time based segmentation (make segments based on the first variable that changes in a set)
+        Rule association
+        Kalman filter
+        Particle Filter?
+
     Table Input:
         Multi td selection
         Clear all button

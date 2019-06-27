@@ -7,6 +7,12 @@ def f(x):
 	chart['uuid'] = '123'
 	chart['traces'] = x
 	
-	chart['layout'] = {'width': 350, 'height': 350}
+	chart['layout'] = {	'width': 350,
+                       	'height': 350,
+                      	'yaxis2': {
+    						'overlaying': 'y',
+    						'side': 'right'
+						}
+                      }
 	
 	return chart
