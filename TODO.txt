@@ -9,13 +9,14 @@ Comming up next:
         GP
         Exponential decay filter
         First/Second order filter
-        Convolution
         Wavelet
         Windowing
         Grouping / Time based segmentation (make segments based on the first variable that changes in a set)
         Rule association
         Kalman filter
         Particle Filter?
+        Cross correlation
+        Rolling std/mu
 
     Table Input:
         Multi td selection

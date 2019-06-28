@@ -1,0 +1,14 @@
+<div style='width: 180px; height:50px;'>
+    Pad
+    <br>
+    <br>
+    Padding type: 
+    <select v-model='scope.pad_type' v-val:pad_type='"none"'>
+        <option value="none" selected="selected">None</option>
+        <option value="zeroes">Zeroes</option>
+        <option value="first_last">First/Last values</option>
+        <option value="tail_mirror">Tail mirror</option>
+        <option value="periodic">Periodic</option>
+        <option value="extrapolate">Extrapolate</option>
+    </select>
+</div>
