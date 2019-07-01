@@ -6,11 +6,12 @@ import warning_icon  from '../../img/warning.png'
 
 export default class Canvas{
 
-    constructor(container, store){
+    constructor(container, outline_container, store){
         this.container = container;
         this.graph = {};
         this.store = store;        
         this.codeNode = {};
+        this.outline_container = outline_container;
 
     }
 
@@ -57,8 +58,27 @@ export default class Canvas{
         mxEdgeHandler.prototype.snapToTerminals = true;
         
         var graph = new mxGraph(this.container);  
+        //var editor = new mxEditor();
+        //var graph = editor.graph;
         this.graph = graph;    
-        graph.store = this.store;        
+        graph.store = this.store;  
+        
+        // Creates the outline (navigator, overview) for moving
+		// around the graph in the top, right corner of the window.
+		var outln = new mxOutline(graph, this.outline_container);
+
+		// To show the images in the outline, uncomment the following code
+		//outln.outline.labelsVisible = true;
+		//outln.outline.setHtmlLabels(true);
+
+        // Sets the graph container and configures the editor
+        /*
+        editor.setGraphContainer(this.container);
+        var config = mxUtils.load(
+            'editors/config/keyhandler-commons.xml').
+                getDocumentElement();
+        editor.configure(config);
+        */
 
         graph.setAllowDanglingEdges(false);
         graph.setConnectable(true);

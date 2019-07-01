@@ -14,8 +14,6 @@ Comming up next:
         Grouping / Time based segmentation (make segments based on the first variable that changes in a set)
         Rule association
         Kalman filter
-        Particle Filter?
-        Cross correlation
         Rolling std/mu
 
     Table Input:
@@ -33,9 +31,6 @@ Comming up next:
 
     UI Improvements:
         Grouping
-        Scrollbars and panning
-        Background grid
-        Mini-map
 
     Code editor:
         On import, make all tabs = 4 spaces

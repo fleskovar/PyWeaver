@@ -43,7 +43,7 @@
         <!--Edges and cells format + Library quick search-->
         <v-toolbar dark class="grey darken-2" dense>          
                       
-          Ouline        
+          Outline        
           <v-item-group>
               <v-btn flat icon @click='SetDashed(false)'>
                 <v-icon>remove</v-icon>
@@ -155,6 +155,7 @@
         </v-card>
         -->
         <v-card flat height='100%'>          
+          <div id='outlineContainer'/>
           <div :class="canvas_color" id='canvas'/>       
         </v-card>
         
@@ -211,7 +212,9 @@ export default {
   },
   mounted(){   
     var container = document.getElementById('canvas');    
-    var canvas = new Canvas(container, this.$store);
+    var outline_container = document.getElementById('outlineContainer');    
+
+    var canvas = new Canvas(container, outline_container, this.$store);
     canvas.mount();
     this.$store.commit('set_canvas', canvas);
     EventBus.$on('update_displays', this.updateCanvas); 
@@ -385,6 +388,20 @@ export default {
 
   html{
     overflow: hidden;
+  }
+
+  #outlineContainer{
+    position: absolute;
+    overflow: hidden;
+    top: 0px;
+    right: 0px;
+    width: 200px;
+    height: 140px;
+    background: white;
+    border-style: solid;
+    border-color: black;
+    z-index: 99;
+    touch-action: none;
   }
 </style>
 
