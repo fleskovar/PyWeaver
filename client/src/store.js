@@ -267,6 +267,10 @@ export default new Vuex.Store({
       socket.emit('delete_connection', data);
       context.dispatch('auto_execute');
     },
+    rename_connection(context, data){
+      socket.emit('rename_connection', data);
+      context.dispatch('auto_execute');
+    },
     execute_server(context){
 
       //Compiles the scope data of each display and passes it to the serve

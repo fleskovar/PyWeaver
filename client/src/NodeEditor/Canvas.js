@@ -230,6 +230,14 @@ export default class Canvas{
             }
         });
 
+        graph.addListener(mxEvent.LABEL_CHANGED, (sender, evt) => {
+            //Detects changes in labels
+            var cell = evt.getProperty('cell');
+            if(cell.edge){
+                //Fires only if the label that changed was from an edge
+            }
+        });
+
         graph.addListener(mxEvent.MOUSE_MOVE, (sender, evt) => {
             if(graph.isMouseDown){
             }
