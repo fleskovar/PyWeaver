@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import seaborn as sns
-from io import StringIO
+from io import BytesIO
 import base64
 
 def f(data):
@@ -14,10 +14,10 @@ def f(data):
 	sns.set(style='ticks', color_codes='True')
 	
 	no_name_series = 0
+	data_names = list(map(lambda x: x.strip(), inputs['data']))
 	
 	if len(data) > 1:
 		z = pd.DataFrame()
-		data_names = list(map(lambda x: x.strip(), inputs['data']))
 		
 		for i, d in enumerate(data):
 			
@@ -40,8 +40,9 @@ def f(data):
 		data_name = data_names[0] if len(data_names[0]) > 0 else 'Input Data'
 		fig = sns.distplot(column).figure	
 	
-	my_stringIObytes = StringIO()
-	fig.savefig(my_stringIObytes, format='jpg')
-	my_stringIObytes.seek(0)
-	img = base64.b64encode(my_stringIObytes.read())
+	figfile = BytesIO()
+	fig.savefig(figfile, format='jpg')
+	figfile.seek(0)
+	img = base64.b64encode(figfile.getvalue())
+	img = img.decode('utf8')
 	return img
