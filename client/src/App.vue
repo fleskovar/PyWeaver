@@ -228,12 +228,19 @@ export default {
       // If down arrow was pressed...
       if (event.target.localName != 'input' && event.target.localName != 'textarea')
       { 
-        if(event.keyCode == 32){
-          vm.captureSearchFocus();
-        }
-        else if(event.keyCode === 13 && event.shiftKey){
-          vm.runServer();
-        }        
+        if(event.target.className == 'mxCellEditor mxPlainTextEditor')
+        {
+          if(event.keyCode === 13){
+            event.target.blur();
+          }
+        }else{
+          if(event.keyCode == 32){
+            vm.captureSearchFocus();
+          }
+          else if(event.keyCode === 13 && event.shiftKey){
+            vm.runServer();
+          }     
+        }   
       }
     });
 

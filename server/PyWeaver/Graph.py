@@ -55,14 +55,18 @@ class Graph(object):
         # This ensures that all nodes are computed in the correct order.
         self.add_to_adjacency_dict(target_node.id, source_node.id)
 
-    def make_connection(self, source_id, source_var, target_id, target_var):        
+    def make_connection(self, source_id, source_var, target_id, target_var, conn_name):        
         source_b = self.nodes[source_id]
         target_b = self.nodes[target_id]
-        source_b.connect_output(source_var, target_b, target_var)
+        source_b.connect_output(source_var, target_b, target_var, conn_name)
 
     def delete_connection(self, source_id, source_var, target_id, target_var):
         node = self.nodes[source_id]
         node.disconnect_output(source_var, target_id, target_var)
+
+    def rename_connection(self, source_id, source_var, target_id, target_var, conn_name):
+        node = self.nodes[target_id]
+        node.rename_input_connection(target_var, source_id, source_var, conn_name)
 
     def add_to_adjacency_dict(self, node_id, neighbor_id):
         if neighbor_id not in self.adjacency_dict[node_id]:

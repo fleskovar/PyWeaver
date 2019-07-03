@@ -122,10 +122,10 @@ def make_connection(data):
     source_var = data['source_var']
     target_var = data['target_var']
 
-    #TODO:
-    #name = None
+    connection_name = ''
+    # connection_name = source_id + '-' + source_var
 
-    graph_root.make_connection(source_id, source_var, target_id, target_var)
+    graph_root.make_connection(source_id, source_var, target_id, target_var, connection_name)
 
 
 @socketio.on('delete_connection')
@@ -138,6 +138,7 @@ def delete_connection(data):
     target_var = data['target_var']
 
     graph_root.delete_connection(source_id, source_var, target_id, target_var)
+    
 
 @socketio.on('rename_connection')
 def rename_connection(data):
@@ -150,9 +151,7 @@ def rename_connection(data):
 
     name = data['name']
 
-    #TODO: Implement:
     graph_root.rename_connection(source_id, source_var, target_id, target_var, name)
-    #graph_root.delete_connection(source_id, source_var, target_id, target_var)
 
 
 @socketio.on('execute')

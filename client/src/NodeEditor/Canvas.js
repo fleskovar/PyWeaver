@@ -230,21 +230,27 @@ export default class Canvas{
             }
         });
 
-        graph.addListener(mxEvent.LABEL_CHANGED, (sender, evt) => {
-            //Detects changes in labels
-            var cell = evt.getProperty('cell');
+        graph.labelChanged = function(cell, value, evt){
+            //Detects changes in labels            
             if(cell.edge){
+                cell.value = value; //Changes the name of the label
                 //Fires only if the label that changed was from an edge
                 var data = {
                     source_id: cell.source.parent.id,
                     source_var: cell.source.value,
                     target_id: cell.target.parent.id,
                     target_var: cell.target.value,
-                    name: 'GET VALUE'
+                    name: value
                 };
-                this.store.dispatch('rename_connection', data);
+
+                //Update the edge
+                this.getView().clear(cell, false, false);
+                this.getView().validate();  
+                this.cellSizeUpdated(cell, true);    
+
+                this.store.dispatch('rename_connection', data);                
             }
-        });
+        };
 
         graph.addListener(mxEvent.MOUSE_MOVE, (sender, evt) => {
             if(graph.isMouseDown){

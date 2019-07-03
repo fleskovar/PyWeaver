@@ -38,6 +38,9 @@ Comming up next:
     Nodes not being properly deleted on serve:
         Setting overlay of already deleted node
 
+    Node code editing:
+        changing the name of 1 output var throws an error
+
 Backlog:
 
     Table/Vector/Time Series:
@@ -51,11 +54,8 @@ Backlog:
     Fix dark mode refresh pf Cells    
 
     Nodes:
-        Optional input (handling of named inputs)
         Coloring optional input
-        Optional connection/ui input
         Connector type & validation
-        Connector special scope 'multi-input': true
         Cell selection disabled on display
         No cell dragging with secondary button
 
@@ -67,13 +67,10 @@ Backlog:
     UI Improvements:        
         Layers (show)
         Grouping
-        Scrollbars and panning
-        Background grid
         Node Search/Find on flowsheet => Focus
         Tooltips
         Tabs?
         New window plot/table/ui display (multi monitor)
-        Mini-map
 
     Testing
 
