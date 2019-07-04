@@ -6,9 +6,7 @@ Comming up next:
         Smooth derivative
         Upsample/Downsample
         Regression returs functions
-        GP
-        Exponential decay filter
-        First/Second order filter
+        GP        
         Wavelet
         Windowing
         Grouping / Time based segmentation (make segments based on the first variable that changes in a set)
