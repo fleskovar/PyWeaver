@@ -1,0 +1,22 @@
+<div>
+    Windo functions
+    <br><br>
+    Window:
+    <select v-model='scope.window_type' v-val:window_type='"square"'>
+            <option value="square" selected="selected">Square</option>
+            <option value="exponential">Exponential</option>
+            <option value="gaussian">Gaussian</option>
+            <option value="hanning">Hanning</option>
+            <option value="blackman">Blackman</option>            
+            <option value="ricker">Ricker (Mexican Hat)</option>
+            <option value="barthann">Bartlett-Hann</option>
+            <option value="flattop">Flat Top</option>
+            <option value="cosine">Cosine</option>
+            <option value="triangle">Triangle</option>
+        </select>
+    <br><br>
+    Size: <input v-model='scope.size' v-val:size='10' type='number' step='1' min='2'>
+    <br><br>
+    Param: <input v-model='scope.param' v-val:param='1'>
+    <br>
+</div>
