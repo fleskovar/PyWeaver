@@ -88,7 +88,13 @@ export default class Canvas{
         graph.isCellEditable  = function(cell){
             
             return cell.edge
-        };       
+        };   
+        
+        var popupMethod = this.createPopupMenu
+        graph.popupMenuHandler.factoryMethod = function(menu, cell, evt) 
+        {
+            return popupMethod(graph, menu, cell, evt);
+        };
         
         //Only cells have html tags
         graph.isLabelMovable  = function(cell){
@@ -607,4 +613,28 @@ export default class Canvas{
     removeOverlay(cell){
         this.graph.removeCellOverlays(cell);
     }
+
+    createPopupMenu(graph, menu, cell, evt)
+    {        
+        if (cell != null)
+        {
+            menu.addItem('Cell Item', 'editors/images/image.gif', function()
+            {
+                mxUtils.alert('MenuItem1');
+            });
+        }
+        else
+        {
+            menu.addItem('No-Cell Item', 'editors/images/image.gif', function()
+            {
+                mxUtils.alert('MenuItem2');
+            });
+        }
+        menu.addSeparator();
+        menu.addItem('MenuItem3', '../src/images/warning.gif', function()
+        {
+            mxUtils.alert('MenuItem3: '+graph.getSelectionCount()+' selected');
+        });
+    };
+
 }
