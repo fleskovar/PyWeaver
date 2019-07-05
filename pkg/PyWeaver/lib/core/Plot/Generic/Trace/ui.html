@@ -1,4 +1,4 @@
-<div style='height: 150px; width: 300'>
+<div style='height: 90px; width: 300'>
 	Trace
 	<br>
 	<br>
@@ -6,9 +6,16 @@
 	<br>
 	<br>
 	Type: 
-	<select id="trace_types" v-model='scope.trace_type' v-val:trace_name='"scatter"'>
+	<select v-model='scope.trace_type' v-val:trace_type='"scatter"'>
 		<option value="scatter" selected="selected">Scatter</option>
 		<option value="bar">Bar</option>
 		<option value="line">Line</option>
+	</select>
+    <br>
+    <br>
+    Axis: 
+	<select v-model='scope.axis' v-val:axis='"y1"'>
+		<option value="y1" selected="selected">1</option>
+		<option value="y2">2</option>
 	</select>
 </div>

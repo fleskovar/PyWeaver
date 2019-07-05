@@ -5,7 +5,7 @@ import re
 from copy import deepcopy
 import sys, os
 
-from PyWeaver.code_parsing import parse_function
+from code_parsing import parse_function
 
 class Node(object):
 
@@ -20,6 +20,7 @@ class Node(object):
         self.output_vars_data = OrderedDict()
         self.func_name = None
         self.func = None
+        self.results = OrderedDict()
 
         self.input_vars = []
         self.input_vars_named = OrderedDict()
@@ -46,6 +47,7 @@ class Node(object):
         if compile_success:
             self.func = self.func_dict[func_name]
             self.func.__globals__['display'] = {}
+            self.func.__globals__['inputs'] = {}
 
             if len(input_vars) < len(self.input_vars):
                 # I could also check that if the smaller new input has some variables in common
@@ -75,9 +77,6 @@ class Node(object):
 
             self.output_vars = output_vars
             
-            self.results = {}
-            # self.input_results = {}
-
             self.results = OrderedDict()
 
             for o in output_vars:
@@ -117,7 +116,9 @@ class Node(object):
                         self.send_error_to_server(exc_type, exc_obj, exc_tb)
             else:
                 # Fetch input values from parent's node scope
-                inputs, named_inputs = self.get_inputs()
+                inputs, named_inputs, input_names = self.get_inputs()
+                
+                self.func.__globals__['inputs'] = input_names
 
                 if len(inputs) == len([i for i in self.input_vars_named if self.input_vars_named[i] is False]):
                     # Checks if the total ammount unnamed inputs given to the func are enough to run the calculation
@@ -161,8 +162,10 @@ class Node(object):
         # Inputs are being fed in reverse order
         input_vals = []
         named_input_vals = dict()
+        input_names = {}
 
         for i in self.input_vars:
+            input_names[i] = []
             has_default = self.input_vars_named[i]  # Flag that indicates if the var has a default value
             data_list = self.input_vars_data[i] if i in self.input_vars_data else []
             val = None
@@ -170,13 +173,15 @@ class Node(object):
             if len(data_list) > 0:
 
                 # Fetch input only if connections available
-
+                
                 if len(data_list) == 1:
                     # If only one connection is made to this input, pass it as a value
                     data = data_list[0]
                     node_id = data[0]
                     var_name = data[1]
-                    val = self.parent_node.get_var_value(node_id, var_name)                
+                    val = self.parent_node.get_var_value(node_id, var_name)
+                    conn_name = data[2]
+                    input_names[i].append(conn_name)
                 elif len(data_list) > 1:
                     # If multiple connections are made to the variable, vectorize it
                     val = []
@@ -185,28 +190,41 @@ class Node(object):
                         var_name = data[1]
                         result = self.parent_node.get_var_value(node_id, var_name)
                         val.append(result)
+                        conn_name = data[2]
+                        input_names[i].append(conn_name)                
 
                 #self.input_results[i] = val # Save the results of the inputs to pass them to the UI
 
-                # TODO: find a better way to handle this: it causes data duplication
+                # TODO: find a better way to handle this: it causes data duplication.
+                # TODO: debug this
                 if has_default:
                     named_input_vals[i]=val
+                    conn_name = '_default-value'
+                    # input_names[i].append(conn_name)
                 else:
                     input_vals.append(val)
 
         input_vals = deepcopy(input_vals) # This should make the original inputs immutable
         named_input_vals = deepcopy(named_input_vals)
 
-        return input_vals, named_input_vals
+        return input_vals, named_input_vals, input_names
 
-    def connect_output(self, var, target_node, target_var):
+    def connect_output(self, var, target_node, target_var, conn_name):
+
+        """
+            The node that sends and output (source) to another cell's input (target).
+            The source stores a reference to the input that it's output is feeding.
+            The target stores a reference to the output that is feeding one of it's inputs 
+            AND stores the name of the connetion in case it wants to use it during the calculation.
+        """
+
         self.parent_node.update_adjacency(self, target_node)
         # TODO: disconnect should undo this
         if target_var not in target_node.input_vars_data:
             # Store connections as a list in case i/o has multiple connections
-            target_node.input_vars_data[target_var] = []
+            target_node.input_vars_data[target_var] = []            
 
-        target_node.input_vars_data[target_var].append((self.id, var)) # Bind target's input var to local output
+        target_node.input_vars_data[target_var].append((self.id, var, conn_name)) # Bind target's input var to source output. Stores name.
         
         if var not in self.output_vars_data:
             self.output_vars_data[var] = []
@@ -214,6 +232,21 @@ class Node(object):
         self.output_vars_data[var].append((target_node.id, target_var)) # Bind local var to target's var
         
         target_node.set_dirty() # A new connection was made. Should recalc.
+
+    def rename_input_connection(self, input_var, source_id, source_var, name):
+        conn_data = self.input_vars_data[input_var]
+
+        record_index = 0
+
+        # Finds the index of the connection with the given id and var name
+        for i, r in enumerate(conn_data):
+            if r[0] == source_id and r[1] == source_var:
+                record_index = i
+                break
+
+        self.input_vars_data[input_var][record_index] = (r[0], r[1], name)  # Rename the connection
+        self.set_dirty()  # Set the current node for recalc
+
 
     def disconnect_output(self, var, target_id, target_var):
         # Takes an output variable, searches for the corresponding connection and deletes it
@@ -223,7 +256,14 @@ class Node(object):
         # Search for output var and disconnect it
         target_node = self.parent_node.nodes[target_id] # Get reference of target node     
         
-        record_index = target_node.input_vars_data[target_var].index((self.id, var))
+        record_index = 0
+
+        # Finds the index of the connection with the given id and var name
+        for i, r in enumerate(target_node.input_vars_data[target_var]):
+            if r[0] == self.id and r[1] == var:
+                record_index = i
+                break
+
         target_node.input_vars_data[target_var].pop(record_index)
         if len(target_node.input_vars_data[target_var]) == 0:
             del target_node.input_vars_data[target_var]

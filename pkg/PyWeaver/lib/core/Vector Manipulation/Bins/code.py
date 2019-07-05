@@ -8,4 +8,5 @@ def f(vector, bins=None):
 		bins = np.array([min_v, max_v])
 	
 	v = np.digitize(vector, bins)
+	v = bins[v]
 	return v

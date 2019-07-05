@@ -1,0 +1,13 @@
+<div style='height: 120px; width: 200px'>
+    Wiener Filter
+    <br>
+    <br>
+    Window: <input type='number' step='1' min='1' v-model='scope.window' v-val:window='5'>
+    <br>
+    <br>
+    <input type="checkbox" v-model='scope.use_power' v-val:use_power='false'> Use noise power?<br>
+	<br>
+    <br>
+    Noise Power: <input type='number' v-model='scope.power' v-val:power='1'>
+    <br>
+</div>

@@ -21,6 +21,11 @@ socketio = SocketIO(app, json=json)
 def root():
     return app.send_static_file('index.html')
 
+@app.route('/node_viewer')
+def view_node():
+    return app.send_static_file('node_viewer.html')
+
+
 @app.route('/config')
 def get_config_file():
     cwd = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))

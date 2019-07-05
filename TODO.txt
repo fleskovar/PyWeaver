@@ -3,16 +3,15 @@ Comming up next:
     Node Library:
         Interactive filter (plotly moving points example)
         Signal derivative/integrate
-        Smooth derivative
         Upsample/Downsample
         Regression returs functions
-        GP        
-        Wavelet
+        GP
         Windowing
         Grouping / Time based segmentation (make segments based on the first variable that changes in a set)
         Rule association
         Kalman filter
         Rolling std/mu
+        Feature engineering
 
     Table Input:
         Multi td selection
@@ -24,8 +23,6 @@ Comming up next:
 
     Node display:
         Fire auto-recalc on display input change
-			
-	Fix optional input
 
     UI Improvements:
         Grouping
@@ -39,10 +36,19 @@ Comming up next:
     Node code editing:
         changing the name of 1 output var throws an error
 
+    Error display:
+        Not working properly
+
 Backlog:
 
+    Hide inputs:
+        Specify on meta
+
+    Window node:
+        Show window plot
+
     Table/Vector/Time Series:
-        Output
+        Visualize Output
 
     Server/client startup:
         Initial delay when loading from library
@@ -94,6 +100,3 @@ Backlog:
 
     Code editors:        
         Code editor 'dirtyness'
-
-    Key input fix:
-        Fix key input capture --still and issue (bug deleting cells)

@@ -1,7 +1,9 @@
-<div style='width: 400px; height: 500px; overflow-x: hidden'>	
-	<input type="checkbox" v-model='scope.export_name' v-val:export_name='false'>Export as columns<br>
+<div style='width: 400px; height: auto; overflow: hidden'>
 	<br>
-	Column name: <input type='text' v-model='scope.col_name' v-val:col_name='"A"'>
+	Table Input
 	<br>	
-	<grid v-model='scope.grid_data' v-val:grid_data='[[]]' :columns="[1]"></grid>
+	<br>
+	<div style='width: 400px; height: 200px; overflow: scroll'>
+		<grid v-model='scope.grid_data' v-val:grid_data='{data: [[]], columns: ["0"], column_types: ["Number"]}'></grid>
+	</div>
 </div>

@@ -1,7 +1,7 @@
 import os, inspect, shutil
 import json
 
-from PyWeaver.NodeTemplate import NodeTemplate
+from NodeTemplate import NodeTemplate
 
 class LibraryManager(object):
 

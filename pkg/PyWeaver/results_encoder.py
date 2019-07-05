@@ -12,5 +12,10 @@ class CustomJSONEncoder(JSONEncoder):
             pass
         else:
             return list(iterable)
-        return JSONEncoder.default(self, obj)
+        
+        try:
+            result = JSONEncoder.default(self, obj)
+        except:
+            result = str(obj)
+        return result
 
