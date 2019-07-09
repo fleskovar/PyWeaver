@@ -620,21 +620,26 @@ export default class Canvas{
         {
             menu.addItem('Cell Item', 'editors/images/image.gif', function()
             {
-                mxUtils.alert('MenuItem1');
+                //mxUtils.alert('MenuItem1');
+                window.open( 'http://localhost:8080/node_viewer.html', 'name', 'location=no,scrollbars=yes,status=no,toolbar=yes,resizable=yes');
             });
         }
         else
         {
+            /*
             menu.addItem('No-Cell Item', 'editors/images/image.gif', function()
             {
                 mxUtils.alert('MenuItem2');
             });
+            */
         }
+        /*
         menu.addSeparator();
         menu.addItem('MenuItem3', '../src/images/warning.gif', function()
         {
             mxUtils.alert('MenuItem3: '+graph.getSelectionCount()+' selected');
         });
+        */
     };
 
 }

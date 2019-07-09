@@ -33,5 +33,13 @@ module.exports = {
         // extracted common chunks and vendor chunks.
         chunks: ['chunk-vendors', 'chunk-common', 'nodeViewer']
       },
+    },
+    devServer: {
+      historyApiFallback: {
+        rewrites: [
+          { from: /\/index/, to: '/index.html' },
+          { from: /\/node_viewer/, to: '/node_viewer.html' }
+        ]
+      }
     }
   };
