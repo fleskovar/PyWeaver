@@ -621,7 +621,7 @@ export default class Canvas{
             menu.addItem('Cell Item', 'editors/images/image.gif', function()
             {
                 //mxUtils.alert('MenuItem1');
-                window.open( 'http://localhost:8080/node_viewer.html', 'name', 'location=no,scrollbars=yes,status=no,toolbar=yes,resizable=yes');
+                window.open( 'http://localhost:8080/node_viewer.html?node_id=n1&other_param=4', 'name', 'location=no,scrollbars=yes,status=no,toolbar=yes,resizable=no,top=0,left=0');
             });
         }
         else

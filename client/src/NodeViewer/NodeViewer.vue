@@ -16,6 +16,9 @@ export default {
     }
   },
   mounted(){
+    //TODO parse this to get data from server
+    var params = window.location.search;
+    console.log(params);
   },
   
 }
