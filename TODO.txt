@@ -1,5 +1,14 @@
 Comming up next:
 
+    Node display window:
+        Render view
+        Sync scope
+        Retrieve results
+
+    Node:
+        Convert to function
+        Parameters
+
     Node Library:
         Interactive filter (plotly moving points example)
         Signal derivative/integrate

@@ -9,7 +9,7 @@ from code_parsing import parse_function
 
 class Node(object):
 
-    def __init__(self, parent_node, id, code=None):
+    def __init__(self, parent_node, id, code=None, ui_code=None, ui_script=None):
 
         self.parent_node = parent_node
         self.display = None  # TODO: Implement display option for web client
@@ -27,6 +27,9 @@ class Node(object):
         self.input_vars_data = OrderedDict()
         self.output_vars = []
 
+        self.ui_code = ui_code
+        self.ui_script = ui_script
+        
         if code is not None:
             self.parse_code(code)
 

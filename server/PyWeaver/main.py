@@ -104,11 +104,17 @@ def edit_node_code(data):
 
     id = data['id']
     code = data['code']
+    ui_code = data['ui_code']
+    ui_script - data['ui_script']
 
     b = graph_root.nodes[id]
     old_input_vars = b.input_vars
     old_output_vars = b.output_vars
+    
+    # Adds python, html and javascript code to the node
     b.parse_code(code)
+    b.ui_code = ui_code
+    b.ui_script = ui_script
 
     if old_input_vars != b.input_vars:
         # Prevents emitting an event when input didnt change
@@ -297,6 +303,21 @@ def save_config_file(xml):
     f = open(config_path, 'w')
     f.write(xml)
     f.close()
+
+
+@socketio.on('get_node_display')
+def get_node_display(data):
+    global graph_root
+
+    node_id = data['id']
+
+    node = graph_root.nodes[node_id]
+
+    ui_code = node.ui_code
+    ui_script = node.ui_script
+    ui_scope = node.scope
+
+    return {'ui': ui_code, 'script': ui_script, 'scope': ui_scope}
     
 
 # Register initial modules that should not be deleted when restarting the server

@@ -618,11 +618,13 @@ export default class Canvas{
     {        
         if (cell != null)
         {
-            menu.addItem('Cell Item', 'editors/images/image.gif', function()
-            {
-                //mxUtils.alert('MenuItem1');
-                window.open( 'http://localhost:8080/node_viewer.html?node_id=n1&other_param=4', 'name', 'location=no,scrollbars=yes,status=no,toolbar=yes,resizable=no,top=0,left=0,width=400,height=400');
-            });
+                if(!cell.edge){
+                menu.addItem('Cell Item', 'editors/images/image.gif', function()
+                {
+                    //mxUtils.alert('MenuItem1');
+                    window.open( 'http://localhost:8080/node_viewer.html?node_id='+cell.id, 'name', 'location=no,scrollbars=yes,status=no,toolbar=yes,resizable=no,top=0,left=0,width=400,height=400');
+                });
+            }
         }
         else
         {

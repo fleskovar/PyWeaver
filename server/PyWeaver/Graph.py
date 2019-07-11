@@ -22,7 +22,7 @@ class Graph(object):
         else:
             self.session_id = session_id
 
-    def add_node(self, node_id=None, code=None):
+    def add_node(self, node_id=None, code=None, ui_code=None, ui_script=None):
         self.node_count += 1
 
         if node_id is None or node_id in self.node_ids:
@@ -34,7 +34,7 @@ class Graph(object):
                 local_count += 1
                 node_id = 'n_'+str(local_count)
 
-        node = Node(self, node_id, code=code)
+        node = Node(self, node_id, code=code, ui_code=ui_code, ui_script=ui_script)
 
         self.nodes[node_id] = node
         self.adjacency_dict[node_id] = dict()
