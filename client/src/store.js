@@ -248,6 +248,8 @@ export default new Vuex.Store({
         .then( () => {
           var data = {};
           data.code = editor_data.code;
+          data.ui_code = editor_data.display_code;
+          data.ui_script = editor_data.display_act_code;
           data.id = context.state.selected_node.cell.id;      
           socket.emit('edit_node_code', data);
           context.dispatch('auto_execute');
