@@ -273,6 +273,9 @@ export default new Vuex.Store({
       socket.emit('rename_connection', data);
       context.dispatch('auto_execute');
     },
+    set_output_type(context, data){
+      socket.emit('set_output_type', data);
+    },
     execute_server(context){
 
       //Compiles the scope data of each display and passes it to the serve

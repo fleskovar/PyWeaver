@@ -632,14 +632,25 @@ export default class Canvas{
                         //If click was done over an output
                         
                         //Adds an option for passing as value
+                        
                         menu.addItem('Pass by value', 'editors/images/image.gif', function()
                         {
-                        
+                            var data = {};
+                            data.id = cell.parent.id;
+                            data.var_name = cell.value;
+                            data.is_val = true;
+
+                            graph.store.dispatch('set_output_type', data);
                         });
 
-                        menu.addItem('Pass by reference', 'editors/images/image.gif', function()
+                        menu.addItem('Pass by reference', 'editors/images/image.gif', function() 
                         {
-                        
+                            var data = {};
+                            data.id = cell.parent.id;
+                            data.var_name = cell.value;
+                            data.is_val = false;
+
+                            graph.store.dispatch('set_output_type', data);
                         });
                     }
                 }

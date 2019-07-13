@@ -65,9 +65,9 @@ def set_output_type(data):
     node_id = data['id']
     var_name = data['var_name']
     is_val = data['is_val']
-
+    
     graph_root.nodes[node_id].isOutputVal[var_name] = is_val
-
+    graph_root.nodes[node_id].set_dirty()
 
 @socketio.on('delete_node')
 def delete_node(node_id):
