@@ -419,18 +419,22 @@ export default class Canvas{
         let remaining_ports = [];
 
         var style_string = '';
+        var is_input = true;
 
-        if(position == 0)
+        if(position == 0){
             style_string = 'labelPosition=left;verticalLabelPosition=top;align=right;deletable=0'; //Input port
-        else 
+        }
+        else{ 
             style_string = 'labelPosition=right;verticalLabelPosition=top;align=left;deletable=0'; //Output port
-
+            is_input = false;
+        }
         //Remove ports that are not listed in the new array
         this.graph.getModel().beginUpdate();
 
         try
         {  
             if(cell.children){
+                //TODO: Check if the if above is a condition for a non-input cell
                 for(var i =0; i < cell.children.length; i++){
 
                     var port = cell.children[i];
@@ -460,7 +464,9 @@ export default class Canvas{
                     var p = this.graph.insertVertex(cell, null, port_name, position, 1.0/(port_names.length+1) * (i+1), 10, 10, style_string, true); 
                     p.geometry.offset = new mxPoint(-5, -5);
                     p.setConnectable(true);  
-                    p.tag = tag;                  
+                    p.tag = tag;          
+                    p.isInput = is_input; //Flag that indicates if the i/o connector is i or o.
+                    p.isConnector = true; //Flag that indicates that this cell is i/o of a node        
                 }else{                    
                     var p = remaining_ports[i];
                     p.geometry.y = 1.0/(port_names.length+1) * (i+1);
@@ -618,12 +624,33 @@ export default class Canvas{
     {        
         if (cell != null)
         {
-                if(!cell.edge){
-                menu.addItem('Cell Item', 'editors/images/image.gif', function()
-                {
-                    //mxUtils.alert('MenuItem1');
-                    window.open( 'http://localhost:8080/node_viewer.html?node_id='+cell.id, 'name', 'location=no,scrollbars=yes,status=no,toolbar=yes,resizable=no,top=0,left=0,width=400,height=400');
-                });
+            if(!cell.edge){
+            
+                if(cell.isConnector){
+                    //If click was done over a connector
+                    if(!cell.isInput){
+                        //If click was done over an output
+                        
+                        //Adds an option for passing as value
+                        menu.addItem('Pass by value', 'editors/images/image.gif', function()
+                        {
+                        
+                        });
+
+                        menu.addItem('Pass by reference', 'editors/images/image.gif', function()
+                        {
+                        
+                        });
+                    }
+                }
+                else{
+                    //If click was done over a node
+                    menu.addItem('Cell Item', 'editors/images/image.gif', function()
+                    {
+                        //mxUtils.alert('MenuItem1');
+                        window.open( 'http://localhost:8080/node_viewer.html?node_id='+cell.id, 'name', 'location=no,scrollbars=yes,status=no,toolbar=yes,resizable=no,top=0,left=0,width=400,height=400');
+                    });
+                }                
             }
         }
         else

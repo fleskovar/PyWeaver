@@ -58,7 +58,15 @@ def load_node(lib_id):
         # If template was found
         create_node(graph_root, template)
 
-    
+@socketio.on('set_output_type')
+def set_output_type(data):
+    global graph_root
+
+    node_id = data['id']
+    var_name = data['var_name']
+    is_val = data['is_val']
+
+    graph_root.nodes[node_id].isOutputVal[var_name] = is_val
 
 
 @socketio.on('delete_node')
@@ -105,7 +113,7 @@ def edit_node_code(data):
     id = data['id']
     code = data['code']
     ui_code = data['ui_code']
-    ui_script - data['ui_script']
+    ui_script = data['ui_script']
 
     b = graph_root.nodes[id]
     old_input_vars = b.input_vars

@@ -21,6 +21,7 @@ class Node(object):
         self.func_name = None
         self.func = None
         self.results = OrderedDict()
+        self.isOutputVal = OrderedDict()
 
         self.input_vars = []
         self.input_vars_named = OrderedDict()
@@ -39,7 +40,12 @@ class Node(object):
         success, func_name, input_vars, input_vars_named, input_vars_data, output_vars = parse_function(code)
         self.func_name = func_name
         self.func_dict = {}
+        self.isOutputVal = OrderedDict()
         
+        # By default, all outputs are passed by val
+        for o in output_vars:
+            self.isOutputVal[o] = True
+
         compile_success = False
         try:
             exec(code, self.func_dict)
@@ -183,6 +189,11 @@ class Node(object):
                     node_id = data[0]
                     var_name = data[1]
                     val = self.parent_node.get_var_value(node_id, var_name)
+                    #If the output of the source should be passed as value, then force a copy
+                    force_copy = self.parent_node.nodes[node_id].isOutputVal[var_name]                    
+                    if force_copy:
+                        val = deepcopy(val)
+
                     conn_name = data[2]
                     input_names[i].append(conn_name)
                 elif len(data_list) > 1:
@@ -192,23 +203,28 @@ class Node(object):
                         node_id = data[0]
                         var_name = data[1]
                         result = self.parent_node.get_var_value(node_id, var_name)
+
+                        #If the output of the source should be passed as value, then force a copy
+                        force_copy = self.parent_node.nodes[node_id].isOutputVal[var_name]                        
+                        if force_copy:
+                            result = deepcopy(result)
+
                         val.append(result)
                         conn_name = data[2]
                         input_names[i].append(conn_name)                
 
                 #self.input_results[i] = val # Save the results of the inputs to pass them to the UI
-
-                # TODO: find a better way to handle this: it causes data duplication.
+                
                 # TODO: debug this
                 if has_default:
                     named_input_vals[i]=val
-                    conn_name = '_default-value'
+                    conn_name = '_default'
                     # input_names[i].append(conn_name)
                 else:
                     input_vals.append(val)
 
-        input_vals = deepcopy(input_vals) # This should make the original inputs immutable
-        named_input_vals = deepcopy(named_input_vals)
+        #input_vals = deepcopy(input_vals) # This should make the original inputs immutable
+        #named_input_vals = deepcopy(named_input_vals)
 
         return input_vals, named_input_vals, input_names
 

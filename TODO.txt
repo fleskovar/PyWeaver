@@ -6,7 +6,8 @@ Comming up next:
         Retrieve results
 
     Node:
-        Convert to function
+        Convert to function / Always export reference to function
+        Add an option to export output by value or reference
         Parameters
 
     Node Library:
