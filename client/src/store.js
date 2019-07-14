@@ -343,7 +343,7 @@ export default new Vuex.Store({
       context.state.canvas.setCellStroke(size);
     },
     change_element_dashed(context, is_dashed){
-      context.state.canvas.setDashed(is_dashed);
+      context.state.canvas.setSelectionDashed(is_dashed);
     },
     change_dark_mode(context, val){
       context.commit('set_dark_mode', val);

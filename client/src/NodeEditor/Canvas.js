@@ -90,10 +90,11 @@ export default class Canvas{
             return cell.edge
         };   
         
-        var popupMethod = this.createPopupMenu
+        var popupMethod = this.createPopupMenu;
+        var canvas_ref = this;
         graph.popupMenuHandler.factoryMethod = function(menu, cell, evt) 
         {
-            return popupMethod(graph, menu, cell, evt);
+            return popupMethod(canvas_ref, graph, menu, cell, evt);
         };
         
         //Only cells have html tags
@@ -520,10 +521,9 @@ export default class Canvas{
 
     }
 
-    setDashed(is_dashed){
+    setDashed(cells, is_dashed){
 
-        var val = 0
-        var cells = this.graph.selectionModel.cells;
+        var val = 0        
         
         for(var i = 0; i < cells.length; i++){
             var cell = cells[i];
@@ -535,6 +535,11 @@ export default class Canvas{
             var newStyle=mxUtils.setStyle(style,mxConstants.STYLE_DASHED, val);
             this.graph.setCellStyle(newStyle,[cell]);
         }
+    }
+
+    setSelectionDashed(is_dashed){
+        var cells = this.graph.selectionModel.cells;
+        this.setDashed(cells, is_dashed);
     }
 
     calcDefaultStyles(){
@@ -620,8 +625,10 @@ export default class Canvas{
         this.graph.removeCellOverlays(cell);
     }
 
-    createPopupMenu(graph, menu, cell, evt)
+    createPopupMenu(canvas, graph, menu, cell, evt)
     {        
+        
+
         if (cell != null)
         {
             if(!cell.edge){
@@ -639,7 +646,7 @@ export default class Canvas{
                             data.id = cell.parent.id;
                             data.var_name = cell.value;
                             data.is_val = true;
-
+                            canvas.setDashed([cell], 0);
                             graph.store.dispatch('set_output_type', data);
                         });
 
@@ -649,14 +656,21 @@ export default class Canvas{
                             data.id = cell.parent.id;
                             data.var_name = cell.value;
                             data.is_val = false;
-
+                            canvas.setDashed([cell], 1);
                             graph.store.dispatch('set_output_type', data);
                         });
                     }
                 }
                 else{
                     //If click was done over a node
-                    menu.addItem('Cell Item', 'editors/images/image.gif', function()
+                    menu.addItem('Display on new window', 'editors/images/image.gif', function()
+                    {
+                        //mxUtils.alert('MenuItem1');
+                        window.open( 'http://localhost:8080/node_viewer.html?node_id='+cell.id, 'name', 'location=no,scrollbars=yes,status=no,toolbar=yes,resizable=no,top=0,left=0,width=400,height=400');
+                    });
+
+                    //If click was done over a node
+                    menu.addItem('Transform to function', 'editors/images/image.gif', function()
                     {
                         //mxUtils.alert('MenuItem1');
                         window.open( 'http://localhost:8080/node_viewer.html?node_id='+cell.id, 'name', 'location=no,scrollbars=yes,status=no,toolbar=yes,resizable=no,top=0,left=0,width=400,height=400');
@@ -666,6 +680,8 @@ export default class Canvas{
         }
         else
         {
+            //Clicked outside a cell/edge.
+
             /*
             menu.addItem('No-Cell Item', 'editors/images/image.gif', function()
             {

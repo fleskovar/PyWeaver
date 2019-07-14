@@ -7,8 +7,6 @@ Comming up next:
 
     Node:
         Convert to function / Always export reference to function
-        Add an option to export output by value or reference
-        Parameters
 
     Node Library:
         Interactive filter (plotly moving points example)
