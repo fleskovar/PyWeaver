@@ -26,6 +26,26 @@ def view_node():
     return app.send_static_file('node_viewer.html')
 
 
+@socketio.on('get_node_view_data')
+def get_node_view_data(data):
+    """
+    Method used by the Node Viewer window to retrieve node's UI and Python code.
+    This should be called upon
+    """
+    global graph_root
+    node_id = data['node_id']
+
+    node = graph_root.nodes[node_id]
+
+    node_data = dict()
+    node_data['ui'] = node.ui_code
+    node_data['script'] = node.ui_script
+    node_data['code'] = node.code
+    node_data['scope'] = node.scope
+
+    return node_data
+
+
 @app.route('/config')
 def get_config_file():
     cwd = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))

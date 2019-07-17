@@ -1,9 +1,16 @@
 Comming up next:
 
-    Node display window:
-        Render view
+    Node display window:        
         Sync scope
         Retrieve results
+        Integrate NodeDisplay component into NodeViewer
+        Big display block
+        Mini display block
+        Full plotly integration
+        Add a nice grid component to the big display
+
+    Refactor client code editor:
+        Better handling of multitab and instances of codemirror
 
     Node:
         Convert to function / Always export reference to function
