@@ -1,5 +1,12 @@
 Comming up next:
 
+    Changing code once inputs are generated:
+        Adding new inputs to node break everything
+        Changing output variable names break server side connections
+
+    Sync bug:
+        New server instance overwrites server model
+
     Node display window:        
         Sync scope
         Retrieve results

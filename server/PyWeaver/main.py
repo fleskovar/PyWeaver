@@ -9,6 +9,7 @@ from Graph import Graph
 from results_encoder import CustomJSONEncoder
 from LibraryManager import LibraryManager
 from model_manager import create_node, load_xml
+from refactor_magic import tabs_to_space, functionalize, vectorize
 
 
 # Flask server app

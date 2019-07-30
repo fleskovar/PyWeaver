@@ -228,7 +228,7 @@ class Node(object):
 
         return input_vals, named_input_vals, input_names
 
-    def connect_output(self, var, target_node, target_var, conn_name):
+    def connect_output(self, var, target_node, target_var, conn_name=''):
 
         """
             The node that sends and output (source) to another cell's input (target).
