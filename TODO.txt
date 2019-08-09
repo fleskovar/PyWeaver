@@ -1,4 +1,10 @@
 Comming up next:
+    
+    Node:
+        Convert to function / Always export reference to function
+
+    Code editor:
+        On import, make all tabs = 4 spaces
 
     Changing code once inputs are generated:
         Adding new inputs to node break everything
@@ -19,12 +25,8 @@ Comming up next:
     Refactor client code editor:
         Better handling of multitab and instances of codemirror
 
-    Node:
-        Convert to function / Always export reference to function
-
     Node Library:
         Interactive filter (plotly moving points example)
-        Signal derivative/integrate
         Upsample/Downsample
         Regression returs functions
         GP
@@ -47,10 +49,7 @@ Comming up next:
         Fire auto-recalc on display input change
 
     UI Improvements:
-        Grouping
-
-    Code editor:
-        On import, make all tabs = 4 spaces
+        Grouping    
 
     Nodes not being properly deleted on serve:
         Setting overlay of already deleted node
