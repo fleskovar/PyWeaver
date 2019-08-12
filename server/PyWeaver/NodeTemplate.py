@@ -1,3 +1,5 @@
+from refactor_magic import tabs_to_space
+
 class NodeTemplate(object):
     """
     Class that stores the information (logic, ui, ui logic, metadata and documentation) for the nodes of the library
@@ -15,7 +17,7 @@ class NodeTemplate(object):
         render = dict()
 
         render['lib_id'] = self.lib_id
-        render['code'] = self.read_file(self.code_path)
+        render['code'] = tabs_to_space(self.read_file(self.code_path))  # Makes sure code is indented with spaces
         render['display_code'] = self.read_file(self.ui_code_path)
         render['display_act_code'] = self.read_file(self.ui_script_path)
         render['meta'] = self.read_file(self.meta_path)

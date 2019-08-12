@@ -41,7 +41,7 @@ def get_node_view_data(data):
     node_data = dict()
     node_data['ui'] = node.ui_code
     node_data['script'] = node.ui_script
-    node_data['code'] = node.code
+    node_data['code'] = tabs_to_space(node.code)  # Makes sure code is indented with spaces
     node_data['scope'] = node.scope
 
     return node_data
@@ -132,7 +132,7 @@ def edit_node_code(data):
     global graph_root
 
     id = data['id']
-    code = data['code']
+    code = tabs_to_space(data['code'])  # Makes sure code is indented with spaces
     ui_code = data['ui_code']
     ui_script = data['ui_script']
 

@@ -3,9 +3,6 @@ Comming up next:
     Node:
         Convert to function / Always export reference to function
 
-    Code editor:
-        On import, make all tabs = 4 spaces
-
     Changing code once inputs are generated:
         Adding new inputs to node break everything
         Changing output variable names break server side connections
