@@ -16,6 +16,7 @@ class Graph(object):
         self.xmlModel = None
         self.node_count = 0
         self.node_ids = []
+        self.store = dict()  # Dictionary of dictionaries (first key is node id, second key variable name)
 
         if session_id is None:
             self.session_id = str(uuid.uuid4())
@@ -83,7 +84,13 @@ class Graph(object):
 
     def get_var_value(self, node_id, var):
         node = self.nodes[node_id]
-        return node.results[var]
+        val = self.store[node_id][var].value
+        return val
+
+    # New method for getting access to the Variable objects
+    def get_var(self, node_id, var):
+        var = self.store[node_id][var]
+        return var
 
     def execute(self, scope_data):
 

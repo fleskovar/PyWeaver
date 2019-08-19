@@ -203,9 +203,26 @@ def execute(scope_data):
     r = dict()
     for n in graph_root.nodes:
         rr = dict()
-        for v in graph_root.nodes[n].results:
+        for v in graph_root.store[n]:
+            var_obj = graph_root.store[n][v]
             # Transforms result into JSON safe data
-            rr[v] = graph_root.nodes[n].results[v]
+            rr[v] = var_obj.value
+        r[n] = rr
+    return r
+
+# TODO: implement this so that it return all the values of the variables in a node
+# this is important for the display pop-up
+@socketio.on('get_node_variables')
+def get_node_variables(node_id):
+    global graph_root
+
+    r = dict()
+    for n in graph_root.nodes:
+        rr = dict()
+        for v in graph_root.store[n]:
+            var_obj = graph_root.store[n][v]
+            # Transforms result into JSON safe data
+            rr[v] = var_obj.value
         r[n] = rr
     return r
 

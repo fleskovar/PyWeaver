@@ -51,9 +51,6 @@ Comming up next:
     Nodes not being properly deleted on serve:
         Setting overlay of already deleted node
 
-    Node code editing:
-        changing the name of 1 output var throws an error
-
     Error display:
         Not working properly
 
