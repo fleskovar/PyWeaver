@@ -196,6 +196,7 @@ def rename_connection(data):
 
 @socketio.on('execute')
 def execute(scope_data):
+    # TODO: this should return the whole variable data (including type) so that the display can use it
     global graph_root
 
     graph_root.execute(scope_data)
@@ -209,6 +210,7 @@ def execute(scope_data):
             rr[v] = var_obj.value
         r[n] = rr
     return r
+
 
 # TODO: implement this so that it return all the values of the variables in a node
 # this is important for the display pop-up
