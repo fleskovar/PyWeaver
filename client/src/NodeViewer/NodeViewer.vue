@@ -42,8 +42,12 @@ export default {
 
     this.id = node_id;
 
+    //Should change _node with a new object that fetches data from the server
+    //Should probably do the same with the UI
     this.node = new Proxy(this._node, {
         get: (target, name, receiver) => {  
+
+          //TODO: should rebuild "target" as an object containing the i/o from the node, obtained from the server
 
           var return_val = null;
 

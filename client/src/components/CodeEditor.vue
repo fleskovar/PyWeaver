@@ -15,28 +15,20 @@
 			<v-card-text>
 
 				<v-tabs dark>
-					<v-tab>Code</v-tab>
-					<v-tab-item>
-						<codemirror :options="cmOptions" ref="code_editor" v-model="code"/>
-						<v-card dark :key='bug_key'>{{error_text}}</v-card>
-					</v-tab-item>
-
-					<v-tab>Display</v-tab>
-					<v-tab-item>                
-						<codemirror :options="dispCmOptions" ref="ui_editor" v-model="display_code"/>                
-					</v-tab-item>
-
-					<v-tab>Display Actions</v-tab>
-					<v-tab-item>                
-						<codemirror :options="dispActCmOptions" ref="script_editor" v-model="display_act_code"/>                
-					</v-tab-item>
+					<v-tab v-on:click='show_code()'>Code</v-tab>
+					<v-tab v-on:click='show_display()'>Display</v-tab>
+					<v-tab v-on:click='show_display_script()'>Display Actions</v-tab>
 				</v-tabs>      
 				<v-spacer/>				    
+				
+				<codemirror :options="cmOptions" ref="code_editor" v-model="editor_code"/>
+				<v-card dark :key='bug_key'>{{error_text}}</v-card>
+			
 			</v-card-text>
 
 			<v-card-actions>     
 				<v-spacer/>         
-				<v-btn color="green" flat v-on:click='saveCode' dark>Update</v-btn>                 
+				<v-btn color="green" flat v-on:click='saveCode' dark>Update</v-btn>
 			</v-card-actions>
 
         </v-card>              
@@ -73,29 +65,9 @@ export default {
 				theme: 'base16-dark',
 				autoRefresh: true,        
 			},
-			dispCmOptions: {
-				// codemirror options
-				tabSize: 4,
-				indentUnit: 4,
-				mode: 'htmlmixed',        
-				lineNumbers: true,
-				viewportMargin: Infinity,
-				line: true,
-				theme: 'base16-dark',
-				autoRefresh: true,        
-			},
-			dispActCmOptions: {
-				// codemirror options
-				tabSize: 4,
-				indentUnit: 4,
-				mode: 'javascript',        
-				lineNumbers: true,
-				viewportMargin: Infinity,
-				line: true,
-				theme: 'base16-dark',
-				autoRefresh: true,        
-			},
 			has_error: false,
+			current_mode: 'code',
+			editor_code: '',
 		}
 	},
 	methods:{
@@ -108,6 +80,42 @@ export default {
 
 				}
 		},
+		backup_code(){
+			
+			if(this.current_mode=='code'){
+				this.code = this.editor_code;
+			}
+			else if(this.current_mode=='ui'){
+				this.display_code = this.editor_code;
+			}
+			else if(this.current_mode=='ui_script'){
+				this.display_act_code = this.editor_code;
+			}
+
+			//Backup the code based on the current mode
+		},
+		show_code(){
+			//TODO: Save and switch code whenever it is edited
+			this.backup_code(); //Based on the editing mode, save the code in a specific variable
+			this.setEditorMode("python");
+			this.current_mode = 'code';
+			this.editor_code = this.code; //Populates the editor with the stored code
+		},
+		show_display(){
+			this.backup_code(); //Based on the editing mode, save the code in a specific variable
+			this.setEditorMode("htmlmixed");
+			this.current_mode='ui';
+			this.editor_code = this.display_code; //Populates the editor with the stored code
+		},
+		show_display_script(){
+			this.backup_code(); //Based on the editing mode, save the code in a specific variable
+			this.setEditorMode("javascript");
+			this.current_mode='ui_script';
+			this.editor_code = this.display_act_code; //Populates the editor with the stored code
+		},
+		setEditorMode(mode){
+    			this.$refs.code_editor.codemirror.setOption("mode", mode);
+  		},
 		bugUnHighlight(){
 			if(this.error_line != -1){
 				var actual_line = this.error_line-1;
@@ -118,12 +126,6 @@ export default {
 			if(this.code_dialog){
 				if(this.$refs.code_editor.codemirror)
 					this.$refs.code_editor.codemirror.refresh();
-
-				if(this.$refs.ui_editor.codemirror)
-					this.$refs.ui_editor.codemirror.refresh();
-				
-				if(this.$refs.script_editor.codemirror)
-					this.$refs.script_editor.codemirror.refresh();
 			}
     	},
 		closeDialog: function(){

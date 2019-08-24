@@ -1,4 +1,11 @@
 Comming up next:
+
+    Cell contextmenu:
+        recalc
+
+    Framework:
+        Undo, redo
+        Drag cell into edge => make quick connections
     
     Changing code once inputs are generated:
         Adding new inputs to node break everything
@@ -15,9 +22,6 @@ Comming up next:
         Mini display block
         Full plotly integration
         Add a nice grid component to the big display
-
-    Refactor client code editor:
-        Better handling of multitab and instances of codemirror
 
     Node Library:
         Interactive filter (plotly moving points example)
@@ -57,10 +61,7 @@ Comming up next:
 Backlog:
 
     Hide inputs:
-        Specify on meta
-
-    Window node:
-        Show window plot
+        Specify on node meta (maybe add as a comment somewhere in the code?)
 
     Table/Vector/Time Series:
         Visualize Output
@@ -73,7 +74,7 @@ Backlog:
     Fix dark mode refresh pf Cells    
 
     Nodes:
-        Coloring optional input
+        Coloring/Visual queue optional input
         Connector type & validation
         Cell selection disabled on display
         No cell dragging with secondary button
@@ -98,11 +99,6 @@ Backlog:
 
     Develop new nodes:        
         Date/time picker
-
-    UI Improvements:
-
-        Plotly: 
-            Cells mouse events 
 
     Python:
         Compile workflow into single python file
