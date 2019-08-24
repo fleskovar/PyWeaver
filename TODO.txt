@@ -1,8 +1,5 @@
 Comming up next:
     
-    Node:
-        Convert to function / Always export reference to function
-
     Changing code once inputs are generated:
         Adding new inputs to node break everything
         Changing output variable names break server side connections
@@ -56,10 +53,6 @@ Comming up next:
 
     Library bug:
         Prevent folders names with spaces.
-    
-    Store:
-        Some nodes keep their results even when connections are replaced
-        (probable connections are note being deleted properly)
 
 Backlog:
 
@@ -122,3 +115,8 @@ Backlog:
 
     Code editors:        
         Code editor 'dirtyness'
+
+    Store:
+        <<Haven't been able to replicate>>
+        Some nodes keep their results even when connections are replaced
+        (probable connections are note being deleted properly)

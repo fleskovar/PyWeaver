@@ -33,7 +33,7 @@ def functionalize(source, inner_inputs):
     func_name = re.findall(r'def (.*)\(', lines[def_matches_index[0]])[0]  # Retrieves the name of the function
     
     args = re.findall(r'def .*\((.*)\)', lines[def_matches_index[0]])[0].split(',')  # Retrieves the args of the function
-    new_args = [ag.strip() for ag in args if ag not in inner_inputs]  # Keep only args that are not args to the inner func
+    new_args = [ag.strip() for ag in args if ag.strip() not in inner_inputs]  # Keep only args that are not args to the inner func
     
     # Edit inner func def args, leaving only the specified varibles in the inner_inputs list   
     lines[def_matches_index[0]] = re.sub(r'(def .*\()(.*)(\))', r'\1' + ','.join(inner_inputs)+')', lines[def_matches_index[0]])

@@ -33,9 +33,18 @@ export default new Vuex.Store({
     code_error_dict: {},
     code_parse_error_list: [],
     calcs_list: [],
+    show_refactor_func_dialog: false,
+    refactor_func_options: [],
+    refactor_node_id: '',
     
   },
   mutations: {
+    set_refactor_node_id: function(state, id){
+      state.refactor_node_id = id;
+    },
+    set_refactor_func_options: function(state, val){
+      state.refactor_func_options = val;
+    },
     calc_list_change: function(state, calcs){
       state.calcs_list = calcs;
     },
@@ -75,6 +84,9 @@ export default new Vuex.Store({
     },
     set_display_code: function(state, code){
       state.display_code = code;
+    },
+    set_show_refactor_func_dialog: function(state, val){
+      state.show_refactor_func_dialog = val;
     },
     set_display_act_code: function(state, code){
       state.display_act_code = code;
@@ -184,6 +196,13 @@ export default new Vuex.Store({
         socket.emit('request_model');
       }
     },
+    socket_setNodeClientCode: function(context, server_data){
+      var node_id = server_data['node_id'];
+      var code = server_data['code'];
+      context.state.code_nodes[node_id].code = code;
+    },
+    socket_setNodeClientUi: function(context, server_data){},
+    socket_setNodeClientUiScript: function(context, server_data){},
     socket_forceSessionId: function(context, session_id){      
         context.commit('set_session_id', session_id);      
     },
@@ -275,6 +294,27 @@ export default new Vuex.Store({
     },
     set_output_type(context, data){
       socket.emit('set_output_type', data);
+    },
+    open_refactor_dialog(context, node_id){
+      context.commit('set_refactor_node_id', node_id);
+
+      //Extract the name of the input variables so that the user can decide
+      //which of them should be paramters and which should be inner inputs
+      var keys = Object.keys(context.state.code_nodes[node_id].inputs);
+      context.commit('set_refactor_func_options', keys);
+      context.commit('set_show_refactor_func_dialog', true);
+    },
+    refactor_to_function(context, refactor_data){
+
+      var server_data = {};
+      var node_id = refactor_data['node_id']
+      server_data['id'] = node_id;
+      server_data['code'] = context.state.code_nodes[node_id].code;
+      server_data['ui_code'] = context.state.code_nodes[node_id].display_code;
+      server_data['ui_script'] = context.state.code_nodes[node_id].display_act_code;
+      server_data['inner_vars'] = refactor_data['inner_vars'];
+
+      socket.emit('refactor_to_function', server_data);
     },
     execute_server(context){
 

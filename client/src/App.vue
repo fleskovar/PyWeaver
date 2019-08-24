@@ -166,6 +166,7 @@
     </v-content>
 
     <CodeEditor/>
+    <RefactorFunctionalize/>
     <LibrarySaveDialog/>    
 
     <v-footer class="pa-3" app dark>
@@ -177,8 +178,9 @@
 </template>
 
 <script>
-import Canvas from './NodeEditor/Canvas';
+import Canvas from './NodeEditor/Canvas'
 import CodeEditor from './components/CodeEditor'
+import RefactorFunctionalize from './components/RefactorFunctionalize'
 import SideBar from './components/SideBar'
 import LibrarySaveDialog from './components/LibrarySaveDialog'
 import EventBus from './EventBus.js'
@@ -190,6 +192,7 @@ export default {
     CodeEditor,
     SideBar,
     LibrarySaveDialog,    
+    RefactorFunctionalize,
   },
   data () {
     return {           

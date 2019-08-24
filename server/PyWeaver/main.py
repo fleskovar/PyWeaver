@@ -46,6 +46,18 @@ def get_node_view_data(data):
 
     return node_data
 
+def set_node_client_code(node_id, code, code_type='code'):
+    
+    data = dict()
+    data['code'] = code
+    data['node_id'] = node_id
+    
+    if code_type == 'code':
+        emit('set_node_client_code', data)  # Send session id to the client
+    elif code_type == 'ui':
+        emit('set_node_client_ui', data)  # Send session id to the client
+    elif code_type == 'ui_script':
+        emit('set_node_client_ui_script', data)  # Send session id to the client
 
 @app.route('/config')
 def get_config_file():
@@ -126,6 +138,22 @@ def model_request():
         graph_root = Graph(session_id=session_id)
         load_xml(graph_root, xml)  # Load and push model into UI
 
+@socketio.on('refactor_to_function')
+def refactor_to_function(refactor_data):
+    global graph_root
+    template = dict()  # Set empty template
+    node_id = refactor_data['id']
+
+    code = functionalize(refactor_data['code'], refactor_data['inner_vars'])  # Applies refactor magic
+
+    data = dict()
+    data['id'] = node_id
+    data['code'] = code
+    data['ui_code'] = refactor_data['ui_code']
+    data['ui_script'] = refactor_data['ui_script']
+
+    edit_node_code(data)
+    set_node_client_code(node_id, code)
 
 @socketio.on('edit_node_code')
 def edit_node_code(data):

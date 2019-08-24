@@ -670,10 +670,10 @@ export default class Canvas{
                     });
 
                     //If click was done over a node
-                    menu.addItem('Transform to function', 'editors/images/image.gif', function()
+                    menu.addItem('Refactor to function', 'editors/images/image.gif', function()
                     {
                         //mxUtils.alert('MenuItem1');
-                        window.open( 'http://localhost:8080/node_viewer.html?node_id='+cell.id, 'name', 'location=no,scrollbars=yes,status=no,toolbar=yes,resizable=no,top=0,left=0,width=400,height=400');
+                        graph.store.dispatch('open_refactor_dialog', cell.id);
                     });
                 }                
             }
