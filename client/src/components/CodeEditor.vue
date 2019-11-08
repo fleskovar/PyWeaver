@@ -14,10 +14,10 @@
 
 			<v-card-text>
 
-				<v-tabs dark>
-					<v-tab v-on:click='show_code()'>Code</v-tab>
-					<v-tab v-on:click='show_display()'>Display</v-tab>
-					<v-tab v-on:click='show_display_script()'>Display Actions</v-tab>
+				<v-tabs dark v-model="current_mode"> 
+					<v-tab v-on:click='show_code()' key="code">Code</v-tab>
+					<v-tab v-on:click='show_display()' key="ui">Display</v-tab>
+					<v-tab v-on:click='show_display_script()' key="ui_script">Display Actions</v-tab>
 				</v-tabs>      
 				<v-spacer/>				    
 				
@@ -98,19 +98,16 @@ export default {
 			//TODO: Save and switch code whenever it is edited
 			this.backup_code(); //Based on the editing mode, save the code in a specific variable
 			this.setEditorMode("python");
-			this.current_mode = 'code';
 			this.editor_code = this.code; //Populates the editor with the stored code
 		},
 		show_display(){
 			this.backup_code(); //Based on the editing mode, save the code in a specific variable
 			this.setEditorMode("htmlmixed");
-			this.current_mode='ui';
 			this.editor_code = this.display_code; //Populates the editor with the stored code
 		},
 		show_display_script(){
 			this.backup_code(); //Based on the editing mode, save the code in a specific variable
 			this.setEditorMode("javascript");
-			this.current_mode='ui_script';
 			this.editor_code = this.display_act_code; //Populates the editor with the stored code
 		},
 		setEditorMode(mode){
@@ -212,7 +209,16 @@ export default {
 	},
 	watch:{
 		code_dialog: function(new_val, old_val){
-			if(new_val){        
+			
+			if(!old_val){
+				//Opening the editor
+				this.setEditorMode("python");
+				this.current_mode = 'code';
+				this.editor_code = this.code; //Populates the editor with the stored code			
+			}
+			
+			if(new_val){   
+
 				this.bugHighlight();        
 			}
 		}

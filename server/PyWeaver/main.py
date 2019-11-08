@@ -16,7 +16,7 @@ from refactor_magic import tabs_to_space, functionalize, vectorize
 app = Flask(__name__, static_url_path='')
 app.json_encoder = CustomJSONEncoder
 app.config['SECRET_KEY'] = 'secret!'
-socketio = SocketIO(app, json=json)
+socketio = SocketIO(app, json=json, cors_allowed_origins="*")
 
 @app.route('/')
 def root():
@@ -86,7 +86,7 @@ def load_node(lib_id):
     global library
     global graph_root
     template = library.get_render(lib_id)
-
+    
     if template is not None:
         # If template was found
         create_node(graph_root, template)
@@ -361,6 +361,7 @@ def get_library():
 @socketio.on('refresh_library')
 def refresh_library():
     global library
+    
     library = LibraryManager()    
     send_library_tree_data()
 

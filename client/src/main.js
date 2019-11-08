@@ -49,5 +49,4 @@ Vue.use(VueSocketio, socket, {store});
       store,
       render: h => h(App),
     }).$mount('#app')
-
 */
