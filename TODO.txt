@@ -1,7 +1,6 @@
 Comming up next:
 
-    Code editor:
-        On open, it should default to code tab. Currently the code tab does not get the underlay.
+    
 
     Cell contextmenu:
         recalc
@@ -62,6 +61,9 @@ Comming up next:
         Prevent folders names with spaces.
 
 Backlog:
+
+    Code editor:
+        On open, it should default to code tab. Currently the code tab does not get the underlay.
 
     Hide inputs:
         Specify on node meta (maybe add as a comment somewhere in the code?)

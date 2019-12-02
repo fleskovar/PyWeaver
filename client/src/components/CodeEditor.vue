@@ -133,6 +133,9 @@ export default {
 			this.$store.commit('set_dialog_open', true);
 		},
 		saveCode: function(){
+
+			this.backup_code();
+
 			this.$store.dispatch('save_node_code',
 			{
 				code: this.code,
