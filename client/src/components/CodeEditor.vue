@@ -66,7 +66,7 @@ export default {
 				autoRefresh: true,        
 			},
 			has_error: false,
-			current_mode: 'code',
+			current_mode: 0,
 			editor_code: '',
 		}
 	},
@@ -82,13 +82,13 @@ export default {
 		},
 		backup_code(){
 			
-			if(this.current_mode=='code'){
+			if(this.current_mode==0){
 				this.code = this.editor_code;
 			}
-			else if(this.current_mode=='ui'){
+			else if(this.current_mode==1){
 				this.display_code = this.editor_code;
 			}
-			else if(this.current_mode=='ui_script'){
+			else if(this.current_mode==2){
 				this.display_act_code = this.editor_code;
 			}
 
@@ -216,7 +216,7 @@ export default {
 			if(!old_val){
 				//Opening the editor
 				this.setEditorMode("python");
-				this.current_mode = 'code';
+				this.current_mode = 0; //Code
 				this.editor_code = this.code; //Populates the editor with the stored code			
 			}
 			
