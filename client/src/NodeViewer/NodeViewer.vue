@@ -16,6 +16,7 @@ export default {
     Val,
   },
   name: 'NodeViewer',
+  props: ['ui_data', '_node'],
   data() {
     return {           
       id: 'n0',
@@ -35,12 +36,8 @@ export default {
     }
   },
   mounted(){
-    //TODO parse this to get data from server
-    var node_id = window.location.search
-      .split('?')[1]
-      .split('=')[1];
 
-    this.id = node_id;
+    this.process_results(this.ui_data);
 
     //Should change _node with a new object that fetches data from the server
     //Should probably do the same with the UI
@@ -55,48 +52,15 @@ export default {
             //Ignore __ob__ request   
             var id = null;
             var var_name = null;
-            if(name in target.inputs){
-              console.log('input request');
-              //The requested var is an input
-              var source_data = target.inputs[name];
-              //Fetch the data from the store using source's data
-              if(source_data){
-                id = source_data.id;
-                var_name = source_data.var_name;
-              }
-            }
-            else{
-              //Fetch the data from the store using own data
-              id = target.id;
-              var_name = name;
-            }
-
-            if(id && var_name){
-              if(id in target.store.state.results){
-                if(var_name in target.store.state.results[id]){
-                  return_val = target.store.state.results[id][var_name];
-                }
-              }
+            if(name in target){
+              //The requested var is inside the node
+              return_val = target[name];
+              
             }
           }
-
           return return_val;
       }
     });
-  },
-  sockets:{
-    connect: function(){
-      
-      var node_id = window.location.search
-      .split('?')[1]
-      .split('=')[1];
-
-      this.$socket.emit('get_node_view_data', {'node_id':node_id}, this.process_results);      
-      
-    },
-    disconnect: function(){
-      //this.connected = false;
-    }
   },
 }
 </script>

@@ -26,6 +26,30 @@ def root():
 def view_node():
     return app.send_static_file('node_viewer.html')
 
+@app.route('/get_node_info/<node_id>')
+def retrieve_node_data(node_id):
+    """
+    Method used by the Node Viewer window to retrieve node's UI and Python code.
+    This should be called upon
+    """
+    global graph_root
+
+    node = graph_root.nodes[node_id]
+
+    node_data = dict()
+    node_data['ui'] = node.ui_code
+    node_data['script'] = node.ui_script
+    node_data['code'] = tabs_to_space(node.code)  # Makes sure code is indented with spaces
+    node_data['scope'] = node.scope
+
+    return_data = dict()
+    return_data['ui_data'] = node_data
+    
+    node_vars = dict()
+    node_vars['x'] = 1
+    return_data['data'] = node_vars
+
+    return return_data
 
 @socketio.on('get_node_view_data')
 def get_node_view_data(data):
