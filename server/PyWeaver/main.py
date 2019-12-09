@@ -45,11 +45,52 @@ def retrieve_node_data(node_id):
     return_data = dict()
     return_data['ui_data'] = node_data
     
-    node_vars = dict()
-    node_vars['x'] = 1
+    node_vars = get_node_data(node_id)
+    
     return_data['data'] = node_vars
 
     return return_data
+
+def get_node_data(node_id):
+    """
+    This method takes a node id and return a dictionary with all the input, output variable and their values.
+    This is used for showing the node display in a separate window.
+    """
+    global graph_root
+
+    node = graph_root.nodes[node_id]
+    input_vars = node.input_vars_data
+    output_vars = node.output_vars
+
+    r = dict()
+
+    # Loop through the input vars and find their values in the store.
+    # We first need to find the id of the source node and then find that variable in the data store.
+    # The inputs of the node contain the source node and the name of the variable.
+    for v in input_vars:
+        # TODO: Decide what happens when this becomes a multiple connection input. List of values?
+        # How does this work in the regular UI?
+        val = []
+        
+        for con in input_vars[v]:
+            source_node = con[0]
+            var_name = con[1]
+            val.append(graph_root.store[source_node][var_name].value)
+
+
+        if len(val) == 1:
+            # If only one value is inside (because this input has only one connection)
+            # Unpack the value and avoid returning a list
+            val = val[0]
+        
+        r[v] = val  # Can either return a list (if multiple connections are made) or a single value
+
+    # Loop through the output variables and the find their values in the store.
+    # The variables can easily be found in the store because we already know the id of the node containing them
+    for v in output_vars:        
+        r[v] = graph_root.store[node_id][v].value
+    
+    return r
 
 @socketio.on('get_node_view_data')
 def get_node_view_data(data):
