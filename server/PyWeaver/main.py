@@ -51,6 +51,11 @@ def retrieve_node_data(node_id):
 
     return return_data
 
+@socketio.on('get_node_view_update')
+def node_display_update(node_id):
+    node_vars = get_node_data(node_id)
+    return node_vars
+
 def get_node_data(node_id):
     """
     This method takes a node id and return a dictionary with all the input, output variable and their values.
@@ -96,7 +101,6 @@ def get_node_data(node_id):
 def get_node_view_data(data):
     """
     Method used by the Node Viewer window to retrieve node's UI and Python code.
-    This should be called upon
     """
     global graph_root
     node_id = data['node_id']
@@ -302,6 +306,9 @@ def execute(scope_data):
             # Transforms result into JSON safe data
             rr[v] = var_obj.value
         r[n] = rr
+
+    emit('graphExecuted', None, broadcast=True)
+
     return r
 
 

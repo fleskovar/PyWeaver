@@ -58,6 +58,7 @@ ax.get('/get_node_info/'+node_id, {
         NodeViewer,
         {
           props:{
+            id:node_id,
             ui_data: ui_data,
             _node: node_data
           }

@@ -1,6 +1,8 @@
 Comming up next:
 
-    
+    Node display window:
+        Avoid mutating a prop directly
+        Property or method "display_code" Error on console
 
     Cell contextmenu:
         recalc

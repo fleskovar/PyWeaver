@@ -16,10 +16,9 @@ export default {
     Val,
   },
   name: 'NodeViewer',
-  props: ['ui_data', '_node'],
+  props: ['id', 'ui_data', '_node'],
   data() {
-    return {           
-      id: 'n0',
+    return {
       template: '',
       script: '',
       scope: {},
@@ -33,6 +32,12 @@ export default {
       this.template = '<div>'+data['ui']+'</div>';
       this.display_code = data['script'];
       this.scope = data['scope'];
+    },
+    process_graph_update: function(data){
+      //this.ui_data = response.data.ui_data;
+
+      //TODO: Avoid mutating a prop directly. Make sure state of the server is synched with display
+      this._node = data;
     }
   },
   mounted(){
@@ -62,6 +67,12 @@ export default {
       }
     });
   },
+  sockets: {
+    graphExecuted(val){
+      this.$socket.emit('get_node_view_update', this.id, this.process_graph_update);
+      
+    }
+  }
 }
 </script>
 
