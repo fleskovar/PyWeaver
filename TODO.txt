@@ -1,7 +1,11 @@
 Comming up next:
 
+    Input bug on server:
+        Build simple plot of y = x**2 but return x (linear function), then change the return from x to y.
+
     Node display window:
-        Avoid mutating a prop directly
+        Force window reupdate if UI code is changed
+        Implement small display, big display markup
         Property or method "display_code" Error on console
 
     Cell contextmenu:
