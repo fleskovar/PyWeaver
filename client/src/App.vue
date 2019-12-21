@@ -1,12 +1,37 @@
 <template>
   <v-app>
     <v-toolbar app dark fixed clipped-left flat>
-      <v-toolbar-title class="headline text-uppercase">
+      <v-toolbar-title class="headline text-uppercase pr-5">
         <span>Py</span>
         <span class="font-weight-light">Weaver</span>
       </v-toolbar-title>
-      <v-spacer></v-spacer>
+      
+      <v-divider vertical/>
         
+      <!--Server Control + Files save/load -->
+      <v-item-group dense class="pa-2">
+        <v-btn flat small icon @click='OpenFile'>          
+          <v-icon>folder_open</v-icon>
+        </v-btn>
+        <v-btn flat small icon @click='SaveModel'>
+          <v-icon>cloud_download</v-icon>
+        </v-btn>
+      </v-item-group>
+      <v-divider vertical/>        
+      <v-item-group dense>
+        <v-btn flat icon small @click="runServer()">
+          <v-icon small>play_arrow</v-icon>
+        </v-btn>
+        <v-btn flat icon small>
+          <v-icon small>pause</v-icon>
+        </v-btn>  
+        <v-btn flat icon small @click="resetServer">
+          <v-icon small>refresh</v-icon>
+        </v-btn>            
+      </v-item-group>
+
+      <v-spacer></v-spacer>
+
       <v-chip color="green" text-color="white" v-if='connected'>Connected</v-chip>  
       <v-chip color="red" text-color="white" v-if='!connected'>Disconnected</v-chip>
     </v-toolbar>
@@ -15,30 +40,6 @@
     <SideBar/>
 
     <v-content style='overflow: hidden'>
-        
-        <!--Server Control + Files save/load -->
-        <v-toolbar dark class="grey darken-1" dense>                  
-          <v-item-group dense>
-            <v-btn flat small icon @click='OpenFile'>          
-              <v-icon>folder_open</v-icon>
-            </v-btn>
-            <v-btn flat small icon @click='SaveModel'>
-              <v-icon>cloud_download</v-icon>
-            </v-btn>
-          </v-item-group>
-          <v-divider vertical/>        
-          <v-item-group dense>
-            <v-btn flat icon small @click="runServer()">
-              <v-icon small>play_arrow</v-icon>
-            </v-btn>
-            <v-btn flat icon small>
-              <v-icon small>pause</v-icon>
-            </v-btn>  
-            <v-btn flat icon small @click="resetServer">
-              <v-icon small>refresh</v-icon>
-            </v-btn>            
-          </v-item-group>
-        </v-toolbar>
 
         <!--Edges and cells format + Library quick search-->
         <v-toolbar dark class="grey darken-2" dense>          

@@ -8,8 +8,7 @@ Comming up next:
 
     Node display window:
         Only update dirty nodes
-        Force window reupdate if UI code is changed
-        Implement small display, big display markup
+        Force window reupdate if UI code is changed        
         Property or method "display_code" Error on console
 
     Cell contextmenu:
@@ -61,7 +60,7 @@ Comming up next:
     UI Improvements:
         Grouping    
 
-    Nodes not being properly deleted on serve:
+    Nodes not being properly deleted on server:
         Setting overlay of already deleted node
 
     Error display:
