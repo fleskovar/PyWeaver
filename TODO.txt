@@ -3,7 +3,11 @@ Comming up next:
     Input bug on server:
         Build simple plot of y = x**2 but return x (linear function), then change the return from x to y.
 
+    UI Inspector:
+        Visualize node UI when selected?
+
     Node display window:
+        Only update dirty nodes
         Force window reupdate if UI code is changed
         Implement small display, big display markup
         Property or method "display_code" Error on console

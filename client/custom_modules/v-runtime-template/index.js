@@ -1,6 +1,7 @@
 import {Val} from '../../src/directives/InitDirective.js'
 import Plotly from 'plotly.js-dist';
 
+
 const getKeysFromOptions = options => [
   ...Object.keys((options.data && options.data()) || {}),
   ...Object.keys(options.props || {})

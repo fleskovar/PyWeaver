@@ -7,10 +7,14 @@
 <script>
 import VRuntimeTemplate from "../../custom_modules/v-runtime-template/index.js";
 import {Val} from '../directives/InitDirective.js'
+import BigDisplay from '../../src/components/BigDisplay.vue'
+import SmallDisplay from '../../src/components/SmallDisplay.vue'
 
 export default {
   components: {    
     VRuntimeTemplate,
+    BigDisplay,
+    SmallDisplay
   },
   directives:{
     Val,
@@ -26,6 +30,7 @@ export default {
       _previous_display_code: '{}',
       node_data: null, //stores inner state of the display
       redraw: 0, //used for forcing render update
+      isBigDisplay: true, //used for selectively rendering components on big/small displays
     }
   },
   methods:{

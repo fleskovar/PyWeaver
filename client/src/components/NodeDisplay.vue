@@ -8,6 +8,9 @@
 import VRuntimeTemplate from "../../custom_modules/v-runtime-template/index.js";
 import EventBus from '../EventBus.js'
 import {Val} from '../directives/InitDirective.js'
+import BigDisplay from '../../src/components/BigDisplay.vue'
+import SmallDisplay from '../../src/components/SmallDisplay.vue'
+
 
 //TODO: Change template init code and tie it to CodeNode default code
 export default {
@@ -20,9 +23,12 @@ export default {
     node: {},
     _previous_template: '',
     _previous_display_code: '{}',
+    isBigDisplay: false, //used for selectively rendering components on big/small displays
   }),
   components: {    
     VRuntimeTemplate,
+    BigDisplay,
+    SmallDisplay,
   },
   directives:{
     Val
