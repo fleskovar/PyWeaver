@@ -45,6 +45,7 @@ export default {
     };
   },
   render(h) {
+    console.log("rendering");
     if (this.template) {
       const { $data, $props, $options } = this.$parent;
 

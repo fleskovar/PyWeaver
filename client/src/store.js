@@ -36,7 +36,7 @@ export default new Vuex.Store({
     show_refactor_func_dialog: false,
     refactor_func_options: [],
     refactor_node_id: '',
-    
+    canvas_views: {},
   },
   mutations: {
     set_refactor_node_id: function(state, id){
@@ -128,6 +128,15 @@ export default new Vuex.Store({
       context.commit('set_display_act_code', node.display_act_code);
       context.commit('open_editor', true);
     },    
+    attach_nodes: function(context){
+      
+      for(let node_id in context.state.node_displays){
+        let instance = context.state.node_displays[node_id];
+        let div_el = document.getElementById('node_'+node_id);
+        if(div_el)
+          div_el.appendChild(instance.$el); //Insert display into DOM
+      }
+    },
     socket_addNode: function(context, node_data){
       //TODO:      
       //set selected_node and others
@@ -150,6 +159,7 @@ export default new Vuex.Store({
 
       var node_cell = canvas.addNode(node);
       var node_id = node_cell.id;
+      console.log("new id: "+node_id);
 
       //Insert component into node
       var ComponentClass = Vue.extend(NodeDisplay);

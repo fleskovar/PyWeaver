@@ -42,7 +42,7 @@
     <v-content style='overflow: hidden'>
 
         <!--Edges and cells format + Library quick search-->
-        <v-toolbar dark class="grey darken-2" dense>          
+        <v-toolbar dark class="grey darken-2" dense flat>          
                       
           Outline        
           <v-item-group>
@@ -147,6 +147,24 @@
 
         </v-toolbar>
 
+        <v-toolbar dark dense> 
+          <v-chip
+            class="ma-2"
+            :close='index>0'
+            :draggable='index>0'
+            color="grey darken-2"
+            text-color="white"  
+            
+            v-for="(c, index) in chips"
+            :key="index" 
+          >
+            {{c}}
+          </v-chip> 
+          <v-chip v-on:click='changeCanvas'>                          
+              <v-icon>add</v-icon>
+          </v-chip>
+
+        </v-toolbar>
 
         <!-- Using grid
         <v-card flat height='100%'>
@@ -158,10 +176,6 @@
         <v-card flat height='100%'>          
           <div id='outlineContainer'/>
           <div :class="canvas_color" id='canvas'/>       
-        </v-card>
-        
-        <v-card style='height: 100px' color='red'>
-          <div>ASDASD</div>
         </v-card>
         
     </v-content>
@@ -196,7 +210,8 @@ export default {
     RefactorFunctionalize,
   },
   data () {
-    return {           
+    return {        
+      showMainCanvas: true,   
       toggle_exclusive: 2,   
       colors: [
         {code:'#F44336', color:'red'},
@@ -206,6 +221,7 @@ export default {
         {code:'#FFEB3B', color:'yellow'},
         {code:'#E91E63', color:'pink'}
       ],
+      chips: ['Main', 'Function 1', 'Function 2'],
       stroke_size: '',
       showOptionsDialog: false,
       library_search_val: null,
@@ -219,8 +235,9 @@ export default {
     var outline_container = document.getElementById('outlineContainer');    
 
     var canvas = new Canvas(container, outline_container, this.$store);
-    canvas.mount();
-    this.$store.commit('set_canvas', canvas);
+    canvas.mount(); //Initializes canvas
+
+    this.$store.commit('set_canvas', canvas); //Stores reference of the canvas
     EventBus.$on('update_displays', this.updateCanvas); 
     //this.library_sort = fuzzysort.new({threshold: -1000});
     this.library_sort = fuzzysort.new();
@@ -253,7 +270,38 @@ export default {
     this.connected = this.$socket.connected;
 
   },
-  methods:{    
+  methods:{
+    changeCanvas(){
+      var xmlString = this.$store.state.canvas.GetModelXML();
+      
+      var newModelXML = '<?xml version="1.0"?> <mxGraphModel><root><mxCell id="0"/><mxCell id="1" parent="0"/></root></mxGraphModel>';
+
+      if(this.showMainCanvas){
+        //Test for main canvas
+
+        //Save current canvas
+        this.$store.state.canvas_views['c1'] = xmlString;
+        //Load previous canvas       
+        if(this.$store.state.canvas_views['c2'])
+          newModelXML = this.$store.state.canvas_views['c2'];
+        
+      }else{
+        //Secondary canvas
+        this.$store.state.canvas_views['c2'] = xmlString;
+        //Load previous canvas
+        newModelXML = this.$store.state.canvas_views['c1'];        
+      }
+
+      this.$store.state.canvas.LoadModel(newModelXML);
+      //Attach all displays
+      this.$store.dispatch('attach_nodes');
+      
+      //Rerender all cells      
+      this.$store.dispatch('update_all_cells');
+      this.$store.state.run_id += 1
+      
+      this.showMainCanvas = !this.showMainCanvas;
+    },
     loseLibrarySearchFocus(){
       this.$refs.search_bar.blur();
       this.$nextTick(() => {
@@ -293,7 +341,7 @@ export default {
       this.library_search_val= null;
       this.librarySearchMenu = true;
     },
-    SetDashed(val){
+    SetDashed(val){      
       this.$store.dispatch('change_element_dashed', val);
     },
     SetStrokeSize(){

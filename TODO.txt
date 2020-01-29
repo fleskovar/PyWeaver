@@ -1,4 +1,14 @@
+Migrating to Vue3 and latest vuetify?
+
 Comming up next:
+
+    Loading:
+        Make canvas load edges positions
+        Make code editor tabs
+            Sortable tabs/chips
+            Load tabs into canvas
+
+    Node library menu horizontal scrolling
 
     Input bug on server:
         Build simple plot of y = x**2 but return x (linear function), then change the return from x to y.
@@ -7,6 +17,7 @@ Comming up next:
         Visualize node UI when selected?
 
     Node display window:
+        Refactor NodeDisplay & Big/Small display component (they share too much similar code)
         Only update dirty nodes
         Force window reupdate if UI code is changed        
         Property or method "display_code" Error on console

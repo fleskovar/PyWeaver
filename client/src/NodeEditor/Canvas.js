@@ -131,10 +131,12 @@ export default class Canvas{
             }
             else{
                 var div = document.getElementById('node_'+cell.id);
-
-                result.width = div.offsetWidth +50;
-                result.height = div.offsetHeight + 50;
-
+                if(div){
+                    result.width = div.offsetWidth +50;
+                    result.height = div.offsetHeight + 50;
+                }else{
+                    console.log("can't find div:" + 'node_'+cell.id);
+                }
                 return result;
             }
         };

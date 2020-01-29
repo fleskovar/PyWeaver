@@ -67,7 +67,6 @@ export default {
             var id = null;
             var var_name = null;
             if(name in target.inputs){
-              console.log('input request');
               //The requested var is an input
               var source_data = target.inputs[name];
               //Fetch the data from the store using source's data
