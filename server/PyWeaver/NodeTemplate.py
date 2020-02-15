@@ -1,4 +1,10 @@
+# For local
+"""
 from refactor_magic import tabs_to_space
+"""
+
+# For release
+from PyWeaver.refactor_magic import tabs_to_space
 
 class NodeTemplate(object):
     """

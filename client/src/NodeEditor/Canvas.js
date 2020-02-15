@@ -668,7 +668,11 @@ export default class Canvas{
                     menu.addItem('Display on new window', 'editors/images/image.gif', function()
                     {
                         //mxUtils.alert('MenuItem1');
-                        window.open( 'http://localhost:8080/node_viewer.html?node_id='+cell.id, 'name', 'location=no,scrollbars=yes,status=no,toolbar=yes,resizable=no,top=0,left=0,width=400,height=400');
+                        //For local
+                        //window.open( 'http://localhost:8080/node_viewer.html?node_id='+cell.id, 'name', 'location=no,scrollbars=yes,status=no,toolbar=yes,resizable=no,top=0,left=0,width=400,height=400');
+                        //For release
+                        
+                        window.open( 'http://localhost:5000/node_viewer.html?node_id='+cell.id, 'name', 'location=no,scrollbars=yes,status=no,toolbar=yes,resizable=no,top=0,left=0,width=400,height=400');
                     });
 
                     //If click was done over a node

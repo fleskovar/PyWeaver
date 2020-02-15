@@ -5,8 +5,15 @@ import re
 from copy import deepcopy
 import sys, os
 
+# For local
+"""
 from Variable import Variable
 from code_parsing import parse_function
+"""
+
+# For release
+from PyWeaver.Variable import Variable
+from PyWeaver.code_parsing import parse_function
 
 class Node(object):
 

@@ -1,9 +1,23 @@
-C:/Users/Fran/Anaconda3/Scripts/activate
+C:/Users/Franc/Anaconda3/Scripts/
 conda activate base
 
-change version number in setup.py
+in server, change all imports from local to release
+
+in client, make sure that in Canvas.js the port is set to 5000
+window.open( 'http://localhost:5000/
+
+change version number in:
+pkg/setup.py
+
+copy server files into:
+pkg\PyWeaver
+
+cd to client -> npm run build
+files will be copied into pkg\PyWeaver\static
+
+cd to pkg
 python setup.py sdist bdist_wheel
 upload to github
 twine upload dist/*
 or
-pip install dist/pyweaver-0.0.8-py3-none-any.whl
+pip install dist/pyweaver-0.0.9-py3-none-any.whl

@@ -7,6 +7,6 @@ from PyWeaver.code_parsing import parse_function
 from PyWeaver.Nodes import Node
 from PyWeaver.NodeTemplate import NodeTemplate
 from PyWeaver.main import start
-
+from PyWeaver.Variable import Variable
 
 name = 'pyweaver'
