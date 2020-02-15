@@ -147,23 +147,12 @@
 
         </v-toolbar>
 
-        <v-toolbar dark dense> 
-          <v-chip
-            class="ma-2"
-            :close='index>0'
-            :draggable='index>0'
-            color="grey darken-2"
-            text-color="white"  
-            
-            v-for="(c, index) in chips"
-            :key="index" 
-          >
-            {{c}}
-          </v-chip> 
+        <v-toolbar dark dense>
+          <!-- 
           <v-chip v-on:click='changeCanvas'>                          
               <v-icon>add</v-icon>
           </v-chip>
-
+          -->
         </v-toolbar>
 
         <!-- Using grid
@@ -221,7 +210,6 @@ export default {
         {code:'#FFEB3B', color:'yellow'},
         {code:'#E91E63', color:'pink'}
       ],
-      chips: ['Main', 'Function 1', 'Function 2'],
       stroke_size: '',
       showOptionsDialog: false,
       library_search_val: null,

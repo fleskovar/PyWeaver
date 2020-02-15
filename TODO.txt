@@ -1,7 +1,7 @@
 Migrating to Vue3 and latest vuetify?
 
 Comming up next:
-
+        
     Loading:
         Make canvas load edges positions
         Make code editor tabs
@@ -81,6 +81,10 @@ Comming up next:
         Prevent folders names with spaces.
 
 Backlog:
+
+    Find a better way to store results/inputs of flowsheet:
+        Maybe just store UI inputs? Optional store results?
+        code should be stored as reference to library when possible
 
     Code editor:
         On open, it should default to code tab. Currently the code tab does not get the underlay.
