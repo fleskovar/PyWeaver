@@ -20,7 +20,7 @@ def create_node(graph_root, node_template):
     code = node_template['code'] if len(node_template['code']) > 0 else None
     node_id = node_template['id'] if 'id' in node_template else None
 
-    node = graph_root.add_node(node_id=node_id, code=code)
+    node = graph_root.add_node(node_id=node_id, code=code, ui_code=node_template['display_code'], ui_script=node_template['display_act_code'])
 
     node_template['id'] = node.id
     node_template['input_port_names'] = node.input_vars

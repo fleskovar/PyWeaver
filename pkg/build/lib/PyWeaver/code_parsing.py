@@ -40,16 +40,16 @@ def extract_inputs(function_statement):
     input_vars_named = OrderedDict()
 
     # This number tells us how many unnamed args we have at the begining of the function declaration
-    named_offset=len(input_vars) - len(function_statement.args.defaults)
+    named_offset=len(function_statement.args.args) - len(function_statement.args.defaults)
 
     for i, var in enumerate(function_statement.args.args):
         
         input_vars.append(var.arg)
         
-        if i+1 < named_offset:
-            input_vars_named[var.arg] = True
-        else:
+        if i+1 <= named_offset:
             input_vars_named[var.arg] = False
+        else:
+            input_vars_named[var.arg] = True
 
     return input_vars, input_vars_named
 

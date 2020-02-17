@@ -7,6 +7,8 @@ class CustomJSONEncoder(JSONEncoder):
         try:
             if isinstance(obj, np.ndarray):
                 return obj.tolist()
+            elif obj is None:
+                return 'null'
             iterable = iter(obj)
         except TypeError:
             pass

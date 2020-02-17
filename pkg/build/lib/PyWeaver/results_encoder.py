@@ -7,10 +7,17 @@ class CustomJSONEncoder(JSONEncoder):
         try:
             if isinstance(obj, np.ndarray):
                 return obj.tolist()
+            elif obj is None:
+                return 'null'
             iterable = iter(obj)
         except TypeError:
             pass
         else:
             return list(iterable)
-        return JSONEncoder.default(self, obj)
+        
+        try:
+            result = JSONEncoder.default(self, obj)
+        except:
+            result = str(obj)
+        return result
 

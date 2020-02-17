@@ -6,6 +6,7 @@ from refactor_magic import tabs_to_space
 # For release
 from PyWeaver.refactor_magic import tabs_to_space
 
+
 class NodeTemplate(object):
     """
     Class that stores the information (logic, ui, ui logic, metadata and documentation) for the nodes of the library

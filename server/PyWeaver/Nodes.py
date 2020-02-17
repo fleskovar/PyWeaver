@@ -15,6 +15,7 @@ from code_parsing import parse_function
 from PyWeaver.Variable import Variable
 from PyWeaver.code_parsing import parse_function
 
+
 class Node(object):
 
     def __init__(self, graph, id, code=None, ui_code=None, ui_script=None):

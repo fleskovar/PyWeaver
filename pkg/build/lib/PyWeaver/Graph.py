@@ -3,7 +3,13 @@ import sys, os
 from flask_socketio import emit
 import uuid
 
+# For local
+"""
+from Nodes import Node
+"""
+# For release
 from PyWeaver.Nodes import Node
+
 
 class Graph(object):
 
@@ -16,13 +22,14 @@ class Graph(object):
         self.xmlModel = None
         self.node_count = 0
         self.node_ids = []
+        self.store = dict()  # Dictionary of dictionaries (first key is node id, second key variable name)
 
         if session_id is None:
             self.session_id = str(uuid.uuid4())
         else:
             self.session_id = session_id
 
-    def add_node(self, node_id=None, code=None):
+    def add_node(self, node_id=None, code=None, ui_code=None, ui_script=None):
         self.node_count += 1
 
         if node_id is None or node_id in self.node_ids:
@@ -34,7 +41,7 @@ class Graph(object):
                 local_count += 1
                 node_id = 'n_'+str(local_count)
 
-        node = Node(self, node_id, code=code)
+        node = Node(self, node_id, code=code, ui_code=ui_code, ui_script=ui_script)
 
         self.nodes[node_id] = node
         self.adjacency_dict[node_id] = dict()
@@ -44,7 +51,8 @@ class Graph(object):
     def delete_node(self, node_id):
         # Should add a check here to clear all i/o in the node just in case UI does not
         # properly trigger the deletion of all variables
-        del self.nodes[node_id]
+        if node_id in self.nodes:
+            del self.nodes[node_id]
 
     def update_adjacency(self, source_node, target_node):
         self.edges.append((source_node.id, target_node.id))
@@ -54,14 +62,18 @@ class Graph(object):
         # This ensures that all nodes are computed in the correct order.
         self.add_to_adjacency_dict(target_node.id, source_node.id)
 
-    def make_connection(self, source_id, source_var, target_id, target_var):        
+    def make_connection(self, source_id, source_var, target_id, target_var, conn_name=''):
         source_b = self.nodes[source_id]
         target_b = self.nodes[target_id]
-        source_b.connect_output(source_var, target_b, target_var)
+        source_b.connect_output(source_var, target_b, target_var, conn_name)
 
     def delete_connection(self, source_id, source_var, target_id, target_var):
         node = self.nodes[source_id]
         node.disconnect_output(source_var, target_id, target_var)
+
+    def rename_connection(self, source_id, source_var, target_id, target_var, conn_name):
+        node = self.nodes[target_id]
+        node.rename_input_connection(target_var, source_id, source_var, conn_name)
 
     def add_to_adjacency_dict(self, node_id, neighbor_id):
         if neighbor_id not in self.adjacency_dict[node_id]:
@@ -78,7 +90,13 @@ class Graph(object):
 
     def get_var_value(self, node_id, var):
         node = self.nodes[node_id]
-        return node.results[var]
+        val = self.store[node_id][var].value
+        return val
+
+    # New method for getting access to the Variable objects
+    def get_var(self, node_id, var):
+        var = self.store[node_id][var]
+        return var
 
     def execute(self, scope_data):
 

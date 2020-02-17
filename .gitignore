@@ -297,3 +297,73 @@ pkg/pyweaver.egg-info/PKG-INFO
 pkg/pyweaver.egg-info/requires.txt
 pkg/pyweaver.egg-info/SOURCES.txt
 pkg/pyweaver.egg-info/top_level.txt
+pkg/PyWeaver/client_pref.json
+pkg/PyWeaver/Graph.py
+pkg/PyWeaver/LibraryManager.py
+pkg/PyWeaver/main.py
+pkg/PyWeaver/model_manager.py
+pkg/PyWeaver/Nodes.py
+pkg/PyWeaver/NodeTemplate.py
+pkg/PyWeaver/results_encoder.py
+pkg/PyWeaver/__pycache__/code_parsing.cpython-37.pyc
+pkg/PyWeaver/__pycache__/Graph.cpython-37.pyc
+pkg/PyWeaver/__pycache__/LibraryManager.cpython-37.pyc
+pkg/PyWeaver/__pycache__/model_manager.cpython-37.pyc
+pkg/PyWeaver/__pycache__/Nodes.cpython-37.pyc
+pkg/PyWeaver/__pycache__/NodeTemplate.cpython-37.pyc
+pkg/PyWeaver/__pycache__/results_encoder.cpython-37.pyc
+pkg/PyWeaver/lib/core/Input/Grid/code.py
+pkg/PyWeaver/lib/core/Input/Grid/meta.json
+pkg/PyWeaver/lib/core/Input/Grid/ui_script.js
+pkg/PyWeaver/lib/core/Input/Grid/ui.html
+pkg/PyWeaver/lib/core/Plot/Generic/Chart/code.py
+pkg/PyWeaver/lib/core/Signal Analysis/Regression/Spline/code.py
+pkg/PyWeaver/static/index.html
+pkg/PyWeaver/static/node_viewer.html
+pkg/PyWeaver/static/css/chunk-vendors.df8b5c19.css
+pkg/PyWeaver/static/css/index.851f3ed4.css
+pkg/PyWeaver/static/js/chunk-vendors.5a64a76d.js
+pkg/PyWeaver/static/js/chunk-vendors.5a64a76d.js.map
+pkg/PyWeaver/static/js/index.8f1bc65a.js
+pkg/PyWeaver/static/js/index.8f1bc65a.js.map
+pkg/PyWeaver/static/js/nodeViewer.920bab2e.js
+pkg/PyWeaver/static/js/nodeViewer.920bab2e.js.map
+pkg/build/lib/PyWeaver/__init__.py
+pkg/build/lib/PyWeaver/client_pref.json
+pkg/build/lib/PyWeaver/code_parsing.py
+pkg/build/lib/PyWeaver/Graph.py
+pkg/build/lib/PyWeaver/LibraryManager.py
+pkg/build/lib/PyWeaver/main.py
+pkg/build/lib/PyWeaver/model_manager.py
+pkg/build/lib/PyWeaver/Nodes.py
+pkg/build/lib/PyWeaver/NodeTemplate.py
+pkg/build/lib/PyWeaver/results_encoder.py
+pkg/build/lib/PyWeaver/lib/core/Input/Grid/code.py
+pkg/build/lib/PyWeaver/lib/core/Input/Grid/meta.json
+pkg/build/lib/PyWeaver/lib/core/Input/Grid/ui_script.js
+pkg/build/lib/PyWeaver/lib/core/Input/Grid/ui.html
+pkg/build/lib/PyWeaver/lib/core/Input/Vector/code.py
+pkg/build/lib/PyWeaver/lib/core/Input/Vector/ui.html
+pkg/build/lib/PyWeaver/lib/core/Plot/Generic/Chart/code.py
+pkg/build/lib/PyWeaver/lib/core/Plot/Generic/Trace/code.py
+pkg/build/lib/PyWeaver/lib/core/Plot/Generic/Trace/ui.html
+pkg/build/lib/PyWeaver/lib/core/Plot/Statistics/Pair Plot/code.py
+pkg/build/lib/PyWeaver/lib/core/Time Series/Filter/Hample Filter/code.py
+pkg/build/lib/PyWeaver/lib/core/Time Series/Filter/Hample Filter/meta.json
+pkg/build/lib/PyWeaver/lib/core/Time Series/Filter/Hample Filter/ui_script.js
+pkg/build/lib/PyWeaver/lib/core/Time Series/Filter/Hample Filter/ui.html
+pkg/build/lib/PyWeaver/lib/core/Vector Manipulation/Bins/code.py
+pkg/build/lib/PyWeaver/lib/local/Shell/PI Series/code.py
+pkg/build/lib/PyWeaver/lib/local/Shell/PI Series/ui.html
+pkg/build/lib/PyWeaver/static/index.html
+pkg/build/lib/PyWeaver/static/css/app.0f269eea.css
+pkg/build/lib/PyWeaver/static/css/chunk-vendors.a78af2c6.css
+pkg/build/lib/PyWeaver/static/js/app.753ac40d.js
+pkg/build/lib/PyWeaver/static/js/app.753ac40d.js.map
+pkg/build/lib/PyWeaver/static/js/chunk-vendors.5a64a76d.js
+pkg/build/lib/PyWeaver/static/js/chunk-vendors.5a64a76d.js.map
+pkg/pyweaver.egg-info/dependency_links.txt
+pkg/pyweaver.egg-info/PKG-INFO
+pkg/pyweaver.egg-info/requires.txt
+pkg/pyweaver.egg-info/SOURCES.txt
+pkg/pyweaver.egg-info/top_level.txt

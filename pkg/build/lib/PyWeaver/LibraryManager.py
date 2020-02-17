@@ -1,7 +1,15 @@
 import os, inspect, shutil
 import json
 
+# For local
+"""
+from NodeTemplate import NodeTemplate
+
+"""
+
+# For release
 from PyWeaver.NodeTemplate import NodeTemplate
+
 
 class LibraryManager(object):
 

@@ -4,6 +4,7 @@ import json
 # For local
 """
 from NodeTemplate import NodeTemplate
+
 """
 
 # For release

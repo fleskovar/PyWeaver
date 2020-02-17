@@ -6,9 +6,7 @@ from PI import PITag
 from SignalProcessing import Shapes, DataFilter as df
 
 
-def f():
-    start_date = datetime(2019, 5, 19)
-    end_date = datetime(2019, 5, 20)
+def f(start_date, end_date):
 
     pi_tag = display['pi_tag']  # Gets value from UI
 
