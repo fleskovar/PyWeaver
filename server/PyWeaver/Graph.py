@@ -4,12 +4,12 @@ from flask_socketio import emit
 import uuid
 
 # For local
-"""
+
 from Nodes import Node
 """
 # For release
 from PyWeaver.Nodes import Node
-
+"""
 
 class Graph(object):
 

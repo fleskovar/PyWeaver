@@ -6,7 +6,7 @@ import webbrowser
 import os, inspect, shutil
 
 # For local
-"""
+
 from Graph import Graph
 from results_encoder import CustomJSONEncoder
 from LibraryManager import LibraryManager
@@ -20,6 +20,7 @@ from PyWeaver.results_encoder import CustomJSONEncoder
 from PyWeaver.LibraryManager import LibraryManager
 from PyWeaver.model_manager import create_node, load_xml
 from PyWeaver.refactor_magic import tabs_to_space, functionalize, vectorize
+"""
 
 # Flask server app
 app = Flask(__name__, static_url_path='')
