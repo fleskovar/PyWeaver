@@ -173,7 +173,7 @@ export default class Canvas{
         };
         
         new mxRubberband(graph);
-        
+
 
         graph.isPort = function(cell)
         {
@@ -190,6 +190,21 @@ export default class Canvas{
                     graph.zoomIn();
                 else graph.zoomOut();
             }	
+        }));
+
+        mxEvent.addListener(this.container, 'copy', mxUtils.bind(this, (evt) =>
+        {
+            if (graph.isEnabled() && !graph.isSelectionEmpty())
+            {                
+                var cell = mxUtils.sortCells(graph.model.getTopmostCells(graph.getSelectionCells()));
+                this.store.commit('set_copied_cell_id', cell[0].id);
+            }
+        }));
+
+        mxEvent.addListener(this.container, 'paste', mxUtils.bind(this, (evt) =>
+        {
+            this.store.dispatch('paste_cell');
+            
         }));
 
         var keyHandler = new mxKeyHandler(graph);

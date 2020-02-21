@@ -37,10 +37,14 @@ export default new Vuex.Store({
     refactor_func_options: [],
     refactor_node_id: '',
     canvas_views: {},
+    copied_cell_id: '',
   },
   mutations: {
     set_refactor_node_id: function(state, id){
       state.refactor_node_id = id;
+    },
+    set_copied_cell_id: function(state, id){
+      state.copied_cell_id = id;
     },
     set_refactor_func_options: function(state, val){
       state.refactor_func_options = val;
@@ -286,6 +290,18 @@ export default new Vuex.Store({
 
       //This is sent to the server to update i/o connections and save code
       
+    },
+    paste_cell(context){
+      var node_id = context.state.copied_cell_id;
+
+      var node_data = {};
+
+      node_data.code = context.state.code_nodes[node_id].code;
+      node_data.display_code = context.state.code_nodes[node_id].display_code;
+      node_data.display_act_code = context.state.code_nodes[node_id].display_act_code;
+
+      socket.emit('new_node_from_code', node_data);
+
     },
     add_connection(context, data){
       socket.emit('make_connection', data);

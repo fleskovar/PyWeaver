@@ -148,6 +148,17 @@ def get_config_file():
     return config
 
 
+@socketio.on('new_node_from_code')
+def add_new_node_from_code(node_data):
+    global graph_root
+    template = dict()  # Set empty template
+
+    template['code'] = node_data['code']
+    template['display_code'] = node_data['display_code']
+    template['display_act_code'] = node_data['display_act_code']
+
+    create_node(graph_root, template)
+
 @socketio.on('new_empty_node')
 def add_new_node():
     global graph_root
@@ -158,7 +169,6 @@ def add_new_node():
     template['display_act_code'] = '{}'
 
     create_node(graph_root, template)
-
 
 @socketio.on('load_node')
 def load_node(lib_id):
