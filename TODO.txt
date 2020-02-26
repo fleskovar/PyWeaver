@@ -2,11 +2,23 @@ Migrating to Vue3 and latest vuetify?
 
 Comming up next:
         
+    Recalc keyboard shortcut (Shift+Enter)
+
+    Display in new window: input UI does not get propagated
+
+    Node display:
+        Fire auto-recalc on display input change ($forceUpdate()?)
+
     Loading:
         Make canvas load edges positions
         Make code editor tabs
             Sortable tabs/chips
             Load tabs into canvas
+
+    Variables visualization:
+        right click output -> print
+        Add vector output
+        Add repl
 
     Node library menu horizontal scrolling
 
@@ -16,14 +28,19 @@ Comming up next:
     UI Inspector:
         Visualize node UI when selected?
 
+    Copy&Paste:
+        Support multi node copy&paste, with connections
+
     Node display window:
         Refactor NodeDisplay & Big/Small display component (they share too much similar code)
         Only update dirty nodes
         Force window reupdate if UI code is changed        
         Property or method "display_code" Error on console
 
-    Cell contextmenu:
-        recalc
+    Refactor:
+    - Refactor to function does not work
+    - Refactor: right click node UI -> "to input"
+    - Refactor: right click input -> "to UI"
 
     Framework:
         Undo, redo
@@ -50,11 +67,11 @@ Comming up next:
         Upsample/Downsample
         Regression returs functions
         GP
-        Windowing
+        Kernel Windowing
         Grouping / Time based segmentation (make segments based on the first variable that changes in a set)
         Rule association
         Kalman filter
-        Rolling std/mu
+        Rolling (windowed) std/mu
         Feature engineering
 
     Table Input:
@@ -63,10 +80,7 @@ Comming up next:
         Copy from table
         Shift+arrows
         Delete key clears cell
-        Context menu
-
-    Node display:
-        Fire auto-recalc on display input change
+        Context menu    
 
     UI Improvements:
         Grouping    

@@ -22,6 +22,10 @@ class Graph(object):
         self.xmlModel = None
         self.node_count = 0
         self.node_ids = []
+        
+        # TODO: refactor this to be a smart lookup of the variables
+        # Since only the outpus get stored and the inputs are references, it would be convenient
+        # to be able to specify a node & input and automatically get the output that is sending the vale to the input
         self.store = dict()  # Dictionary of dictionaries (first key is node id, second key variable name)
 
         if session_id is None:
@@ -100,6 +104,7 @@ class Graph(object):
 
     def execute(self, scope_data):
 
+        sucess = True
         exec_list = self.sort_graph(self.nodes)
 
         for id in exec_list:
@@ -119,7 +124,7 @@ class Graph(object):
                 overlay_data = {}
                 overlay_data['node_id'] = id
                 overlay_data['overlay_type'] = 'exec'
-                emit('set_node_overlay', overlay_data)
+                emit('set_node_overlay', overlay_data)  # TODO: Remove this functionality from here
 
                 sucess_run = exe_node.execute(node_scope)
                 
@@ -131,6 +136,8 @@ class Graph(object):
                     overlay_data['overlay_type'] = 'ok'
                     emit('set_node_overlay', overlay_data)
 
+        return sucess
+        
     def build_adjacency_dict(self):
         # TODO: build adjacency dict from edges list
         pass

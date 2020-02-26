@@ -66,12 +66,30 @@ def node_display_update(node_id):
     node_vars = get_node_data(node_id)
     return node_vars
 
+
+@socketio.on('print_variable')
+def print_variable(var_data):
+
+    results = graph_root.store    
+    
+    n_id = var_data['n_id']
+    v_id = var_data['v_id']
+
+    var_obj = graph_root.store[n_id][v_id]
+    # var_obj.value
+    result = dict()
+    result["value"] = str(var_obj.value)
+    result["var_type"] = str(var_obj.var_type)
+    emit('print_to_console', result)
+    
+
 def get_node_data(node_id):
     """
     This method takes a node id and return a dictionary with all the input, output variable and their values.
     This is used for showing the node display in a separate window.
     """
     global graph_root
+    
 
     node = graph_root.nodes[node_id]
     input_vars = node.input_vars_data
@@ -104,7 +122,7 @@ def get_node_data(node_id):
     # The variables can easily be found in the store because we already know the id of the node containing them
     for v in output_vars:        
         r[v] = graph_root.store[node_id][v].value
-    
+
     return r
 
 @socketio.on('get_node_view_data')
@@ -315,8 +333,8 @@ def rename_connection(data):
 def execute(scope_data):
     # TODO: this should return the whole variable data (including type) so that the display can use it
     global graph_root
-
-    graph_root.execute(scope_data)
+    
+    sucess = graph_root.execute(scope_data)
 
     r = dict()
     for n in graph_root.nodes:
@@ -326,6 +344,8 @@ def execute(scope_data):
             # Transforms result into JSON safe data
             rr[v] = var_obj.value
         r[n] = rr
+
+    
 
     emit('graphExecuted', None, broadcast=True)
 
@@ -494,6 +514,7 @@ init_modules = sys.modules.keys()
 init_path = deepcopy(sys.path)
 graph_root = Graph()
 library = LibraryManager()
+results = dict()
 
 
 def start():

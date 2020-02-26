@@ -20,16 +20,19 @@ class Node(object):
 
     def __init__(self, graph, id, code=None, ui_code=None, ui_script=None):
 
-        self.graph = graph
+        self.graph = graph  # Reference to the root graph 
         self.dirty = True  # This property determines if the node needs to be recomputed
-        self.scope = dict()
-        self.code = code
-        self.id = id
-        self.output_vars_data = OrderedDict()
-        self.func_name = None
-        self.func = None
-        self.results = OrderedDict()
+        self.scope = dict()  # Contains the UI variables from the node
+        self.code = code  # Logic to be executed
+        self.id = id  # Node id
+        self.output_vars_data = OrderedDict()  # Reference to the output variables
+        self.func_name = None  # Name of the function
+        self.func = None  # "Compiled" code
+        self.results = OrderedDict() 
         self.isOutputVal = OrderedDict()
+
+        self.is_subgraph = False  # Determines if the Node actually contains a subgraph instead of a single function
+        self.subgraph = None
 
         self.input_vars = []
         self.input_vars_named = OrderedDict()
@@ -111,6 +114,13 @@ class Node(object):
         return val
 
     def execute(self, scope_data):
+        if self.is_subgraph:
+            self.subgraph.execute(scope_data)
+            return False
+        else:
+            return self.execute_node(scope_data)
+
+    def execute_node(self, scope_data):
         sucess_run = True # Determines if the code was sucessfully executed
         
         #Inject display's scope

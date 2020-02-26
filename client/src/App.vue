@@ -38,6 +38,7 @@
     <input type='file' id='fileInput' v-on:change='OpenModel($event)' hidden>
 
     <SideBar/>
+    <ExplorerMenu/>
 
     <v-content style='overflow: hidden'>
 
@@ -162,9 +163,9 @@
           />       
         </v-card>
         -->
-        <v-card flat height='100%'>          
-          <div id='outlineContainer'/>
-          <div :class="canvas_color" id='canvas'/>       
+        <v-card flat height='100%'>  
+          <div :class="canvas_color" id='canvas'/>
+          <div id='outlineContainer'/>       
         </v-card>
         
     </v-content>
@@ -186,6 +187,7 @@ import Canvas from './NodeEditor/Canvas'
 import CodeEditor from './components/CodeEditor'
 import RefactorFunctionalize from './components/RefactorFunctionalize'
 import SideBar from './components/SideBar'
+import ExplorerMenu from './components/ExplorerMenu'
 import LibrarySaveDialog from './components/LibrarySaveDialog'
 import EventBus from './EventBus.js'
 import fuzzysort from 'fuzzysort'
@@ -195,6 +197,7 @@ export default {
   components: {
     CodeEditor,
     SideBar,
+    ExplorerMenu,
     LibrarySaveDialog,    
     RefactorFunctionalize,
   },
@@ -447,7 +450,7 @@ export default {
     background: white;
     border-style: solid;
     border-color: black;
-    z-index: 99;
+    z-index: 1;  /* z-index: 99; */
     touch-action: none;
   }
 </style>
