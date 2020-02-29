@@ -38,7 +38,7 @@ export default new Vuex.Store({
     refactor_node_id: '',
     canvas_views: {},
     copied_cell_id: '',
-    console_text: 'PyWeaver Console',
+    console_text: 'PyWeaver Console \n',
   },
   mutations: {
     set_refactor_node_id: function(state, id){
@@ -104,6 +104,13 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    execute_console: function(context, code){
+      socket.emit('execute_console', code);
+      context.dispatch('socket_printToConsole', '>>'+code+'\n');
+    },
+    socket_printToConsole: function(context, text){
+      this.state.console_text += text;
+    },
     update_all_cells: function(context){
       
       let graph = context.state.canvas.graph;

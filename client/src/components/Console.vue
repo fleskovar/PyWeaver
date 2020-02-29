@@ -2,17 +2,27 @@
     <v-card>
         
         <v-card-text>
-            <v-card v-show='!drawer_mini' black style='padding: 5px; overflow-y: scroll' height='200px' flat class="black">          
-                {{console_text_display}}         
+            <v-card 
+				black style='padding: 5px; overflow-y: scroll'
+				height='200px'
+				flat class="black"				
+			>
+				<pre style='white-space: pre-line'>          
+                	{{console_text_display}}  
+				</pre>       
             </v-card>            
                    
-            <codemirror :options="cmOptions" ref="console_code_editor" v-model="editor_code"/>
+            <codemirror :options="cmOptions"
+			 ref="console_code_editor"
+			 v-model="editor_code"	
+			 @keydown="codeShortcuts"		 			 
+			 />
             
         </v-card-text>
         
         <v-card-actions>     
             <v-spacer/>         
-            <v-btn color="gray" flat v-on:click='saveCode' dark>Submit</v-btn>
+            <v-btn color="gray" flat v-on:click='executeConsole' dark>Execute</v-btn>
         </v-card-actions>
 
     </v-card>
@@ -50,28 +60,32 @@ export default {
 				autoRefresh: true,        
 			},			
             editor_code: '',
-            console_text: '',
 		}
 	},
 	methods:{		
-		codeDialogShortcuts: function(e){
-			if(this.code_dialog){
-				if (e.keyCode === 13 && e.shiftKey){
-					//Submit code
-				}
-			}
+		codeShortcuts: function(e){
+			console.log('yay');
+			if (e.keyCode === 13 && e.shiftKey){
+				
+				this.executeConsole();
+			}			
+		},
+		updateEditors: function(){			
+				if(this.$refs.console_code_editor.codemirror)
+					this.$refs.console_code_editor.codemirror.refresh();			
+    	},
+		executeConsole: function(){
+			this.$store.dispatch('execute_console', this.editor_code);
+			this.editor_code = '';
 		},
     },
     
-	computed:{
-        
+	computed:{        
         console_text_display:{
-            get(){
-                var display_tect = this.console_text + "\n >>";
-                return display_tect;
+            get(){                
+                return this.$store.state.console_text+'>>';
             }
-        },
-        
+        },        
     },
     
 	watch:{		
@@ -79,7 +93,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .CodeMirror {
   border: 1px solid #eee;
   height: 100px;

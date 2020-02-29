@@ -4,6 +4,9 @@ import sys
 from copy import deepcopy
 import webbrowser
 import os, inspect, shutil
+from code import InteractiveConsole
+from io import StringIO
+from contextlib import redirect_stdout
 
 # For local
 
@@ -67,19 +70,15 @@ def node_display_update(node_id):
     return node_vars
 
 
-@socketio.on('print_variable')
-def print_variable(var_data):
+@socketio.on('execute_console')
+def execute_console(code):
+    global python_console
 
-    results = graph_root.store    
+    f = StringIO()
+    with redirect_stdout(f):
+        python_console.runcode(code)
+    result = f.getvalue()
     
-    n_id = var_data['n_id']
-    v_id = var_data['v_id']
-
-    var_obj = graph_root.store[n_id][v_id]
-    # var_obj.value
-    result = dict()
-    result["value"] = str(var_obj.value)
-    result["var_type"] = str(var_obj.var_type)
     emit('print_to_console', result)
     
 
@@ -333,6 +332,7 @@ def rename_connection(data):
 def execute(scope_data):
     # TODO: this should return the whole variable data (including type) so that the display can use it
     global graph_root
+    global python_console
     
     sucess = graph_root.execute(scope_data)
 
@@ -345,7 +345,7 @@ def execute(scope_data):
             rr[v] = var_obj.value
         r[n] = rr
 
-    
+    python_console.__dict__['locals']['data'] = r  # Inject results into console's scope
 
     emit('graphExecuted', None, broadcast=True)
 
@@ -519,7 +519,7 @@ init_path = deepcopy(sys.path)
 graph_root = Graph()
 library = LibraryManager()
 results = dict()
-current_module = None  # current_module.__dict__['node_id']
+python_console = InteractiveConsole()
 
 
 def start():
@@ -530,7 +530,5 @@ def start():
     socketio.run(app, host='localhost', port=5000)
 
 
-
-if __name__ == '__main__':
-    current_module = sys.modules[__name__]
+if __name__ == '__main__':    
     start()
