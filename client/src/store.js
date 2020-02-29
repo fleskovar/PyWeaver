@@ -38,6 +38,7 @@ export default new Vuex.Store({
     refactor_node_id: '',
     canvas_views: {},
     copied_cell_id: '',
+    console_text: 'PyWeaver Console',
   },
   mutations: {
     set_refactor_node_id: function(state, id){

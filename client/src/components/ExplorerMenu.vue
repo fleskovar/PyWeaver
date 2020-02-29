@@ -27,9 +27,7 @@
           <v-list-tile-content>Console</v-list-tile-content>     
         </v-list-tile>
 
-        <v-card v-show='!drawer_mini' black style='padding: 20px; overflow-y: scroll' height='300px' flat class="black">          
-          This is a thing
-        </v-card>
+        <Console v-show='!drawer_mini'/>
 
         <v-divider/>
 
@@ -40,7 +38,11 @@
             </v-btn>
           </v-list-tile-action>   
           <v-list-tile-content>Watch</v-list-tile-content>     
-        </v-list-tile>      
+        </v-list-tile>    
+
+        <v-card v-show='!drawer_mini' black style='padding: 20px; overflow-y: scroll' height='300px' flat class="black">          
+          Here goes the watcher
+        </v-card>  
 
         
 
@@ -67,10 +69,12 @@
 
 <script>
 import OptionsDialog from './OptionsDialog.vue'
+import Console from './Console.vue'
 
 export default {
   components:{
-    OptionsDialog
+    OptionsDialog,
+    Console,
   },
   mounted(){
 
@@ -78,10 +82,14 @@ export default {
     data(){
         return{
             drawer_mini: true,            
-            showOptionsDialog: false
+            showOptionsDialog: false,
+            console_input: '',
         }
     },
     methods:{
+      printToConsole: function(){
+        console.log('yay');
+      },
       addNode: function(){      
         this.$socket.emit('new_empty_node');     
       },
@@ -101,15 +109,7 @@ export default {
       
     },
     computed:{
-      items:{
-        get(){
-          return this.$store.state.libraryTree;
-        }
-      },      
-      document_name:{
-        get(){ return this.$store.state.document_name},
-        set(val){ this.$store.commit('set_document_name', val);}
-      }
+      
     }
 }
 </script>

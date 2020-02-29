@@ -441,6 +441,10 @@ def new_folder(folder_data):
     
     send_library_tree_data()
 
+#def execute_on_console():
+#    if console_scope is None:
+#        self.func.__globals__['display'] = scope_data
+
 
 @socketio.on('delete_folder')
 def delete_folder(path):
@@ -515,6 +519,7 @@ init_path = deepcopy(sys.path)
 graph_root = Graph()
 library = LibraryManager()
 results = dict()
+current_module = None  # current_module.__dict__['node_id']
 
 
 def start():
@@ -527,4 +532,5 @@ def start():
 
 
 if __name__ == '__main__':
+    current_module = sys.modules[__name__]
     start()
