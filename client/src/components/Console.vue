@@ -1,21 +1,24 @@
 <template>
-    <v-card>
+    <v-card tabindex=-1 @keydown.shift.enter.prevent="executeConsole">
         
         <v-card-text>
             <v-card 
-				black style='padding: 5px; overflow-y: scroll'
+				black 
 				height='200px'
-				flat class="black"				
+				flat class="black"	
+				ref="console_display"		
+				style='padding: 5px;'	
 			>
-				<pre style='white-space: pre-line'>          
-                	{{console_text_display}}  
-				</pre>       
+				<div style='overflow-y: scroll; height: 200px' ref="console_display">
+					<pre style='white-space: pre-line' >          
+						{{console_text_display}}  
+					</pre> 
+				</div>      
             </v-card>            
                    
             <codemirror :options="cmOptions"
 			 ref="console_code_editor"
-			 v-model="editor_code"	
-			 @keydown="codeShortcuts"		 			 
+			 v-model="editor_code"
 			 />
             
         </v-card-text>
@@ -60,17 +63,10 @@ export default {
 				theme: 'base16-dark',
 				autoRefresh: true,        
 			},			
-            editor_code: '',
+			editor_code: '',
 		}
 	},
-	methods:{		
-		codeShortcuts: function(e){
-			console.log('yay');
-			if (e.keyCode === 13 && e.shiftKey){
-				
-				this.executeConsole();
-			}			
-		},
+	methods:{
 		updateEditors: function(){			
 				if(this.$refs.console_code_editor.codemirror)
 					this.$refs.console_code_editor.codemirror.refresh();			
@@ -84,7 +80,12 @@ export default {
 	computed:{        
         console_text_display:{
             get(){                
-                return this.$store.state.console_text+'>>';
+				var new_text = this.$store.state.console_text+'>>';				
+				
+				if(this.$refs.console_display && this.$refs.console_display_text)
+					this.$refs.console_display.scrollTop = Math.floor (this.$refs.console_display_text.offsetHeight);				
+				
+				return new_text;
             }
         },        
     },

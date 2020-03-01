@@ -345,7 +345,7 @@ def execute(scope_data):
             rr[v] = var_obj.value
         r[n] = rr
 
-    python_console.__dict__['locals']['data'] = r  # Inject results into console's scope
+    python_console.__dict__['locals']['_data'] = r  # Inject results into console's scope
 
     emit('graphExecuted', None, broadcast=True)
 
@@ -375,6 +375,7 @@ def reset():
     global library
     global init_modules
     global init_path
+    global python_console
 
     # Resets module imports
     if 'init_modules' in globals():
@@ -391,6 +392,8 @@ def reset():
     # Reset computational graph and library
     graph_root = Graph()
     library = LibraryManager()
+    python_console = InteractiveConsole()
+
 
 @socketio.on('get_template_names')
 def get_template_names():

@@ -13,7 +13,7 @@
         </v-list-tile>        
         
         <v-list-tile>
-          More text
+          <!--Here goes a title -->
         </v-list-tile>
 
         <v-divider/>
@@ -52,15 +52,6 @@
 
         <v-divider/>
 
-
-        <v-list-tile @click='showOptionsDialog=true'>
-          <v-list-tile-action>
-            <v-btn icon class="text-lg-right" @click='showOptionsDialog=true'>              
-              <v-icon>settings</v-icon>
-            </v-btn>
-          </v-list-tile-action>   
-          <v-list-tile-content>SETTINGS</v-list-tile-content>     
-        </v-list-tile>
       </v-list>      
 
     </v-navigation-drawer>
