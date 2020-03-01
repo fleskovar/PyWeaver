@@ -43,7 +43,8 @@ export default {
 		codemirror,
 	},
 	mounted(){		
-    window.setInterval(() => {this.updateEditors();},250);
+		window.setInterval(() => {this.updateEditors();},250);
+		this.$refs.console_code_editor.$refs.textarea.nextElementSibling.id = "CodeMirrorConsole";
 	},
 	data(){
 		return {
@@ -93,9 +94,9 @@ export default {
 }
 </script>
 
-<style scoped>
-.CodeMirror {
+<style>
+#CodeMirrorConsole {
   border: 1px solid #eee;
-  height: 100px;
+  height: 100px !important;
 }
 </style>
