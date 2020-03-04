@@ -92,7 +92,7 @@ export default class Canvas{
         
         var popupMethod = this.createPopupMenu;
         var canvas_ref = this;
-        graph.popupMenuHandler.factoryMethod = function(menu, cell, evt) 
+        graph.popupMenuHandler.factoryMethod = (menu, cell, evt) => 
         {
             return popupMethod(canvas_ref, graph, menu, cell, evt);
         };
@@ -250,6 +250,18 @@ export default class Canvas{
                 if (cell.isNode){
                     let code_node = this.store.state.code_nodes[cell.id];
                     this.store.dispatch('open_code_editor', code_node);
+                }
+            }
+        });
+
+        //Adding double click event handler
+        graph.addListener(mxEvent.CLICK, (sender, evt) => {
+            var cell = evt.getProperty('cell'); 
+            var event = evt.getProperty('event');           
+            if (cell!=null && event.target.localName == 'rect'){
+                if (cell.isNode){
+                    let code_node = this.store.state.code_nodes[cell.id];
+                    this.store.dispatch('set_selected_node', code_node);
                 }
             }
         });
@@ -643,9 +655,7 @@ export default class Canvas{
     }
 
     createPopupMenu(canvas, graph, menu, cell, evt)
-    {        
-        
-
+    {
         if (cell != null)
         {
             if(!cell.edge){
@@ -675,18 +685,47 @@ export default class Canvas{
                             data.is_val = false;
                             canvas.setDashed([cell], 1);
                             graph.store.dispatch('set_output_type', data);
-                        });
+                        });                        
                     }
+
+                    menu.addItem('Print to console', 'editors/images/image.gif', function()
+                    {
+                        //
+                    });                        
+
+                    menu.addItem('Copy connections', 'editors/images/image.gif', function()
+                    {
+                        //Intended for replicating connection in another output
+                    });
+
+                    menu.addItem('Delete connections', 'editors/images/image.gif', function()
+                    {
+                        //Deletes all connections
+                    });
+
+                    menu.addItem('Cut connections', 'editors/images/image.gif', function()
+                    {
+                        //Copy + Delete connections
+                    });
+
+
                 }
                 else{
+
+                    //Set node as selected
+                    let code_node = graph.store.state.code_nodes[cell.id];
+                    graph.store.commit('set_selected_node', code_node);
+                    
                     //If click was done over a node
                     menu.addItem('Display on new window', 'editors/images/image.gif', function()
                     {
                         //mxUtils.alert('MenuItem1');
                         //For local
-                        window.open( 'http://localhost:8080/node_viewer.html?node_id='+cell.id, 'name', 'location=no,scrollbars=yes,status=no,toolbar=yes,resizable=no,top=0,left=0,width=400,height=400');
+                        var s = new Date().getTime() / 1000;
+                        var win_name = 'w_'+ s;
+                        window.open( 'http://localhost:8080/node_viewer.html?node_id='+cell.id, win_name, 'location=no,scrollbars=yes,status=no,toolbar=yes,resizable=no,top=0,left=0,width=400,height=400');
                         //For release                        
-                        //window.open( 'http://localhost:5000/node_viewer.html?node_id='+cell.id, 'name', 'location=no,scrollbars=yes,status=no,toolbar=yes,resizable=no,top=0,left=0,width=400,height=400');
+                        //window.open( 'http://localhost:5000/node_viewer.html?node_id='+cell.id, win_name, 'location=no,scrollbars=yes,status=no,toolbar=yes,resizable=no,top=0,left=0,width=400,height=400');
                     });
 
                     //If click was done over a node

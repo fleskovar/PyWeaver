@@ -38,31 +38,50 @@ def functionalize(source, inner_inputs):
     # Edit inner func def args, leaving only the specified varibles in the inner_inputs list   
     lines[def_matches_index[0]] = re.sub(r'(def .*\()(.*)(\))', r'\1' + ','.join(inner_inputs)+')', lines[def_matches_index[0]])
 
-    # Save the position of all the lines of code above the first function
-    setup_lines = lines[0:def_matches_index[0]-1]
+    # Save the position of all the lines of code above the first function. This is mainly for the imports
+    if def_matches_index[0] == 0:
+        setup_lines = []
+    else:
+        setup_lines = lines[0:def_matches_index[0]-1]
+
     setup_lines.append('')
-    lines = lines[def_matches_index[0]:]
+    lines = lines[def_matches_index[0]:]  # Grab all the rest of the lines
 
     # Just in case, save the indentation level of the fisrt function (should be 0)
-    indent_level = len(lines[def_matches_index[0]].split(' '*4))
+    indent_level = len(lines[def_matches_index[0]].split(' '*4))-1
 
     # Find all lines of code that use the 'display' dictionary
     display_rgx = r".*=.*display\[.*"
     display_matches = list(map(lambda l: bool(re.match(display_rgx, l)), lines))
     display_matches_index = [i for i, m in enumerate(display_matches) if m]
 
-    display_lines = [' '*4*(indent_level-1)+n.strip() for i, n in enumerate(lines) if i in display_matches_index]  # Extract lines 
+    display_lines = [' '*4*(indent_level+1)+n.strip() for i, n in enumerate(lines) if i in display_matches_index]  # Extract lines 
     display_lines.append('')
-    lines = [' '*4*(indent_level-1)+n for i, n in enumerate(lines) if i not in display_matches_index]  # Pop display lines
+    lines = [' '*4*(indent_level+1)+n for i, n in enumerate(lines) if i not in display_matches_index]  # Pop display lines
 
     # Shuffle lines around in the right order
     lines[0:0] = display_lines  # Reinsert display lines up in the code
     top_func_args = '('+','.join(new_args)+')'
-    lines = setup_lines+ ['def top_func'+top_func_args+':', ''] + lines + [' '*4*(indent_level-1)+'return '+func_name, '']
+    lines = setup_lines+ ['def top_func'+top_func_args+':', ''] + lines + [' '*4*(indent_level+1)+'return '+func_name, '']
 
     new_code = '\n'.join(lines)
 
     return new_code
+
+
+def zip_output(source, inner_inputs):
+    """
+        Finds the variables in the return statement, uses them to create a new output_tuple object and returns
+        the newly created tuple
+    """
+    pass
+
+def zip_input(source, inner_inputs):
+    """
+        Finds the variables in the signature of the function, replaces them with a tuple and unpicks the variables
+        below
+    """
+    pass
 
 def vectorize(source):
     pass
