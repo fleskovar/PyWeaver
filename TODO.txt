@@ -1,14 +1,27 @@
 Migrating to Vue3 and latest vuetify?
 
 Comming up next:
+
+    Refactor:
+        - Create a refactor menu on the right inspector
+        - Refactor: right click node UI -> "to input"
+        - Refactor: right click input -> "to UI"
+        -Zip arguments
+        -Zip output
         
+    Node display window:
+        Fire auto-recalc on display input change ($forceUpdate()?)
+        Refactor NodeDisplay & Big/Small display component (they share too much similar code)
+        Only update dirty nodes
+        Force window reupdate if UI code is changed        
+        Property or method "display_code" Error on console    
+
     Recalc keyboard shortcut (Shift+Enter)
 
     Display in new window: input UI does not get propagated
 
     Node display:
-        Fire auto-recalc on display input change ($forceUpdate()?)
-
+        
     Loading:
         Make canvas load edges positions
         Make code editor tabs
@@ -18,29 +31,14 @@ Comming up next:
     Variables visualization:
         right click output -> print
         Add vector output
-        Add repl
 
     Node library menu horizontal scrolling
 
     Input bug on server:
         Build simple plot of y = x**2 but return x (linear function), then change the return from x to y.
 
-    UI Inspector:
-        Visualize node UI when selected?
-
     Copy&Paste:
-        Support multi node copy&paste, with connections
-
-    Node display window:
-        Refactor NodeDisplay & Big/Small display component (they share too much similar code)
-        Only update dirty nodes
-        Force window reupdate if UI code is changed        
-        Property or method "display_code" Error on console
-
-    Refactor:
-    - Refactor to function does not work
-    - Refactor: right click node UI -> "to input"
-    - Refactor: right click input -> "to UI"
+        Support multi node copy&paste, with connections    
 
     Framework:
         Undo, redo
@@ -57,8 +55,6 @@ Comming up next:
         Sync scope
         Retrieve results
         Integrate NodeDisplay component into NodeViewer
-        Big display block
-        Mini display block
         Full plotly integration
         Add a nice grid component to the big display
 
@@ -73,6 +69,7 @@ Comming up next:
         Kalman filter
         Rolling (windowed) std/mu
         Feature engineering
+        Quickly plot approximated Normal distribution
 
     Table Input:
         Multi td selection

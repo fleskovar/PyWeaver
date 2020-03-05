@@ -54,9 +54,7 @@ def functionalize(source, inner_inputs):
     # TODO: Change this so that new variables get created where the display reference is and create the new vars at the top
     display_rgx = r"(display\[[\'\"](.*?)[\'\"]\])"
     display_matches = list(map(lambda l: re.findall(display_rgx, l), lines)) # List of lists with all matches
-    display_matches_bool = list(map(lambda l: bool(re.findall(display_rgx, l)), lines))
-    display_matches_index = [i for i, m in enumerate(display_matches_bool) if m]
-
+    
     # Make new lines declarations
     new_display_vars = dict()
     replaced_lines = []
@@ -81,9 +79,6 @@ def functionalize(source, inner_inputs):
     for v in new_display_vars:
         display_lines.append(' '*4*(indent_level+1)+new_display_vars[v])
     display_lines.append('')
-
-    # Replace 'displays[]' with new variables and ident everything
-    # lines = [' '*4*(indent_level+1)+n for i, n in enumerate(lines) if i not in display_matches_index]  # Pop display lines
 
     # Shuffle lines around in the right order
     lines[0:0] = display_lines  # Reinsert display lines up in the code
