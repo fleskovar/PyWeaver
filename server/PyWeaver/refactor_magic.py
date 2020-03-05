@@ -51,13 +51,39 @@ def functionalize(source, inner_inputs):
     indent_level = len(lines[def_matches_index[0]].split(' '*4))-1
 
     # Find all lines of code that use the 'display' dictionary
-    display_rgx = r".*=.*display\[.*"
-    display_matches = list(map(lambda l: bool(re.match(display_rgx, l)), lines))
-    display_matches_index = [i for i, m in enumerate(display_matches) if m]
+    # TODO: Change this so that new variables get created where the display reference is and create the new vars at the top
+    display_rgx = r"(display\[[\'\"](.*?)[\'\"]\])"
+    display_matches = list(map(lambda l: re.findall(display_rgx, l), lines)) # List of lists with all matches
+    display_matches_bool = list(map(lambda l: bool(re.findall(display_rgx, l)), lines))
+    display_matches_index = [i for i, m in enumerate(display_matches_bool) if m]
 
-    display_lines = [' '*4*(indent_level+1)+n.strip() for i, n in enumerate(lines) if i in display_matches_index]  # Extract lines 
+    # Make new lines declarations
+    new_display_vars = dict()
+    replaced_lines = []
+    for i, m in enumerate(display_matches):
+        line = lines[i]
+        for d in m:
+            display_ref = d[0]  # display['var']
+            replace = '__'+d[1]  # __var 
+            pattern = r'display\[(.*?)\]'
+            line = re.sub(pattern, replace, line)
+            
+            # Create new variable declarations
+            if replace not in new_display_vars:
+                new_display_vars[replace] = replace +' = '+display_ref
+
+        replaced_lines.append(' '*4*(indent_level+1)+line)
+    
+    lines = replaced_lines  # Substitue lines
+    
+    # Generate new display lines
+    display_lines = []
+    for v in new_display_vars:
+        display_lines.append(' '*4*(indent_level+1)+new_display_vars[v])
     display_lines.append('')
-    lines = [' '*4*(indent_level+1)+n for i, n in enumerate(lines) if i not in display_matches_index]  # Pop display lines
+
+    # Replace 'displays[]' with new variables and ident everything
+    # lines = [' '*4*(indent_level+1)+n for i, n in enumerate(lines) if i not in display_matches_index]  # Pop display lines
 
     # Shuffle lines around in the right order
     lines[0:0] = display_lines  # Reinsert display lines up in the code
