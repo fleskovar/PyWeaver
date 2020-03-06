@@ -25,6 +25,7 @@ export default new Vuex.Store({
       auto_exec: true,
       sync_model: true,
       dark_mode: false,
+      options_show_node_id: false,
     },    
     run_id: 0,
     libraryTree: [],
@@ -38,7 +39,7 @@ export default new Vuex.Store({
     refactor_node_id: '',
     canvas_views: {},
     copied_cell_id: '',
-    console_text: 'PyWeaver Console \n',
+    console_text: 'PyWeaver Console \n',    
   },
   mutations: {
     set_refactor_node_id: function(state, id){
@@ -67,6 +68,9 @@ export default new Vuex.Store({
     },
     set_sync_model: function(state, val){
       state.config.sync_model = val;
+    },
+    set_node_id_display: function(state, val){
+      state.config.options_show_node_id = val;
     },
     tree_change: function(state, libraryTree){
       state.libraryTree = libraryTree;
@@ -191,6 +195,9 @@ export default new Vuex.Store({
 
       instance.changeAct(node_data.display_act_code);
       node.setDisplayActCode(node_data.display_act_code);
+
+      instance.setID(node_id);
+      instance.setDisplayID(node_id);
 
       instance.$mount(); // pass nothing
       document.getElementById('node_'+node_id).appendChild(instance.$el); //Insert display into DOM

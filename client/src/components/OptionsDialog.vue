@@ -15,6 +15,7 @@
                 <v-checkbox v-model="autoRun" :label="`Automatically run flowsheet`"/>
                 <v-checkbox v-model="autoSync" :label="`Automatically sync model`"/>
                 <v-checkbox v-model="darkMode" :label="`Dark Mode (requires page reload)`"/>
+                <v-checkbox v-model="dispNodeID" :label="`Always show node ID`"/>
             </v-card-text>
 
         </v-card>
@@ -30,6 +31,13 @@ export default {
         return{}
     },
     computed:{
+        dispNodeID:{
+            get(){return this.$store.state.config.options_show_node_id},
+            set(val){ 
+                this.$store.commit('set_node_id_display', val);
+                this.$store.dispatch('save_config_file');
+            }
+        },
         autoRun:{
             get(){return this.$store.state.config.auto_exec},
             set(val){ 

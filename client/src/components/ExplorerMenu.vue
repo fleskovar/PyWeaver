@@ -11,46 +11,25 @@
             </v-btn>
           </v-list-tile-action>        
         </v-list-tile>        
-        
-        <v-list-tile>
-          <!--Here goes a title -->
-        </v-list-tile>
 
-        <v-divider/>
+        <v-tabs dark v-model="tab" v-show="!drawer_mini"> 
+					<v-tab key="console"> <v-icon>desktop_windows</v-icon> </v-tab>
+					<v-tab key="inspector"> <v-icon>remove_red_eye</v-icon> </v-tab>	
 
-        <v-list-tile>
-          <v-list-tile-action>
-            <v-btn icon class="text-lg-right">              
-              <v-icon>desktop_windows</v-icon>
-            </v-btn>
-          </v-list-tile-action>   
-          <v-list-tile-content>Console</v-list-tile-content>     
-        </v-list-tile>
+          <v-tab-item key="console">
+            <v-divider/>
+            Console
+            <v-divider/> 
+            <Console/>                
+          </v-tab-item>
 
-        <Console v-show='!drawer_mini'/>
+          <v-tab-item key="inspector">
+            <v-divider/>
+            Inspector
+            <v-divider/>                            
+          </v-tab-item>
 
-        <v-divider/>
-
-        <v-list-tile @click="drawer_mini = false">
-          <v-list-tile-action>
-            <v-btn icon class="text-lg-right">              
-              <v-icon>remove_red_eye</v-icon>
-            </v-btn>
-          </v-list-tile-action>   
-          <v-list-tile-content>Watch</v-list-tile-content>     
-        </v-list-tile>    
-
-        <v-card v-show='!drawer_mini' black style='padding: 20px; overflow-y: scroll' height='300px' flat class="black">          
-          Here goes the watcher
-        </v-card>  
-
-        
-
-        <v-card v-show='!drawer_mini' style='padding: 20px; overflow-y: scroll' height='300px' flat>          
-          This is a thing
-        </v-card>
-
-        <v-divider/>
+				</v-tabs>
 
       </v-list>      
 
@@ -75,6 +54,7 @@ export default {
             drawer_mini: true,            
             showOptionsDialog: false,
             console_input: '',
+            tab: null,
         }
     },
     methods:{

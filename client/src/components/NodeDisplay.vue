@@ -1,5 +1,14 @@
 <template>
 	<div :key='run_id'>
+    
+    <div align="left" style='padding-left: 15px'>
+      <div v-if="store.state.config.options_show_node_id">
+        <br>
+        ID: {{display_id}}
+        <br>
+      </div>
+    </div>
+    
 		<v-runtime-template :template="template" :display_code="display_code"></v-runtime-template>   
 	</div>
 </template>
@@ -16,6 +25,7 @@ import SmallDisplay from '../../src/components/SmallDisplay.vue'
 export default {
   props: [ '_node', 'store'],
   data: () => ({
+    display_id: '',
     id: '',
     template: `<div>Node</div>`,
     display_code:'{}',
@@ -34,6 +44,12 @@ export default {
     Val
   },
   methods:{
+      setID(id){
+        this.id = id;        
+      },
+      setDisplayID(id){
+        this.display_id = id;        
+      },
       changeCode(code){         
             //Safeguarding display code
             this.template ='<div>'+code+'</div>';          

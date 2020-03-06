@@ -302,6 +302,14 @@ def make_connection(data):
     graph_root.make_connection(source_id, source_var, target_id, target_var, connection_name)
 
 
+@socketio.on('get_input_connection_data')
+def get_input_connection_data(data):
+    global graph_root
+    node_id = data['node_id']
+    var_name = data['var']    
+    pass
+
+
 @socketio.on('delete_connection')
 def delete_connection(data):
     global graph_root

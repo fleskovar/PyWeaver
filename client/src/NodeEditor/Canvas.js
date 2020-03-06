@@ -661,6 +661,8 @@ export default class Canvas{
             if(!cell.edge){
             
                 if(cell.isConnector){
+                    
+
                     //If click was done over a connector
                     if(!cell.isInput){
                         //If click was done over an output
@@ -686,6 +688,13 @@ export default class Canvas{
                             canvas.setDashed([cell], 1);
                             graph.store.dispatch('set_output_type', data);
                         });                        
+                    }else{
+
+                        menu.addItem('Inspect', 'editors/images/image.gif', function()
+                        {
+                            //
+                        });   
+                        
                     }
 
                     menu.addItem('Print to console', 'editors/images/image.gif', function()
