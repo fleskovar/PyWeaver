@@ -261,7 +261,7 @@ export default class Canvas{
             if (cell!=null && event.target.localName == 'rect'){
                 if (cell.isNode){
                     let code_node = this.store.state.code_nodes[cell.id];
-                    this.store.dispatch('set_selected_node', code_node);
+                    this.store.commit('set_selected_node', code_node);
                 }
             }
         });

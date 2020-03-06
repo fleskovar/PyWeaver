@@ -334,7 +334,8 @@ export default new Vuex.Store({
 
       //Extract the name of the input variables so that the user can decide
       //which of them should be paramters and which should be inner inputs
-      var keys = Object.keys(context.state.code_nodes[node_id].inputs);
+      //var keys = Object.keys(context.state.code_nodes[node_id].inputs);
+      var keys = context.state.code_nodes[node_id].inputs;
       context.commit('set_refactor_func_options', keys);
       context.commit('set_show_refactor_func_dialog', true);
     },
