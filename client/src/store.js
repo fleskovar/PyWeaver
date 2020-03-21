@@ -40,11 +40,15 @@ export default new Vuex.Store({
     canvas_views: {},
     copied_cell_id: '',
     console_text: 'PyWeaver Console \n',
-    connection_inspector_connections: [],    
+    connection_inspector_connections: [],   
+    connection_inspector_id: '',  
     explorer_menu_open: true,
     explorer_menu_tab: null,
   },
   mutations: {
+    set_connection_inspector_id: function(state, id){
+      state.connection_inspector_id = id;
+    },
     set_explorer_menu_open: function(state, val){
       state.explorer_menu_open = val;
     },
@@ -121,7 +125,19 @@ export default new Vuex.Store({
   },
   actions: {
 
+    sort_connection: function(context, data){
+      socket.emit('sort_connection_data', var_data, 
+        (data) => {
+          var var_data = '';
+          context.dispatch('get_connection_data', var_data);
+        });
+    },
+
     get_connection_data: function(context, var_data){
+
+      var var_id = var_data.node_id+":"+var_data.var_name;
+      context.commit('set_connection_inspector_id', var_id);
+
       socket.emit('get_input_connection_data', var_data,
         (data) => {
           context.commit('set_connection_inspector_connections', data);

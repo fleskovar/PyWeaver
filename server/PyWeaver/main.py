@@ -302,6 +302,14 @@ def make_connection(data):
     graph_root.make_connection(source_id, source_var, target_id, target_var, connection_name)
 
 
+@socketio.on('sort_connection_data')
+def sort_connection_data(data):
+    global graph_root
+    node_id = data['node_id']
+    var_name = data['var_name']
+    direction = data['direction']
+    position = data['position']
+
 @socketio.on('get_input_connection_data')
 def get_input_connection_data(data):
     global graph_root
