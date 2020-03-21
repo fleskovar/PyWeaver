@@ -254,7 +254,7 @@ export default class Canvas{
             }
         });
 
-        //Adding double click event handler
+        //Adding click event handler
         graph.addListener(mxEvent.CLICK, (sender, evt) => {
             var cell = evt.getProperty('cell'); 
             var event = evt.getProperty('event');           
@@ -692,7 +692,11 @@ export default class Canvas{
 
                         menu.addItem('Inspect', 'editors/images/image.gif', function()
                         {
-                            //
+                            var data = {};
+                            data.node_id = cell.parent.id;
+                            data.var_name = cell.value;
+
+                            graph.store.dispatch("get_connection_data", data);
                         });   
                         
                     }

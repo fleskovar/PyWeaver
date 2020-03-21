@@ -2,6 +2,10 @@ Migrating to Vue3 and latest vuetify?
 
 Comming up next:
 
+    Esc closes side menu
+    Alt-doubleclick for node editor
+    doubleclick for node on separate window
+
     Refactor:
         - Create a refactor menu on the right inspector
         - Refactor: right click node UI -> "to input"

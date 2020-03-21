@@ -1,5 +1,5 @@
 <template>
-    <v-navigation-drawer permanent clipped right dark app width='400' :mini-variant="drawer_mini">  
+    <v-navigation-drawer permanent clipped right dark app width='500' :mini-variant="drawer_mini">  
       
       <v-list>
         <v-list-tile>          
@@ -11,13 +11,15 @@
             </v-btn>
           </v-list-tile-action>        
         </v-list-tile>        
-
+        <v-divider/>
+        
         <v-tabs dark v-model="tab" v-show="!drawer_mini"> 
 					<v-tab key="console"> <v-icon>desktop_windows</v-icon> </v-tab>
 					<v-tab key="inspector"> <v-icon>remove_red_eye</v-icon> </v-tab>	
-
+          
           <v-tab-item key="console">
             <v-divider/>
+            <br>
             Console
             <v-divider/> 
             <Console/>                
@@ -25,8 +27,11 @@
 
           <v-tab-item key="inspector">
             <v-divider/>
+            <br>
             Inspector
-            <v-divider/>                            
+            <v-divider/>  
+            <br>
+            <ConnectionOrderControl/>
           </v-tab-item>
 
 				</v-tabs>
@@ -38,23 +43,20 @@
 
 
 <script>
-import OptionsDialog from './OptionsDialog.vue'
 import Console from './Console.vue'
+import ConnectionOrderControl from './ConnectionOrderControl.vue'
 
 export default {
   components:{
-    OptionsDialog,
     Console,
+    ConnectionOrderControl,
   },
   mounted(){
 
   },
     data(){
-        return{
-            drawer_mini: true,            
-            showOptionsDialog: false,
-            console_input: '',
-            tab: null,
+        return{            
+            console_input: '',                        
         }
     },
     methods:{
@@ -80,7 +82,24 @@ export default {
       
     },
     computed:{
-      
+      drawer_mini:{
+        get: function(){
+          return this.$store.state.explorer_menu_open;
+        },
+        set: function(val){
+          this.$store.commit('set_explorer_menu_open', val);
+        }
+      },
+
+      tab:{
+        get: function(){
+          return this.$store.state.explorer_menu_tab;
+        },
+        set: function(val){
+          this.$store.commit('set_explorer_menu_tab', val);
+        }
+      }
+
     }
 }
 </script>

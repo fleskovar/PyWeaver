@@ -23,7 +23,7 @@
     "vue-codemirror": "^4.0.6",
     "vue-observe-visibility": "^0.4.4",
     "vue-socket.io-extended": "^3.2.1",
-    "vuetify": "^1.5.5",
+    "vuetify": "^1.5.24",
     "vuex": "^3.0.1"
   },
   "devDependencies": {

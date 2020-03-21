@@ -39,9 +39,18 @@ export default new Vuex.Store({
     refactor_node_id: '',
     canvas_views: {},
     copied_cell_id: '',
-    console_text: 'PyWeaver Console \n',    
+    console_text: 'PyWeaver Console \n',
+    connection_inspector_connections: [],    
+    explorer_menu_open: true,
+    explorer_menu_tab: null,
   },
   mutations: {
+    set_explorer_menu_open: function(state, val){
+      state.explorer_menu_open = val;
+    },
+    set_explorer_menu_tab: function(state, tab_name){
+      state.explorer_menu_tab = tab_name;
+    },
     set_refactor_node_id: function(state, id){
       state.refactor_node_id = id;
     },
@@ -105,9 +114,23 @@ export default new Vuex.Store({
     },
     set_session_id: function(state, session_id){
       state.session_id = session_id;
+    },
+    set_connection_inspector_connections: function(state, var_list){
+      state.connection_inspector_connections = var_list;
     }
   },
   actions: {
+
+    get_connection_data: function(context, var_data){
+      socket.emit('get_input_connection_data', var_data,
+        (data) => {
+          context.commit('set_connection_inspector_connections', data);
+          context.commit('set_explorer_menu_open', false); //Open left side panel
+          context.commit('set_explorer_menu_tab', 1) //Navigate to explorer tab
+        }      
+      );
+    },
+
     execute_console: function(context, code){
       socket.emit('execute_console', code);
       context.dispatch('socket_printToConsole', '>>'+code+'\n');

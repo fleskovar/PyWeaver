@@ -1,1 +1,1 @@
-{"description":"Gets data for a given ticker within a time range. Returns a Pandas data frame with Open/High/Low/Close/Adj Close/Volume columns","keywords":"","test_vals":"","connections":""}
+{"description":"Given a ticker, obtains historial data","keywords":"","test_vals":"","connections":""}

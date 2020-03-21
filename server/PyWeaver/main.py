@@ -306,8 +306,22 @@ def make_connection(data):
 def get_input_connection_data(data):
     global graph_root
     node_id = data['node_id']
-    var_name = data['var']    
-    pass
+    var_name = data['var_name']  
+
+    node = graph_root.nodes[node_id]
+
+    connection_data = []
+
+    for c in node.input_vars_data[var_name]:
+        # {node_id: 'n_1', var_name: 'x', var_type:'int'}
+        conn = dict()
+        conn['node_id'] = c[0]
+        conn['var_name'] = c[1]
+        conn['var_type'] = c[2]        
+        connection_data.append(conn)
+
+    return  connection_data
+    
 
 
 @socketio.on('delete_connection')

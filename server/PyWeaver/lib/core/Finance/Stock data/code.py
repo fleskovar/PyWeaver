@@ -7,4 +7,12 @@ def f():
     end_date = display['end_date']
     
     data = yf.download(ticker, start_date, end_date) #returns a pandas
-    return data
+    
+    close_val = data['Close'].values
+    open_val = data['Open'].values
+    low_val = data['Low'].values
+    high_val = data['High'].values
+    
+    dates = data['Close'].index.values
+    
+    return dates, close_val, high_val, low_val, open_val
