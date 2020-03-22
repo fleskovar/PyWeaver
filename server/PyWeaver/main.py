@@ -319,13 +319,16 @@ def sort_connection_data(data):
         success = True
     except:
         pass
-    
+
     return success
 
 
 @socketio.on('get_input_connection_data')
 def get_input_connection_data(data):
+    
     global graph_root
+    global results
+
     node_id = data['node_id']
     var_name = data['var_name']  
 
@@ -338,7 +341,18 @@ def get_input_connection_data(data):
         conn = dict()
         conn['node_id'] = c[0]
         conn['var_name'] = c[1]
-        conn['var_type'] = c[2]        
+        
+        var_type = '?'
+        var_val = '?'
+
+        if c[0] in results:
+            if c[1] in results[c[0]]:
+                var_type = str(type(results[c[0]][c[1]]))
+                var_val = str(results[c[0]][c[1]])
+        
+        conn['var_type'] = var_type        
+        conn['var_val'] = var_val
+        
         connection_data.append(conn)
 
     return  connection_data
@@ -376,6 +390,7 @@ def execute(scope_data):
     # TODO: this should return the whole variable data (including type) so that the display can use it
     global graph_root
     global python_console
+    global results
     
     sucess = graph_root.execute(scope_data)
 
@@ -387,6 +402,9 @@ def execute(scope_data):
             # Transforms result into JSON safe data
             rr[v] = var_obj.value
         r[n] = rr
+
+    # TODO: This is probably duplicating the data already stored in the nodes.
+    results = r  # Save reference to the results of the calculation
 
     python_console.__dict__['locals']['_data'] = r  # Inject results into console's scope
 
