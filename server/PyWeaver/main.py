@@ -310,6 +310,19 @@ def sort_connection_data(data):
     direction = data['direction']
     position = data['position']
 
+    node = graph_root.nodes[node_id]
+
+    success = False
+
+    try:
+        node.input_vars_data[var_name][position-direction:position-direction] = [node.input_vars_data[var_name].pop(position)]
+        success = True
+    except:
+        pass
+    
+    return success
+
+
 @socketio.on('get_input_connection_data')
 def get_input_connection_data(data):
     global graph_root

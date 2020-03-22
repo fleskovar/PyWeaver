@@ -33,7 +33,18 @@ export default {
     }),
     methods:{
         move_conn: function(props, dir){
-            this.$store.dispatch('sort_connection');
+            var sort_data = {};
+            sort_data.position = props.index;
+            sort_data.direction = dir;
+            sort_data.node_id = this.$store.state.connection_inspector_id.node_id;
+            sort_data.var_name = this.$store.state.connection_inspector_id.var_name;
+
+            var new_pos = props.index - dir;
+            var max_index = this.vars_list.length-1;
+
+            if(new_pos > -1 && new_pos < max_index){
+                this.$store.dispatch('sort_connection', sort_data);
+            }
         }        
     },
     computed:{
