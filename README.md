@@ -5,6 +5,13 @@ PyWeaver is a visual code editor for Python 3 that leverages web technologies. I
 ```
 pip install pyweaver
 ```
+Note: depending on your environment, you might also need to downgrade the packages listed below. You can find more information following this [link](https://flask-socketio.readthedocs.io/en/latest/#version-compatibility).
+```
+python-engineio==3.13.2
+python-socketio==4.6.0
+```
+
+
 To run the app simply open a cmd and:
 ```
 pyweaver
